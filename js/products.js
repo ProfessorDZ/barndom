@@ -17,6 +17,14 @@
  *    can choose on the product page: any of "uk", "pl", "en", "sv".
  * 7. Fill in "name", "shortDescription" and "description" for all 4
  *    languages (uk / pl / en / sv) — these are shown to the visitor.
+ * 8. Optional flags:
+ *    - "bestseller: true" shows the product in the homepage bestsellers
+ *      row and adds a "Bestseller" badge on its card.
+ *    - "isNew: true" adds a "New" badge on its card.
+ *    - "images: [...]" — a list of image paths for a photo gallery on
+ *      the product page (main photo + clickable thumbnails). Leave it
+ *      out and the single "image" is used everywhere instead. Once real
+ *      product photos exist, this is the only thing you need to add.
  * That's it — the new product will automatically show up in its
  * catalog page and can be linked to directly.
  */
@@ -63,6 +71,7 @@
       type: "velcro-books",
       price: 39,
       image: "assets/types/velcro-books.svg",
+      bestseller: true,
       ages: ["1"],
       categories: ["animals"],
       availableLanguages: ["uk", "pl", "en"],
@@ -90,6 +99,7 @@
       type: "velcro-books",
       price: 42,
       image: "assets/types/velcro-books.svg",
+      bestseller: true,
       ages: ["3"],
       categories: ["animals", "geography"],
       availableLanguages: ["uk", "pl", "en", "sv"],
@@ -171,6 +181,7 @@
       type: "velcro-books",
       price: 45,
       image: "assets/types/velcro-books.svg",
+      bestseller: true,
       ages: ["5", "10"],
       categories: ["space", "logic"],
       availableLanguages: ["uk", "pl", "en", "sv"],
@@ -198,6 +209,7 @@
       type: "velcro-books",
       price: 42,
       image: "assets/types/velcro-books.svg",
+      bestseller: true,
       ages: ["3", "5"],
       categories: ["dinosaurs"],
       availableLanguages: ["uk", "pl", "en"],
@@ -416,6 +428,7 @@
       type: "coloring",
       price: 18,
       image: "assets/types/coloring.svg",
+      bestseller: true,
       ages: ["3", "5"],
       categories: [],
       availableLanguages: ["uk", "pl", "en", "sv"],
@@ -499,6 +512,7 @@
       type: "spot-it",
       price: 49,
       image: "assets/types/spot-it.svg",
+      bestseller: true,
       ages: ["5", "10"],
       categories: [],
       availableLanguages: ["uk", "pl", "en", "sv"],
@@ -555,6 +569,7 @@
       type: "playdough",
       price: 28,
       image: "assets/types/playdough.svg",
+      bestseller: true,
       ages: ["1", "3"],
       categories: [],
       availableLanguages: ["uk", "pl", "en", "sv"],
@@ -611,6 +626,7 @@
       type: "wipe-clean",
       price: 32,
       image: "assets/types/wipe-clean.svg",
+      bestseller: true,
       ages: ["3", "5"],
       categories: [],
       availableLanguages: ["uk", "pl", "en", "sv"],
@@ -694,6 +710,7 @@
       type: "unit-study",
       price: 48,
       image: "assets/types/unit-study.svg",
+      isNew: true,
       ages: ["5", "10"],
       categories: [],
       availableLanguages: ["uk", "pl", "en", "sv"],

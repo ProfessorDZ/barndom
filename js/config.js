@@ -22,6 +22,14 @@ window.BD_CONFIG = {
   // Default site language if nothing is saved yet in the visitor's browser.
   defaultLanguage: "uk",
 
-  // Contact email placeholder shown in the footer.
+  // Contact details shown in the footer (and used for the "mailto" link).
+  // These are placeholders — replace them with the shop's real contacts.
   contactEmail: "hello@barndom.example",
+  contactPhone: "+48 000 000 000",
+
+  // Which translation key (from js/i18n.js) is shown in the thin bar at
+  // the very top of every page. To change the announcement text, edit
+  // that key ("announcement.text") in js/i18n.js in all 4 languages —
+  // this setting only controls WHICH key is displayed.
+  announcementKey: "announcement.text",
 };

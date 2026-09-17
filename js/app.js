@@ -1,9 +1,10 @@
 /*
  * Barn Dom — shared app logic
  * --------------------------------
- * Renders the header/footer on every page, wires up the language
- * switcher and mobile menu, and renders whichever page is active based
- * on document.body.dataset.page ("home" | "catalog" | "product" | "cart").
+ * Renders the header/footer/mini-cart on every page, wires up the
+ * language switcher, mobile menu and search, and renders whichever page
+ * is active based on document.body.dataset.page
+ * ("home" | "catalog" | "product" | "cart").
  *
  * No build step, no frameworks: this file runs directly in the browser
  * once index.html/catalog.html/product.html/cart.html load it with a
@@ -24,6 +25,17 @@
     }
   }
 
+  function qsAll(name) {
+    var raw = qs(name);
+    if (!raw) return [];
+    return raw
+      .split(",")
+      .map(function (v) {
+        return v.trim();
+      })
+      .filter(Boolean);
+  }
+
   function escapeHtml(str) {
     return String(str == null ? "" : str).replace(/[&<>"']/g, function (ch) {
       return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[ch];
@@ -41,6 +53,14 @@
     }
   }
 
+  function shopName() {
+    return (window.BD_CONFIG && window.BD_CONFIG.shopName) || "Barn Dom";
+  }
+
+  function setTitle(pageTitle) {
+    document.title = pageTitle + " — " + shopName();
+  }
+
   function getProductById(id) {
     var list = window.BD_PRODUCTS || [];
     for (var i = 0; i < list.length; i++) {
@@ -55,6 +75,13 @@
     });
   }
 
+  function getBestsellers(limit) {
+    var list = (window.BD_PRODUCTS || []).filter(function (p) {
+      return p.bestseller;
+    });
+    return typeof limit === "number" ? list.slice(0, limit) : list;
+  }
+
   function isValidType(type) {
     return (window.BD_PRODUCT_TYPES || []).some(function (t) {
       return t.id === type;
@@ -63,7 +90,12 @@
 
   function localizedText(field) {
     var lang = window.BD_getLang();
-    return field[lang] || field.uk || "";
+    return (field && (field[lang] || field.uk)) || "";
+  }
+
+  function getProductImages(product) {
+    if (product.images && product.images.length) return product.images;
+    return [product.image];
   }
 
   function el(html) {
@@ -72,15 +104,108 @@
     return wrap.firstElementChild;
   }
 
-  // ---------- toast ----------
+  function orderedTypes() {
+    // velcro-books is the shop's flagship product, so it always leads.
+    var types = (window.BD_PRODUCT_TYPES || []).slice();
+    types.sort(function (a, b) {
+      if (a.id === "velcro-books") return -1;
+      if (b.id === "velcro-books") return 1;
+      return 0;
+    });
+    return types;
+  }
+
+  // ---------- inline line icons ----------
+
+  var ICONS = {
+    handmade:
+      '<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 11V7a2 2 0 0 1 4 0"></path><path d="M11 11V5.5a2 2 0 0 1 4 0V11"></path><path d="M15 11V7a2 2 0 0 1 4 0v7c0 3.3-2.7 6-6 6h-2c-2 0-3.2-.6-4.4-1.9l-3.3-3.6a1.5 1.5 0 0 1 2.1-2.1L7 14"></path></svg>',
+    shield:
+      '<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l7 3v6c0 4.5-3 7.7-7 9-4-1.3-7-4.5-7-9V6z"></path><path d="M9 12l2 2 4-4"></path></svg>',
+    tag: '<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.6 12.3 12.7 20a1 1 0 0 1-1.4 0l-8-8a1 1 0 0 1-.3-.7V4.5A1.5 1.5 0 0 1 4.5 3h6.8c.3 0 .5.1.7.3l8.6 8.6a1 1 0 0 1 0 1.4Z"></path><circle cx="8" cy="8" r="1.5"></circle></svg>',
+    truck:
+      '<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 7h11v9H2z"></path><path d="M13 10h4l4 3.5V16h-8z"></path><circle cx="6.5" cy="18" r="1.7"></circle><circle cx="17" cy="18" r="1.7"></circle></svg>',
+    check:
+      '<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"></path></svg>',
+    lock: '<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="10" width="16" height="10" rx="2"></rect><path d="M8 10V7a4 4 0 0 1 8 0v3"></path></svg>',
+    clock:
+      '<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3.5 2"></path></svg>',
+    search:
+      '<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="m21 21-4.3-4.3"></path></svg>',
+    cart: '<svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>',
+    chevronDown:
+      '<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"></path></svg>',
+    grid: '<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1.5"></rect><rect x="14" y="3" width="7" height="7" rx="1.5"></rect><rect x="3" y="14" width="7" height="7" rx="1.5"></rect><rect x="14" y="14" width="7" height="7" rx="1.5"></rect></svg>',
+    instagram:
+      '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"></rect><circle cx="12" cy="12" r="4.2"></circle><circle cx="17.2" cy="6.8" r="1"></circle></svg>',
+    facebook:
+      '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M15 8h-2a2 2 0 0 0-2 2v10M9 13h5"></path><circle cx="12" cy="12" r="9"></circle></svg>',
+    tiktok:
+      '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M14 4v9.5a3.5 3.5 0 1 1-3.5-3.5"></path><path d="M14 4c.5 2.2 2 3.6 4 4"></path></svg>',
+  };
+
+  // ---------- overlay panel helper (mobile menu / drawers) ----------
+
+  function makeOverlay(overlayEl, panelEl) {
+    var lastFocused = null;
+
+    function getFocusable() {
+      return Array.prototype.slice.call(
+        panelEl.querySelectorAll('a[href], button:not([disabled]), input, select, textarea, [tabindex]:not([tabindex="-1"])')
+      );
+    }
+
+    function onKeydown(evt) {
+      if (evt.key === "Escape") {
+        evt.preventDefault();
+        close();
+        return;
+      }
+      if (evt.key === "Tab") {
+        var focusable = getFocusable();
+        if (!focusable.length) return;
+        var first = focusable[0];
+        var last = focusable[focusable.length - 1];
+        if (evt.shiftKey && document.activeElement === first) {
+          evt.preventDefault();
+          last.focus();
+        } else if (!evt.shiftKey && document.activeElement === last) {
+          evt.preventDefault();
+          first.focus();
+        }
+      }
+    }
+
+    function open() {
+      lastFocused = document.activeElement;
+      overlayEl.classList.add("is-open");
+      document.body.style.overflow = "hidden";
+      document.addEventListener("keydown", onKeydown);
+      var focusable = getFocusable();
+      if (focusable.length) focusable[0].focus();
+    }
+
+    function close() {
+      overlayEl.classList.remove("is-open");
+      document.body.style.overflow = "";
+      document.removeEventListener("keydown", onKeydown);
+      if (lastFocused && typeof lastFocused.focus === "function") lastFocused.focus();
+    }
+
+    overlayEl.addEventListener("click", function (evt) {
+      if (evt.target === overlayEl) close();
+    });
+
+    return { open: open, close: close };
+  }
+
+  // ---------- toast (small non-blocking confirmations) ----------
 
   function showToast(message) {
     var existing = document.getElementById("bd-toast");
     if (existing) existing.parentNode.removeChild(existing);
     var toast = el(
-      '<div id="bd-toast" class="bd-toast" role="status" aria-live="polite">' +
-        escapeHtml(message) +
-        "</div>"
+      '<div id="bd-toast" class="bd-toast" role="status" aria-live="polite">' + escapeHtml(message) + "</div>"
     );
     document.body.appendChild(toast);
     requestAnimationFrame(function () {
@@ -94,157 +219,488 @@
     }, 2600);
   }
 
+  // ---------- mini-cart drawer ----------
+
+  var miniCartOverlay = null;
+
+  function miniCartLineHtml(line, product) {
+    var metaBits = [window.BD_T("langName." + line.productLanguage)];
+    if (line.personalized) metaBits.push(window.BD_T("cart.tableChildName") + ": " + line.childName);
+    return (
+      '<div class="mini-cart-line">' +
+      '<img class="mini-cart-line__image" src="' +
+      product.image +
+      '" alt="" width="56" height="56">' +
+      '<div>' +
+      '<p class="mini-cart-line__name">' +
+      escapeHtml(localizedText(product.name)) +
+      "</p>" +
+      '<p class="mini-cart-line__meta">' +
+      escapeHtml(metaBits.join(" · ")) +
+      "</p>" +
+      '<p class="mini-cart-line__meta">' +
+      escapeHtml(window.BD_T("cart.tableQuantity")) +
+      ": " +
+      line.quantity +
+      "</p>" +
+      '<p class="mini-cart-line__price">' +
+      formatPrice(line.unitPrice * line.quantity) +
+      "</p>" +
+      "</div>" +
+      "</div>"
+    );
+  }
+
+  function renderMiniCart() {
+    var body = document.getElementById("bd-minicart-body");
+    var foot = document.getElementById("bd-minicart-foot");
+    if (!body || !foot) return;
+    var cart = window.BD_CART.read();
+
+    if (!cart.length) {
+      body.innerHTML =
+        '<div class="mini-cart__empty">' +
+        '<img src="assets/brand/astronaut-rocket.svg" alt="" width="140" height="117">' +
+        "<p>" +
+        escapeHtml(window.BD_T("miniCart.empty")) +
+        "</p>" +
+        "</div>";
+      foot.innerHTML =
+        '<div class="mini-cart__actions">' +
+        '<button type="button" class="btn btn--primary btn--large" data-drawer-close>' +
+        escapeHtml(window.BD_T("miniCart.continueShopping")) +
+        "</button>" +
+        "</div>";
+    } else {
+      body.innerHTML = cart
+        .map(function (line) {
+          var product = getProductById(line.productId);
+          return product ? miniCartLineHtml(line, product) : "";
+        })
+        .join("");
+      var total = window.BD_CART.total(cart);
+      foot.innerHTML =
+        '<div class="mini-cart__subtotal"><span>' +
+        escapeHtml(window.BD_T("miniCart.subtotal")) +
+        "</span><span>" +
+        formatPrice(total) +
+        "</span></div>" +
+        '<div class="mini-cart__actions">' +
+        '<a class="btn btn--primary btn--large" href="cart.html">' +
+        escapeHtml(window.BD_T("miniCart.goToCart")) +
+        "</a>" +
+        '<button type="button" class="btn btn--secondary" data-drawer-close>' +
+        escapeHtml(window.BD_T("miniCart.continueShopping")) +
+        "</button>" +
+        "</div>";
+    }
+
+    Array.prototype.forEach.call(body.querySelectorAll("[data-drawer-close]"), function (btn) {
+      btn.addEventListener("click", function () {
+        if (miniCartOverlay) miniCartOverlay.close();
+      });
+    });
+    Array.prototype.forEach.call(foot.querySelectorAll("[data-drawer-close]"), function (btn) {
+      btn.addEventListener("click", function () {
+        if (miniCartOverlay) miniCartOverlay.close();
+      });
+    });
+  }
+
+  function openMiniCart() {
+    renderMiniCart();
+    if (miniCartOverlay) miniCartOverlay.open();
+  }
+
+  function renderMiniCartShell() {
+    if (document.getElementById("bd-minicart-overlay")) return;
+    var shell = el(
+      '<div class="drawer-overlay" id="bd-minicart-overlay">' +
+      '<aside class="mini-cart" role="dialog" aria-modal="true" aria-label="' +
+      escapeHtml(window.BD_T("miniCart.title")) +
+      '">' +
+      '<div class="mini-cart__head">' +
+      "<h2>" +
+      escapeHtml(window.BD_T("miniCart.title")) +
+      "</h2>" +
+      '<button type="button" class="mini-cart__close" id="bd-minicart-close" aria-label="' +
+      escapeHtml(window.BD_T("common.close")) +
+      '">&times;</button>' +
+      "</div>" +
+      '<div class="mini-cart__body" id="bd-minicart-body"></div>' +
+      '<div class="mini-cart__foot" id="bd-minicart-foot"></div>' +
+      "</aside>" +
+      "</div>"
+    );
+    document.body.appendChild(shell);
+    var overlayEl = document.getElementById("bd-minicart-overlay");
+    var panelEl = overlayEl.querySelector(".mini-cart");
+    miniCartOverlay = makeOverlay(overlayEl, panelEl);
+    document.getElementById("bd-minicart-close").addEventListener("click", function () {
+      miniCartOverlay.close();
+    });
+  }
+
   // ---------- header / footer ----------
 
-  function typeCardsHtml(compact) {
-    return (window.BD_PRODUCT_TYPES || [])
+  function typesForDropdown() {
+    return orderedTypes()
       .map(function (type) {
         return (
-          '<a class="type-card' +
-          (compact ? " type-card--compact" : "") +
-          '" href="catalog.html?type=' +
+          '<a class="categories-dropdown__link" href="catalog.html?type=' +
           encodeURIComponent(type.id) +
           '">' +
-          '<span class="type-card__image"><img src="' +
-          type.image +
-          '" alt="" width="120" height="120" loading="lazy"></span>' +
-          '<span class="type-card__name">' +
           escapeHtml(window.BD_T("type." + type.id)) +
-          "</span>" +
-          '<span class="type-card__tagline">' +
-          escapeHtml(window.BD_T("typeTagline." + type.id)) +
-          "</span>" +
-          '<span class="type-card__cta">' +
-          escapeHtml(window.BD_T("home.cardView")) +
-          " &rarr;</span>" +
           "</a>"
         );
       })
       .join("");
+  }
+
+  function renderAnnouncementBar() {
+    var mount = document.getElementById("bd-announcement");
+    if (!mount) return;
+    var key = (window.BD_CONFIG && window.BD_CONFIG.announcementKey) || "announcement.text";
+    mount.innerHTML = '<p class="announcement-bar__inner">' + escapeHtml(window.BD_T(key)) + "</p>";
+  }
+
+  function searchFormHtml(idSuffix) {
+    return (
+      '<form class="header-search-form" data-search-form role="search">' +
+      '<label class="visually-hidden" for="bd-search-' +
+      idSuffix +
+      '">' +
+      escapeHtml(window.BD_T("header.searchAria")) +
+      "</label>" +
+      '<input type="search" id="bd-search-' +
+      idSuffix +
+      '" name="q" placeholder="' +
+      escapeHtml(window.BD_T("header.searchPlaceholder")) +
+      '">' +
+      '<button type="submit" aria-label="' +
+      escapeHtml(window.BD_T("header.searchSubmitAria")) +
+      '">' +
+      ICONS.search +
+      "</button>" +
+      "</form>"
+    );
   }
 
   function renderHeader() {
     var mount = document.getElementById("bd-header");
     if (!mount) return;
     var lang = window.BD_getLang();
-    var shopName = (window.BD_CONFIG && window.BD_CONFIG.shopName) || "Barn Dom";
     var cartCount = window.BD_CART ? window.BD_CART.count() : 0;
 
-    var navLinks = (window.BD_PRODUCT_TYPES || [])
-      .map(function (type) {
+    var langOptionsDesktop = (window.BD_LANGS || [])
+      .map(function (l) {
         return (
-          '<a class="main-nav__link" href="catalog.html?type=' +
-          encodeURIComponent(type.id) +
+          '<button type="button" class="lang-dropdown__option' +
+          (l.code === lang ? " is-active" : "") +
+          '" data-lang="' +
+          l.code +
           '">' +
-          escapeHtml(window.BD_T("type." + type.id)) +
-          "</a>"
+          '<span class="lang-dropdown__code">' +
+          l.code.toUpperCase() +
+          "</span><span>" +
+          escapeHtml(l.nativeName) +
+          "</span></button>"
         );
       })
       .join("");
 
-    var langButtons = (window.BD_LANGS || [])
+    var langOptionsMobile = (window.BD_LANGS || [])
       .map(function (l) {
         return (
-          '<button type="button" class="lang-btn' +
+          '<button type="button" class="lang-dropdown__option' +
           (l.code === lang ? " is-active" : "") +
           '" data-lang="' +
           l.code +
-          '" aria-pressed="' +
-          (l.code === lang ? "true" : "false") +
-          '" aria-label="' +
-          escapeHtml(l.nativeName) +
           '">' +
+          '<span class="lang-dropdown__code">' +
           l.code.toUpperCase() +
-          "</button>"
+          "</span><span>" +
+          escapeHtml(l.nativeName) +
+          "</span></button>"
         );
+      })
+      .join("");
+
+    var mobileTypeLinks = orderedTypes()
+      .map(function (type) {
+        return '<a href="catalog.html?type=' + encodeURIComponent(type.id) + '">' + escapeHtml(window.BD_T("type." + type.id)) + "</a>";
       })
       .join("");
 
     mount.innerHTML =
-      '<div class="container header-inner">' +
+      '<div class="container header-row">' +
       '<a class="brand" href="index.html">' +
-      '<img src="assets/brand/logo.svg" alt="" width="44" height="44">' +
+      '<img src="assets/brand/logo.svg" alt="" width="40" height="40">' +
       '<span class="brand__name">' +
-      escapeHtml(shopName) +
+      escapeHtml(shopName()) +
       "</span>" +
       "</a>" +
-      '<button type="button" class="menu-toggle" id="bd-menu-toggle" aria-expanded="false" aria-controls="bd-main-nav">' +
-      '<span class="visually-hidden">' +
-      escapeHtml(window.BD_T("nav.menu")) +
-      "</span>" +
-      '<span class="menu-toggle__bar"></span><span class="menu-toggle__bar"></span><span class="menu-toggle__bar"></span>' +
-      "</button>" +
-      '<nav class="main-nav" id="bd-main-nav" aria-label="' +
-      escapeHtml(window.BD_T("nav.menu")) +
-      '">' +
-      navLinks +
-      "</nav>" +
+      '<div class="header-search header-search--desktop">' +
+      searchFormHtml("desktop") +
+      "</div>" +
       '<div class="header-actions">' +
-      '<div class="lang-switcher" role="group" aria-label="' +
+      '<div class="lang-dropdown" id="bd-lang-dropdown">' +
+      '<button type="button" class="lang-dropdown__toggle" id="bd-lang-toggle" aria-haspopup="true" aria-expanded="false" aria-label="' +
       escapeHtml(window.BD_T("lang.switcherLabel")) +
       '">' +
-      langButtons +
+      lang.toUpperCase() +
+      ICONS.chevronDown +
+      "</button>" +
+      '<div class="lang-dropdown__panel" role="menu">' +
+      langOptionsDesktop +
       "</div>" +
-      '<a class="cart-link" href="cart.html" aria-label="' +
+      "</div>" +
+      '<a class="cart-link" id="bd-cart-link" href="cart.html" aria-label="' +
       escapeHtml(window.BD_T("cart.itemsCountAria", { count: cartCount })) +
       '">' +
-      '<svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>' +
+      ICONS.cart +
       '<span class="cart-count" id="bd-cart-count">' +
       cartCount +
       "</span>" +
       "</a>" +
+      '<button type="button" class="menu-toggle" id="bd-menu-toggle" aria-expanded="false" aria-label="' +
+      escapeHtml(window.BD_T("header.openMenu")) +
+      '">' +
+      '<span class="menu-toggle__bar"></span><span class="menu-toggle__bar"></span><span class="menu-toggle__bar"></span>' +
+      "</button>" +
+      "</div>" +
+      "</div>" +
+      '<div class="container header-search-mobile-wrap">' +
+      searchFormHtml("mobile") +
+      "</div>" +
+      '<nav class="subnav container" aria-label="' +
+      escapeHtml(window.BD_T("nav.menu")) +
+      '">' +
+      '<div class="categories-dropdown" id="bd-categories-dropdown">' +
+      '<button type="button" class="categories-dropdown__toggle" id="bd-categories-toggle" aria-haspopup="true" aria-expanded="false">' +
+      ICONS.grid +
+      escapeHtml(window.BD_T("header.categories")) +
+      ICONS.chevronDown +
+      "</button>" +
+      '<div class="categories-dropdown__panel" role="menu">' +
+      typesForDropdown() +
+      "</div>" +
+      "</div>" +
+      '<a class="subnav__link" href="index.html#bd-bestsellers">' +
+      escapeHtml(window.BD_T("header.bestsellers")) +
+      "</a>" +
+      '<a class="subnav__link" href="cart.html">' +
+      escapeHtml(window.BD_T("nav.cart")) +
+      "</a>" +
+      "</nav>" +
+      "</div>" +
+      '<div class="mobile-menu-overlay" id="bd-mobile-menu-overlay">' +
+      '<div class="mobile-menu" role="dialog" aria-modal="true" aria-label="' +
+      escapeHtml(window.BD_T("nav.menu")) +
+      '">' +
+      '<div class="mobile-menu__top">' +
+      '<button type="button" class="mobile-menu__close" id="bd-mobile-menu-close" aria-label="' +
+      escapeHtml(window.BD_T("header.closeMenu")) +
+      '">&times;</button>' +
+      "</div>" +
+      '<div>' +
+      '<p class="mobile-menu__group-title">' +
+      escapeHtml(window.BD_T("header.categories")) +
+      "</p>" +
+      '<nav class="mobile-menu__links">' +
+      mobileTypeLinks +
+      '<a href="index.html#bd-bestsellers">' +
+      escapeHtml(window.BD_T("header.bestsellers")) +
+      "</a>" +
+      '<a href="cart.html">' +
+      escapeHtml(window.BD_T("nav.cart")) +
+      "</a>" +
+      "</nav>" +
+      "</div>" +
+      '<div>' +
+      '<p class="mobile-menu__group-title">' +
+      escapeHtml(window.BD_T("lang.switcherLabel")) +
+      "</p>" +
+      '<div class="lang-grid">' +
+      langOptionsMobile +
+      "</div>" +
+      "</div>" +
       "</div>" +
       "</div>";
 
-    var toggle = document.getElementById("bd-menu-toggle");
-    var nav = document.getElementById("bd-main-nav");
-    if (toggle && nav) {
-      toggle.addEventListener("click", function () {
-        var isOpen = nav.classList.toggle("is-open");
-        toggle.setAttribute("aria-expanded", isOpen ? "true" : "false");
-        toggle.classList.toggle("is-open", isOpen);
-      });
-    }
-
-    Array.prototype.forEach.call(mount.querySelectorAll(".lang-btn"), function (btn) {
+    // language dropdowns (desktop toggle + mobile grid) share the same
+    // click handler for setting the language.
+    Array.prototype.forEach.call(mount.querySelectorAll(".lang-dropdown__option"), function (btn) {
       btn.addEventListener("click", function () {
         window.BD_setLang(btn.getAttribute("data-lang"));
         window.location.reload();
       });
+    });
+
+    // search forms (desktop + mobile) both go to the same place.
+    Array.prototype.forEach.call(mount.querySelectorAll("[data-search-form]"), function (form) {
+      form.addEventListener("submit", function (evt) {
+        evt.preventDefault();
+        var value = form.querySelector("input[name=q]").value.trim();
+        if (!value) return;
+        window.location.href = "catalog.html?q=" + encodeURIComponent(value);
+      });
+    });
+
+    var langDropdown = document.getElementById("bd-lang-dropdown");
+    var langToggle = document.getElementById("bd-lang-toggle");
+    langToggle.addEventListener("click", function (evt) {
+      evt.stopPropagation();
+      var open = langDropdown.classList.toggle("is-open");
+      langToggle.setAttribute("aria-expanded", open ? "true" : "false");
+      closeCategoriesDropdown();
+    });
+
+    var categoriesDropdown = document.getElementById("bd-categories-dropdown");
+    var categoriesToggle = document.getElementById("bd-categories-toggle");
+    function closeCategoriesDropdown() {
+      categoriesDropdown.classList.remove("is-open");
+      categoriesToggle.setAttribute("aria-expanded", "false");
+    }
+    function closeLangDropdown() {
+      langDropdown.classList.remove("is-open");
+      langToggle.setAttribute("aria-expanded", "false");
+    }
+    categoriesToggle.addEventListener("click", function (evt) {
+      evt.stopPropagation();
+      var open = categoriesDropdown.classList.toggle("is-open");
+      categoriesToggle.setAttribute("aria-expanded", open ? "true" : "false");
+      closeLangDropdown();
+    });
+    document.addEventListener("click", function () {
+      closeCategoriesDropdown();
+      closeLangDropdown();
+    });
+    document.addEventListener("keydown", function (evt) {
+      if (evt.key === "Escape") {
+        closeCategoriesDropdown();
+        closeLangDropdown();
+      }
+    });
+
+    var menuToggle = document.getElementById("bd-menu-toggle");
+    var mobileOverlay = document.getElementById("bd-mobile-menu-overlay");
+    var mobileMenuHandle = makeOverlay(mobileOverlay, mobileOverlay.querySelector(".mobile-menu"));
+    menuToggle.addEventListener("click", function () {
+      menuToggle.classList.add("is-open");
+      menuToggle.setAttribute("aria-expanded", "true");
+      mobileMenuHandle.open();
+    });
+    document.getElementById("bd-mobile-menu-close").addEventListener("click", function () {
+      menuToggle.classList.remove("is-open");
+      menuToggle.setAttribute("aria-expanded", "false");
+      mobileMenuHandle.close();
+    });
+    mobileOverlay.addEventListener("click", function (evt) {
+      if (evt.target === mobileOverlay) {
+        menuToggle.classList.remove("is-open");
+        menuToggle.setAttribute("aria-expanded", "false");
+      }
+    });
+
+    renderMiniCartShell();
+    var cartLink = document.getElementById("bd-cart-link");
+    cartLink.addEventListener("click", function (evt) {
+      if (document.body.getAttribute("data-page") === "cart") return;
+      evt.preventDefault();
+      openMiniCart();
     });
   }
 
   function renderFooter() {
     var mount = document.getElementById("bd-footer");
     if (!mount) return;
-    var shopName = (window.BD_CONFIG && window.BD_CONFIG.shopName) || "Barn Dom";
     var email = (window.BD_CONFIG && window.BD_CONFIG.contactEmail) || "";
+    var phone = (window.BD_CONFIG && window.BD_CONFIG.contactPhone) || "";
+
+    var shopLinks = orderedTypes()
+      .map(function (type) {
+        return (
+          '<li><a href="catalog.html?type=' +
+          encodeURIComponent(type.id) +
+          '">' +
+          escapeHtml(window.BD_T("type." + type.id)) +
+          "</a></li>"
+        );
+      })
+      .join("");
+
     mount.innerHTML =
-      '<div class="container footer-inner">' +
-      '<p class="footer__brand">' +
-      escapeHtml(shopName) +
+      '<div class="container">' +
+      '<div class="footer-grid">' +
+      '<div class="footer-col">' +
+      '<p class="footer-brand__name">' +
+      '<img src="assets/brand/logo.svg" alt="" width="32" height="32">' +
+      escapeHtml(shopName()) +
       "</p>" +
-      '<p class="footer__tagline">' +
+      '<p class="footer-brand__tagline">' +
       escapeHtml(window.BD_T("footer.tagline")) +
       "</p>" +
-      '<p class="footer__contact">' +
-      escapeHtml(window.BD_T("footer.contactLabel")) +
-      ' <a href="mailto:' +
+      '<div class="footer-social" aria-label="' +
+      escapeHtml(window.BD_T("footer.socialAria")) +
+      '">' +
+      '<a href="#" aria-label="Instagram">' +
+      ICONS.instagram +
+      "</a>" +
+      '<a href="#" aria-label="Facebook">' +
+      ICONS.facebook +
+      "</a>" +
+      '<a href="#" aria-label="TikTok">' +
+      ICONS.tiktok +
+      "</a>" +
+      "</div>" +
+      "</div>" +
+      '<div class="footer-col">' +
+      '<p class="footer-col__title">' +
+      escapeHtml(window.BD_T("footer.shopTitle")) +
+      "</p>" +
+      '<ul class="footer-col__links">' +
+      shopLinks +
+      "</ul>" +
+      "</div>" +
+      '<div class="footer-col">' +
+      '<p class="footer-col__title">' +
+      escapeHtml(window.BD_T("footer.infoTitle")) +
+      "</p>" +
+      '<ul class="footer-col__links">' +
+      '<li><a href="#">' +
+      escapeHtml(window.BD_T("footer.infoDelivery")) +
+      "</a></li>" +
+      '<li><a href="#">' +
+      escapeHtml(window.BD_T("footer.infoReturns")) +
+      "</a></li>" +
+      '<li><a href="#">' +
+      escapeHtml(window.BD_T("footer.infoTerms")) +
+      "</a></li>" +
+      '<li><a href="#">' +
+      escapeHtml(window.BD_T("footer.infoPrivacy")) +
+      "</a></li>" +
+      "</ul>" +
+      "</div>" +
+      '<div class="footer-col">' +
+      '<p class="footer-col__title">' +
+      escapeHtml(window.BD_T("footer.contactTitle")) +
+      "</p>" +
+      '<ul class="footer-col__links">' +
+      '<li><a href="mailto:' +
       encodeURIComponent(email) +
       '">' +
       escapeHtml(email) +
-      "</a></p>" +
-      '<nav class="footer__links" aria-label="' +
-      escapeHtml(window.BD_T("nav.menu")) +
+      "</a></li>" +
+      '<li><a href="tel:' +
+      escapeHtml(phone.replace(/\s+/g, "")) +
       '">' +
-      '<a href="index.html">' +
-      escapeHtml(window.BD_T("nav.home")) +
-      "</a>" +
-      '<a href="cart.html">' +
-      escapeHtml(window.BD_T("nav.cart")) +
-      "</a>" +
-      "</nav>" +
-      '<p class="footer__rights">' +
+      escapeHtml(phone) +
+      "</a></li>" +
+      "</ul>" +
+      "</div>" +
+      "</div>" +
+      '<p class="footer-bottom">' +
       escapeHtml(window.BD_T("footer.rights", { year: new Date().getFullYear() })) +
       "</p>" +
       "</div>";
@@ -253,10 +709,96 @@
   function updateCartCount() {
     var badge = document.getElementById("bd-cart-count");
     if (badge && window.BD_CART) badge.textContent = window.BD_CART.count();
-    var cartLink = document.querySelector(".cart-link");
+    var cartLink = document.getElementById("bd-cart-link");
     if (cartLink && window.BD_CART) {
       cartLink.setAttribute("aria-label", window.BD_T("cart.itemsCountAria", { count: window.BD_CART.count() }));
     }
+  }
+
+  // ---------- shared: product card + type tile ----------
+
+  function productBadgesHtml(p) {
+    var badges = "";
+    if (p.bestseller) badges += '<span class="badge badge--bestseller">' + escapeHtml(window.BD_T("badge.bestseller")) + "</span>";
+    if (p.isNew) badges += '<span class="badge badge--new">' + escapeHtml(window.BD_T("badge.new")) + "</span>";
+    return badges;
+  }
+
+  function productAgeLabel(p) {
+    if (p.type !== "velcro-books" || !p.ages || !p.ages.length) return "";
+    return p.ages
+      .map(function (a) {
+        return window.BD_T("age." + a);
+      })
+      .join(", ");
+  }
+
+  function productCardHtml(p) {
+    var ageLabel = productAgeLabel(p);
+    return (
+      '<article class="product-card">' +
+      '<a class="product-card__image" href="product.html?id=' +
+      encodeURIComponent(p.id) +
+      '">' +
+      (productBadgesHtml(p) ? '<span class="product-card__badges">' + productBadgesHtml(p) + "</span>" : "") +
+      '<img src="' +
+      p.image +
+      '" alt="" width="220" height="220" loading="lazy">' +
+      "</a>" +
+      (ageLabel ? '<p class="product-card__age">' + escapeHtml(ageLabel) + "</p>" : "") +
+      '<h3 class="product-card__name">' +
+      '<a href="product.html?id=' +
+      encodeURIComponent(p.id) +
+      '">' +
+      escapeHtml(localizedText(p.name)) +
+      "</a>" +
+      "</h3>" +
+      '<p class="product-card__price">' +
+      formatPrice(p.price) +
+      "</p>" +
+      '<a class="btn btn--secondary product-card__cta" href="product.html?id=' +
+      encodeURIComponent(p.id) +
+      '">' +
+      escapeHtml(window.BD_T("catalog.viewProduct")) +
+      "</a>" +
+      "</article>"
+    );
+  }
+
+  function typeCardHtml(type, featured) {
+    return (
+      '<a class="type-card' +
+      (featured ? " type-card--featured" : "") +
+      '" href="catalog.html?type=' +
+      encodeURIComponent(type.id) +
+      '">' +
+      '<span class="type-card__image">' +
+      (featured ? '<span class="type-card__featured-flag">' + escapeHtml(window.BD_T("home.featuredBadge")) + "</span>" : "") +
+      '<img src="' +
+      type.image +
+      '" alt="" width="160" height="160" loading="lazy">' +
+      "</span>" +
+      '<span class="type-card__name">' +
+      escapeHtml(window.BD_T("type." + type.id)) +
+      "</span>" +
+      '<span class="type-card__tagline">' +
+      escapeHtml(window.BD_T("typeTagline." + type.id)) +
+      "</span>" +
+      '<span class="type-card__cta">' +
+      escapeHtml(window.BD_T("home.cardView")) +
+      " &rarr;</span>" +
+      "</a>"
+    );
+  }
+
+  function breadcrumbsHtml(items) {
+    // items: [{label, href?}] — the last item has no href (current page).
+    var parts = items.map(function (item, i) {
+      var isLast = i === items.length - 1;
+      var content = item.href && !isLast ? '<a href="' + item.href + '">' + escapeHtml(item.label) + "</a>" : '<span class="breadcrumbs__current">' + escapeHtml(item.label) + "</span>";
+      return content;
+    });
+    return '<nav class="breadcrumbs container" aria-label="Breadcrumb">' + parts.join('<span class="breadcrumbs__sep">/</span>') + "</nav>";
   }
 
   // ---------- home page ----------
@@ -264,9 +806,21 @@
   function renderHome() {
     var mount = document.getElementById("bd-page");
     if (!mount) return;
-    document.title = ((window.BD_CONFIG && window.BD_CONFIG.shopName) || "Barn Dom") + " — " + window.BD_T("home.sectionTitle");
+    setTitle(window.BD_T("home.sectionTitle"));
+
+    var typesOrdered = orderedTypes();
+    var typeTiles = typesOrdered
+      .map(function (type, i) {
+        return typeCardHtml(type, i === 0);
+      })
+      .join("");
+
+    var bestsellers = getBestsellers(8);
+
     mount.innerHTML =
-      '<section class="hero container">' +
+      '<section class="hero">' +
+      '<span class="hero__stars"></span>' +
+      '<div class="container hero__inner">' +
       '<div class="hero__text">' +
       "<h1>" +
       escapeHtml(window.BD_T("home.heroTitle")) +
@@ -274,170 +828,206 @@
       "<p>" +
       escapeHtml(window.BD_T("home.heroSubtitle")) +
       "</p>" +
-      '<a class="btn btn--primary" href="#bd-types">' +
+      '<a class="btn btn--primary btn--large" href="#bd-chooser">' +
       escapeHtml(window.BD_T("home.heroCta")) +
       "</a>" +
       "</div>" +
       '<div class="hero__image">' +
-      '<img src="assets/brand/astronaut-rocket.svg" alt="" width="420" height="420">' +
+      '<img src="assets/brand/astronaut-rocket.svg" alt="" width="400" height="333">' +
+      "</div>" +
       "</div>" +
       "</section>" +
-      '<section class="types-section container" id="bd-types">' +
-      "<h2>" +
+      '<section class="benefits">' +
+      '<div class="container benefits__grid">' +
+      '<div class="benefit"><span class="benefit__icon">' +
+      ICONS.handmade +
+      '</span><p class="benefit__title">' +
+      escapeHtml(window.BD_T("benefits.handmadeTitle")) +
+      '</p><p class="benefit__text">' +
+      escapeHtml(window.BD_T("benefits.handmadeText")) +
+      "</p></div>" +
+      '<div class="benefit"><span class="benefit__icon">' +
+      ICONS.shield +
+      '</span><p class="benefit__title">' +
+      escapeHtml(window.BD_T("benefits.durableTitle")) +
+      '</p><p class="benefit__text">' +
+      escapeHtml(window.BD_T("benefits.durableText")) +
+      "</p></div>" +
+      '<div class="benefit"><span class="benefit__icon">' +
+      ICONS.tag +
+      '</span><p class="benefit__title">' +
+      escapeHtml(window.BD_T("benefits.personalizedTitle")) +
+      '</p><p class="benefit__text">' +
+      escapeHtml(window.BD_T("benefits.personalizedText")) +
+      "</p></div>" +
+      '<div class="benefit"><span class="benefit__icon">' +
+      ICONS.truck +
+      '</span><p class="benefit__title">' +
+      escapeHtml(window.BD_T("benefits.deliveryTitle")) +
+      '</p><p class="benefit__text">' +
+      escapeHtml(window.BD_T("benefits.deliveryText")) +
+      "</p></div>" +
+      "</div>" +
+      "</section>" +
+      '<section class="section container" id="bd-chooser">' +
+      '<h2 class="section-title section-title--center">' +
       escapeHtml(window.BD_T("home.sectionTitle")) +
       "</h2>" +
-      '<div class="type-grid">' +
-      typeCardsHtml(false) +
+      '<p class="section-lede section-lede--center">' +
+      escapeHtml(window.BD_T("home.chooserSubtitle")) +
+      "</p>" +
+      '<div class="type-grid" style="margin-top: 28px;">' +
+      typeTiles +
+      "</div>" +
+      "</section>" +
+      (bestsellers.length
+        ? '<section class="section container" id="bd-bestsellers">' +
+          '<h2 class="section-title section-title--center">' +
+          escapeHtml(window.BD_T("home.bestsellersTitle")) +
+          "</h2>" +
+          '<div class="product-grid" style="margin-top: 28px;">' +
+          bestsellers.map(productCardHtml).join("") +
+          "</div>" +
+          "</section>"
+        : "") +
+      '<section class="trust section">' +
+      '<div class="container trust__grid">' +
+      '<div class="trust__image"><img src="assets/brand/astronaut-rocket.svg" alt="" width="260" height="217"></div>' +
+      "<div>" +
+      '<h2 class="section-title">' +
+      escapeHtml(window.BD_T("home.trustTitle")) +
+      "</h2>" +
+      "<p>" +
+      escapeHtml(window.BD_T("home.trustText")) +
+      "</p>" +
+      '<div class="trust__points">' +
+      '<div class="trust__point">' +
+      ICONS.check +
+      "<p>" +
+      escapeHtml(window.BD_T("home.trustPoint1")) +
+      "</p></div>" +
+      '<div class="trust__point">' +
+      ICONS.check +
+      "<p>" +
+      escapeHtml(window.BD_T("home.trustPoint2")) +
+      "</p></div>" +
+      '<div class="trust__point">' +
+      ICONS.check +
+      "<p>" +
+      escapeHtml(window.BD_T("home.trustPoint3")) +
+      "</p></div>" +
+      '<div class="trust__point">' +
+      ICONS.check +
+      "<p>" +
+      escapeHtml(window.BD_T("home.trustPoint4")) +
+      "</p></div>" +
+      "</div>" +
+      "</div>" +
       "</div>" +
       "</section>";
   }
 
   // ---------- catalog page ----------
 
-  var catalogState = { ages: [], categories: [] };
+  var catalogState = { ages: [], categories: [], sort: "recommended" };
+  var mobileFiltersOverlayHandle = null;
 
-  function renderCatalog() {
-    var mount = document.getElementById("bd-page");
-    if (!mount) return;
-    var type = qs("type");
-
-    if (!isValidType(type)) {
-      document.title = window.BD_T("catalog.allTitle") + " — " + ((window.BD_CONFIG && window.BD_CONFIG.shopName) || "Barn Dom");
-      mount.innerHTML =
-        '<section class="types-section container">' +
-        "<h1>" +
-        escapeHtml(window.BD_T("catalog.allTitle")) +
-        "</h1>" +
-        "<h2>" +
-        escapeHtml(window.BD_T("home.sectionTitle")) +
-        "</h2>" +
-        '<div class="type-grid">' +
-        typeCardsHtml(false) +
-        "</div>" +
-        "</section>";
-      return;
-    }
-
-    document.title = window.BD_T("type." + type) + " — " + ((window.BD_CONFIG && window.BD_CONFIG.shopName) || "Barn Dom");
-
-    var showFilters = type === "velcro-books";
-    var filtersHtml = "";
-    if (showFilters) {
-      filtersHtml =
-        '<div class="filters">' +
-        '<button type="button" class="filters__toggle" id="bd-filters-toggle" aria-expanded="false" aria-controls="bd-filters-panel">' +
-        escapeHtml(window.BD_T("catalog.filtersToggle")) +
-        "</button>" +
-        '<div class="filters__panel" id="bd-filters-panel">' +
-        '<div class="filter-group">' +
-        '<h3 class="filter-group__title">' +
-        escapeHtml(window.BD_T("catalog.filtersAge")) +
-        "</h3>" +
-        '<div class="chip-row" data-filter-group="ages">' +
-        (window.BD_AGES || [])
-          .map(function (age) {
-            return (
-              '<button type="button" class="chip" data-value="' +
-              age +
-              '" aria-pressed="false">' +
-              escapeHtml(window.BD_T("age." + age)) +
-              "</button>"
-            );
-          })
-          .join("") +
-        "</div>" +
-        "</div>" +
-        '<div class="filter-group">' +
-        '<h3 class="filter-group__title">' +
-        escapeHtml(window.BD_T("catalog.filtersCategory")) +
-        "</h3>" +
-        '<div class="chip-row chip-row--scroll" data-filter-group="categories">' +
-        (window.BD_CATEGORIES || [])
-          .map(function (cat) {
-            return (
-              '<button type="button" class="chip" data-value="' +
-              cat +
-              '" aria-pressed="false">' +
-              escapeHtml(window.BD_T("category." + cat)) +
-              "</button>"
-            );
-          })
-          .join("") +
-        "</div>" +
-        "</div>" +
-        '<button type="button" class="btn btn--ghost" id="bd-clear-filters">' +
-        escapeHtml(window.BD_T("catalog.clearFilters")) +
-        "</button>" +
-        "</div>" +
-        "</div>";
-    }
-
-    mount.innerHTML =
-      '<section class="catalog container">' +
-      '<a class="back-link" href="index.html">&larr; ' +
-      escapeHtml(window.BD_T("catalog.backToTypes")) +
-      "</a>" +
-      "<h1>" +
-      escapeHtml(window.BD_T("type." + type)) +
-      "</h1>" +
-      filtersHtml +
-      '<p class="catalog__count" id="bd-catalog-count"></p>' +
-      '<div class="product-grid" id="bd-product-grid"></div>' +
-      "</section>";
-
-    if (showFilters) {
-      catalogState = { ages: [], categories: [] };
-      wireFilterChips();
-      var toggle = document.getElementById("bd-filters-toggle");
-      var panel = document.getElementById("bd-filters-panel");
-      if (toggle && panel) {
-        toggle.addEventListener("click", function () {
-          var open = panel.classList.toggle("is-open");
-          toggle.setAttribute("aria-expanded", open ? "true" : "false");
-        });
-      }
-      var clearBtn = document.getElementById("bd-clear-filters");
-      if (clearBtn) {
-        clearBtn.addEventListener("click", function () {
-          catalogState = { ages: [], categories: [] };
-          Array.prototype.forEach.call(mount.querySelectorAll(".chip"), function (chip) {
-            chip.classList.remove("is-active");
-            chip.setAttribute("aria-pressed", "false");
-          });
-          renderProductGrid(type);
-        });
-      }
-    }
-
-    renderProductGrid(type);
+  function sortLabel(code) {
+    var map = {
+      recommended: "catalog.sortRecommended",
+      "price-asc": "catalog.sortPriceAsc",
+      "price-desc": "catalog.sortPriceDesc",
+      "name-asc": "catalog.sortNameAsc",
+    };
+    return window.BD_T(map[code] || map.recommended);
   }
 
-  function wireFilterChips() {
-    Array.prototype.forEach.call(document.querySelectorAll(".chip"), function (chip) {
-      chip.addEventListener("click", function () {
-        var group = chip.closest("[data-filter-group]").getAttribute("data-filter-group");
-        var value = chip.getAttribute("data-value");
-        var list = catalogState[group];
-        var idx = list.indexOf(value);
-        if (idx === -1) {
-          list.push(value);
-          chip.classList.add("is-active");
-          chip.setAttribute("aria-pressed", "true");
-        } else {
-          list.splice(idx, 1);
-          chip.classList.remove("is-active");
-          chip.setAttribute("aria-pressed", "false");
-        }
-        renderProductGrid(qs("type"));
-      });
-    });
+  function readCatalogStateFromURL() {
+    var sort = qs("sort");
+    return {
+      ages: qsAll("age"),
+      categories: qsAll("category"),
+      sort: ["price-asc", "price-desc", "name-asc"].indexOf(sort) !== -1 ? sort : "recommended",
+    };
   }
 
-  function renderProductGrid(type) {
-    var grid = document.getElementById("bd-product-grid");
-    var countEl = document.getElementById("bd-catalog-count");
-    if (!grid) return;
+  function writeCatalogStateToURL() {
+    try {
+      var params = new URLSearchParams(window.location.search);
+      if (catalogState.ages.length) params.set("age", catalogState.ages.join(","));
+      else params.delete("age");
+      if (catalogState.categories.length) params.set("category", catalogState.categories.join(","));
+      else params.delete("category");
+      if (catalogState.sort && catalogState.sort !== "recommended") params.set("sort", catalogState.sort);
+      else params.delete("sort");
+      var newUrl = window.location.pathname + "?" + params.toString();
+      window.history.replaceState(null, "", newUrl.replace(/\?$/, ""));
+    } catch (e) {
+      /* URL API unavailable — filters still work in-memory */
+    }
+  }
 
+  function countFor(products, group, value) {
+    return products.filter(function (p) {
+      return (p[group] || []).indexOf(value) !== -1;
+    }).length;
+  }
+
+  function filterOptionsHtml(group, values, allProductsOfType) {
+    return values
+      .map(function (value) {
+        var count = countFor(allProductsOfType, group, value);
+        var checked = catalogState[group].indexOf(value) !== -1;
+        var label = window.BD_T((group === "ages" ? "age." : "category.") + value);
+        return (
+          '<label class="filter-option' +
+          (count === 0 ? " is-zero" : "") +
+          '">' +
+          '<input type="checkbox" data-group="' +
+          group +
+          '" data-value="' +
+          value +
+          '"' +
+          (checked ? " checked" : "") +
+          ">" +
+          '<span class="filter-option__label">' +
+          escapeHtml(label) +
+          "</span>" +
+          '<span class="filter-option__count">' +
+          count +
+          "</span>" +
+          "</label>"
+        );
+      })
+      .join("");
+  }
+
+  function filtersPanelInnerHtml(allProductsOfType) {
+    return (
+      '<div class="filter-group">' +
+      '<p class="filter-group__title">' +
+      escapeHtml(window.BD_T("catalog.filtersAge")) +
+      "</p>" +
+      '<div class="filter-option-list" data-filter-group="ages">' +
+      filterOptionsHtml("ages", window.BD_AGES || [], allProductsOfType) +
+      "</div>" +
+      "</div>" +
+      '<div class="filter-group">' +
+      '<p class="filter-group__title">' +
+      escapeHtml(window.BD_T("catalog.filtersCategory")) +
+      "</p>" +
+      '<div class="filter-option-list" data-filter-group="categories">' +
+      filterOptionsHtml("categories", window.BD_CATEGORIES || [], allProductsOfType) +
+      "</div>" +
+      "</div>"
+    );
+  }
+
+  function activeFilterCount() {
+    return catalogState.ages.length + catalogState.categories.length;
+  }
+
+  function filteredProducts(type) {
     var products = getProductsByType(type);
     if (type === "velcro-books") {
       if (catalogState.ages.length) {
@@ -455,50 +1045,468 @@
         });
       }
     }
+    return sortProducts(products);
+  }
 
+  function sortProducts(products) {
+    var sorted = products.slice();
+    if (catalogState.sort === "price-asc") sorted.sort(function (a, b) { return a.price - b.price; });
+    else if (catalogState.sort === "price-desc") sorted.sort(function (a, b) { return b.price - a.price; });
+    else if (catalogState.sort === "name-asc") {
+      sorted.sort(function (a, b) {
+        return localizedText(a.name).localeCompare(localizedText(b.name));
+      });
+    }
+    return sorted;
+  }
+
+  function syncFilterCheckboxes() {
+    Array.prototype.forEach.call(document.querySelectorAll("[data-group]"), function (input) {
+      var group = input.getAttribute("data-group");
+      var value = input.getAttribute("data-value");
+      input.checked = catalogState[group].indexOf(value) !== -1;
+    });
+  }
+
+  function renderActiveFilterChips(type) {
+    var mount = document.getElementById("bd-active-filters");
+    if (!mount) return;
+    if (type !== "velcro-books" || !activeFilterCount()) {
+      mount.innerHTML = "";
+      return;
+    }
+    var chips = [];
+    catalogState.ages.forEach(function (a) {
+      chips.push({ group: "ages", value: a, label: window.BD_T("age." + a) });
+    });
+    catalogState.categories.forEach(function (c) {
+      chips.push({ group: "categories", value: c, label: window.BD_T("category." + c) });
+    });
+    mount.innerHTML =
+      '<div class="active-filters">' +
+      chips
+        .map(function (chip) {
+          return (
+            '<button type="button" class="filter-chip" data-remove-group="' +
+            chip.group +
+            '" data-remove-value="' +
+            chip.value +
+            '" aria-label="' +
+            escapeHtml(window.BD_T("catalog.removeFilterAria", { label: chip.label })) +
+            '">' +
+            escapeHtml(chip.label) +
+            '<span class="filter-chip__x" aria-hidden="true">&times;</span>' +
+            "</button>"
+          );
+        })
+        .join("") +
+      '<button type="button" class="clear-all-link" id="bd-clear-all">' +
+      escapeHtml(window.BD_T("catalog.clearAll")) +
+      "</button>" +
+      "</div>";
+
+    Array.prototype.forEach.call(mount.querySelectorAll(".filter-chip"), function (chip) {
+      chip.addEventListener("click", function () {
+        var group = chip.getAttribute("data-remove-group");
+        var value = chip.getAttribute("data-remove-value");
+        var idx = catalogState[group].indexOf(value);
+        if (idx !== -1) catalogState[group].splice(idx, 1);
+        onFiltersChanged(type);
+      });
+    });
+    var clearAll = document.getElementById("bd-clear-all");
+    if (clearAll) {
+      clearAll.addEventListener("click", function () {
+        catalogState.ages = [];
+        catalogState.categories = [];
+        onFiltersChanged(type);
+      });
+    }
+  }
+
+  function updateMobileFilterButton() {
+    var showBtn = document.getElementById("bd-mobile-filters-show");
+    var toggleCount = document.getElementById("bd-filters-toggle-count");
+    var type = qs("type");
+    if (showBtn) {
+      var count = filteredProducts(type).length;
+      showBtn.textContent = window.BD_T("catalog.showResults", { count: count });
+    }
+    if (toggleCount) {
+      var active = activeFilterCount();
+      toggleCount.textContent = active;
+      toggleCount.hidden = active === 0;
+    }
+  }
+
+  function onFiltersChanged(type) {
+    syncFilterCheckboxes();
+    writeCatalogStateToURL();
+    renderActiveFilterChips(type);
+    updateMobileFilterButton();
+    renderProductGrid(type);
+  }
+
+  function wireFilterInputs(root, type) {
+    Array.prototype.forEach.call(root.querySelectorAll("[data-group]"), function (input) {
+      input.addEventListener("change", function () {
+        var group = input.getAttribute("data-group");
+        var value = input.getAttribute("data-value");
+        var list = catalogState[group];
+        var idx = list.indexOf(value);
+        if (input.checked && idx === -1) list.push(value);
+        else if (!input.checked && idx !== -1) list.splice(idx, 1);
+        onFiltersChanged(type);
+      });
+    });
+  }
+
+  function renderCatalog() {
+    var mount = document.getElementById("bd-page");
+    if (!mount) return;
+    var type = qs("type");
+    var query = qs("q");
+
+    if (query) {
+      renderSearchResults(query);
+      return;
+    }
+
+    if (!isValidType(type)) {
+      setTitle(window.BD_T("catalog.allTitle"));
+      mount.innerHTML =
+        breadcrumbsHtml([{ label: window.BD_T("catalog.breadcrumbHome"), href: "index.html" }, { label: window.BD_T("catalog.allTitle") }]) +
+        '<section class="section container">' +
+        '<h1 class="section-title">' +
+        escapeHtml(window.BD_T("home.sectionTitle")) +
+        "</h1>" +
+        '<div class="type-grid">' +
+        orderedTypes()
+          .map(function (t, i) {
+            return typeCardHtml(t, i === 0);
+          })
+          .join("") +
+        "</div>" +
+        "</section>";
+      return;
+    }
+
+    setTitle(window.BD_T("type." + type));
+    catalogState = readCatalogStateFromURL();
+    var showFilters = type === "velcro-books";
+    var allOfType = getProductsByType(type);
+
+    var sortSelectHtml =
+      '<label class="visually-hidden" for="bd-sort">' +
+      escapeHtml(window.BD_T("catalog.sortLabel")) +
+      "</label>" +
+      '<select class="sort-select" id="bd-sort">' +
+      ["recommended", "price-asc", "price-desc", "name-asc"]
+        .map(function (code) {
+          return '<option value="' + code + '"' + (catalogState.sort === code ? " selected" : "") + ">" + escapeHtml(sortLabel(code)) + "</option>";
+        })
+        .join("") +
+      "</select>";
+
+    var sidebarHtml = showFilters
+      ? '<aside class="catalog__sidebar" aria-label="' +
+        escapeHtml(window.BD_T("catalog.filtersTitle")) +
+        '">' +
+        '<div class="filters__panel-inner" id="bd-desktop-filters">' +
+        filtersPanelInnerHtml(allOfType) +
+        "</div>" +
+        "</aside>"
+      : "";
+
+    var mobileFiltersToggleHtml = showFilters
+      ? '<button type="button" class="filters__toggle" id="bd-mobile-filters-open">' +
+        escapeHtml(window.BD_T("catalog.filtersToggle")) +
+        ' <span class="filters__count" id="bd-filters-toggle-count" hidden>0</span>' +
+        "</button>"
+      : "";
+
+    mount.innerHTML =
+      breadcrumbsHtml([
+        { label: window.BD_T("catalog.breadcrumbHome"), href: "index.html" },
+        { label: window.BD_T("type." + type) },
+      ]) +
+      '<section class="catalog container">' +
+      '<div class="catalog__header">' +
+      "<h1>" +
+      escapeHtml(window.BD_T("type." + type)) +
+      "</h1>" +
+      "</div>" +
+      '<div class="catalog__layout">' +
+      sidebarHtml +
+      '<div class="catalog__main">' +
+      mobileFiltersToggleHtml +
+      '<div id="bd-active-filters"></div>' +
+      '<div class="catalog__meta-row">' +
+      '<p class="catalog__count" id="bd-catalog-count"></p>' +
+      '<div class="catalog__controls">' +
+      sortSelectHtml +
+      "</div>" +
+      "</div>" +
+      '<div class="product-grid' +
+      (showFilters ? " product-grid--sidebar" : "") +
+      '" id="bd-product-grid"></div>' +
+      "</div>" +
+      "</div>" +
+      "</section>" +
+      (showFilters
+        ? '<div class="filters-mobile-overlay" id="bd-filters-mobile-overlay">' +
+          '<div class="filters-mobile-panel" role="dialog" aria-modal="true" aria-label="' +
+          escapeHtml(window.BD_T("catalog.filtersTitle")) +
+          '">' +
+          '<div class="filters-mobile-panel__head">' +
+          "<h2>" +
+          escapeHtml(window.BD_T("catalog.filtersTitle")) +
+          "</h2>" +
+          '<button type="button" class="mini-cart__close" id="bd-mobile-filters-close" aria-label="' +
+          escapeHtml(window.BD_T("common.close")) +
+          '">&times;</button>' +
+          "</div>" +
+          '<div class="filters-mobile-panel__body" id="bd-mobile-filters-body">' +
+          filtersPanelInnerHtml(allOfType) +
+          "</div>" +
+          '<div class="filters-mobile-panel__foot">' +
+          '<button type="button" class="btn btn--secondary" id="bd-mobile-filters-clear">' +
+          escapeHtml(window.BD_T("catalog.clearFilters")) +
+          "</button>" +
+          '<button type="button" class="btn btn--primary" id="bd-mobile-filters-show"></button>' +
+          "</div>" +
+          "</div>" +
+          "</div>"
+        : "");
+
+    if (showFilters) {
+      wireFilterInputs(document.getElementById("bd-desktop-filters"), type);
+      wireFilterInputs(document.getElementById("bd-mobile-filters-body"), type);
+
+      var openBtn = document.getElementById("bd-mobile-filters-open");
+      var closeBtn = document.getElementById("bd-mobile-filters-close");
+      var showBtn = document.getElementById("bd-mobile-filters-show");
+      var clearBtn = document.getElementById("bd-mobile-filters-clear");
+      var overlayEl = document.getElementById("bd-filters-mobile-overlay");
+      mobileFiltersOverlayHandle = makeOverlay(overlayEl, overlayEl.querySelector(".filters-mobile-panel"));
+
+      openBtn.addEventListener("click", function () {
+        mobileFiltersOverlayHandle.open();
+      });
+      closeBtn.addEventListener("click", function () {
+        mobileFiltersOverlayHandle.close();
+      });
+      showBtn.addEventListener("click", function () {
+        mobileFiltersOverlayHandle.close();
+      });
+      clearBtn.addEventListener("click", function () {
+        catalogState.ages = [];
+        catalogState.categories = [];
+        onFiltersChanged(type);
+      });
+
+      renderActiveFilterChips(type);
+      updateMobileFilterButton();
+    }
+
+    document.getElementById("bd-sort").addEventListener("change", function (evt) {
+      catalogState.sort = evt.target.value;
+      writeCatalogStateToURL();
+      renderProductGrid(type);
+    });
+
+    renderProductGrid(type);
+  }
+
+  function renderProductGrid(type) {
+    var grid = document.getElementById("bd-product-grid");
+    var countEl = document.getElementById("bd-catalog-count");
+    if (!grid) return;
+
+    var products = filteredProducts(type);
     if (countEl) countEl.textContent = window.BD_T("catalog.count", { count: products.length });
+    updateMobileFilterButton();
 
     if (!products.length) {
       grid.innerHTML = '<p class="catalog__empty">' + escapeHtml(window.BD_T("catalog.empty")) + "</p>";
       return;
     }
 
-    grid.innerHTML = products
-      .map(function (p) {
-        return (
-          '<article class="product-card">' +
-          '<a class="product-card__image" href="product.html?id=' +
-          encodeURIComponent(p.id) +
-          '">' +
-          '<img src="' +
-          p.image +
-          '" alt="" width="220" height="220" loading="lazy">' +
-          "</a>" +
-          '<h2 class="product-card__name">' +
-          '<a href="product.html?id=' +
-          encodeURIComponent(p.id) +
-          '">' +
-          escapeHtml(localizedText(p.name)) +
-          "</a>" +
-          "</h2>" +
-          '<p class="product-card__desc">' +
-          escapeHtml(localizedText(p.shortDescription)) +
-          "</p>" +
-          '<p class="product-card__price">' +
-          formatPrice(p.price) +
-          "</p>" +
-          '<a class="btn btn--secondary product-card__cta" href="product.html?id=' +
-          encodeURIComponent(p.id) +
-          '">' +
-          escapeHtml(window.BD_T("catalog.viewProduct")) +
-          "</a>" +
-          "</article>"
-        );
-      })
-      .join("");
+    grid.innerHTML = products.map(productCardHtml).join("");
+  }
+
+  function renderSearchResults(query) {
+    var mount = document.getElementById("bd-page");
+    setTitle(window.BD_T("catalog.searchTitle"));
+    var lang = window.BD_getLang();
+    var needle = query.toLowerCase();
+    var matches = (window.BD_PRODUCTS || []).filter(function (p) {
+      var name = (p.name[lang] || p.name.uk || "").toLowerCase();
+      var desc = (p.shortDescription[lang] || p.shortDescription.uk || "").toLowerCase();
+      return name.indexOf(needle) !== -1 || desc.indexOf(needle) !== -1;
+    });
+    matches = sortProducts(matches);
+
+    mount.innerHTML =
+      breadcrumbsHtml([{ label: window.BD_T("catalog.breadcrumbHome"), href: "index.html" }, { label: window.BD_T("catalog.searchTitle") }]) +
+      '<section class="catalog container">' +
+      "<h1>" +
+      escapeHtml(window.BD_T("catalog.searchFor", { query: query })) +
+      "</h1>" +
+      '<p class="catalog__count">' +
+      escapeHtml(window.BD_T("catalog.count", { count: matches.length })) +
+      "</p>" +
+      (matches.length
+        ? '<div class="product-grid">' + matches.map(productCardHtml).join("") + "</div>"
+        : '<p class="catalog__empty">' + escapeHtml(window.BD_T("catalog.empty")) + "</p>") +
+      "</section>";
   }
 
   // ---------- product page ----------
+
+  var currentProductState = null;
+
+  function computeUnitPrice(product) {
+    var personalizationPrice = (window.BD_CONFIG && window.BD_CONFIG.personalizationPrice) || 0;
+    return product.price + (currentProductState.personalized ? personalizationPrice : 0);
+  }
+
+  function updateProductPrices(product) {
+    var unit = computeUnitPrice(product);
+    var qty = currentProductState.quantity;
+    var priceEls = document.querySelectorAll("[data-live-price]");
+    Array.prototype.forEach.call(priceEls, function (elx) {
+      elx.textContent = formatPrice(unit * qty);
+    });
+    var stickyPrice = document.getElementById("bd-sticky-price");
+    if (stickyPrice) stickyPrice.textContent = formatPrice(unit * qty);
+  }
+
+  function accordionHtml(product) {
+    var ageLabel = productAgeLabel(product);
+    var categoryLabels = (product.categories || [])
+      .map(function (c) {
+        return window.BD_T("category." + c);
+      })
+      .join(", ");
+    var languageLabels = (product.availableLanguages || [])
+      .map(function (c) {
+        return window.BD_T("langName." + c);
+      })
+      .join(", ");
+
+    var items = [
+      { title: window.BD_T("product.tabDescription"), body: "<p>" + escapeHtml(localizedText(product.description)) + "</p>", open: true },
+      {
+        title: window.BD_T("product.tabDetails"),
+        body:
+          "<dl>" +
+          (ageLabel ? "<dt>" + escapeHtml(window.BD_T("product.detailsAgeLabel")) + "</dt><dd>" + escapeHtml(ageLabel) + "</dd>" : "") +
+          (categoryLabels
+            ? "<dt>" + escapeHtml(window.BD_T("product.detailsCategoriesLabel")) + "</dt><dd>" + escapeHtml(categoryLabels) + "</dd>"
+            : "") +
+          "<dt>" +
+          escapeHtml(window.BD_T("product.detailsLanguagesLabel")) +
+          "</dt><dd>" +
+          escapeHtml(languageLabels) +
+          "</dd>" +
+          "</dl>",
+        open: false,
+      },
+      { title: window.BD_T("product.tabDelivery"), body: "<p>" + escapeHtml(window.BD_T("product.deliveryText")) + "</p>", open: false },
+    ];
+
+    return (
+      '<div class="accordion">' +
+      items
+        .map(function (item, i) {
+          return (
+            '<div class="accordion__item' +
+            (item.open ? " is-open" : "") +
+            '" data-accordion-item>' +
+            '<button type="button" class="accordion__trigger" aria-expanded="' +
+            (item.open ? "true" : "false") +
+            '" aria-controls="bd-accordion-panel-' +
+            i +
+            '">' +
+            "<span>" +
+            escapeHtml(item.title) +
+            "</span>" +
+            '<span class="accordion__icon">' +
+            ICONS.chevronDown +
+            "</span>" +
+            "</button>" +
+            '<div class="accordion__panel" id="bd-accordion-panel-' +
+            i +
+            '">' +
+            item.body +
+            "</div>" +
+            "</div>"
+          );
+        })
+        .join("") +
+      "</div>"
+    );
+  }
+
+  function wireAccordion(root) {
+    Array.prototype.forEach.call(root.querySelectorAll("[data-accordion-item]"), function (item) {
+      var trigger = item.querySelector(".accordion__trigger");
+      trigger.addEventListener("click", function () {
+        var open = item.classList.toggle("is-open");
+        trigger.setAttribute("aria-expanded", open ? "true" : "false");
+      });
+    });
+  }
+
+  function relatedProductsHtml(product) {
+    var related = getProductsByType(product.type)
+      .filter(function (p) {
+        return p.id !== product.id;
+      })
+      .slice(0, 4);
+    if (!related.length) return "";
+    return (
+      '<section class="related">' +
+      '<h2 class="section-title">' +
+      escapeHtml(window.BD_T("product.relatedTitle")) +
+      "</h2>" +
+      '<div class="product-grid" style="margin-top: 20px;">' +
+      related.map(productCardHtml).join("") +
+      "</div>" +
+      "</section>"
+    );
+  }
+
+  function handleAddToCart(product) {
+    var nameInput = document.getElementById("bd-child-name");
+    var nameError = document.getElementById("bd-child-name-error");
+    var childNameWrap = document.getElementById("bd-child-name-wrap");
+    var childName = nameInput.value.trim();
+    if (currentProductState.personalized && (!childName || childName.length > 20)) {
+      nameError.textContent = window.BD_T("product.nameRequired");
+      nameError.hidden = false;
+      childNameWrap.classList.add("has-error");
+      nameInput.focus();
+      return;
+    }
+    nameError.hidden = true;
+    childNameWrap.classList.remove("has-error");
+
+    var unitPrice = computeUnitPrice(product);
+
+    window.BD_CART.add({
+      productId: product.id,
+      productLanguage: currentProductState.language,
+      personalized: currentProductState.personalized,
+      childName: currentProductState.personalized ? childName.slice(0, 20) : "",
+      quantity: currentProductState.quantity,
+      unitPrice: unitPrice,
+    });
+
+    updateCartCount();
+    openMiniCart();
+  }
 
   function renderProduct() {
     var mount = document.getElementById("bd-page");
@@ -507,9 +1515,10 @@
     var product = getProductById(id);
 
     if (!product) {
-      document.title = window.BD_T("product.notFoundTitle") + " — " + ((window.BD_CONFIG && window.BD_CONFIG.shopName) || "Barn Dom");
+      setTitle(window.BD_T("product.notFoundTitle"));
       mount.innerHTML =
         '<section class="container not-found">' +
+        '<img src="assets/brand/astronaut-rocket.svg" alt="" width="200" height="167">' +
         "<h1>" +
         escapeHtml(window.BD_T("product.notFoundTitle")) +
         "</h1>" +
@@ -523,9 +1532,11 @@
       return;
     }
 
-    document.title = localizedText(product.name) + " — " + ((window.BD_CONFIG && window.BD_CONFIG.shopName) || "Barn Dom");
+    setTitle(localizedText(product.name));
+    currentProductState = { language: product.availableLanguages[0], personalized: false, quantity: 1 };
 
     var personalizationPrice = (window.BD_CONFIG && window.BD_CONFIG.personalizationPrice) || 0;
+    var images = getProductImages(product);
 
     var languageOptions = (product.availableLanguages || [])
       .map(function (code, i) {
@@ -535,7 +1546,7 @@
           code +
           '"' +
           (i === 0 ? " checked" : "") +
-          ">" +
+          ' required>' +
           "<span>" +
           escapeHtml(window.BD_T("langName." + code)) +
           "</span>" +
@@ -544,22 +1555,51 @@
       })
       .join("");
 
+    var galleryThumbs =
+      images.length > 1
+        ? '<div class="gallery__thumbs">' +
+          images
+            .map(function (src, i) {
+              return (
+                '<button type="button" class="gallery__thumb' +
+                (i === 0 ? " is-active" : "") +
+                '" data-thumb="' +
+                i +
+                '" aria-label="' +
+                escapeHtml(window.BD_T("product.galleryThumbAria", { num: i + 1 })) +
+                '"><img src="' +
+                src +
+                '" alt="" width="64" height="64"></button>'
+              );
+            })
+            .join("") +
+          "</div>"
+        : "";
+
     mount.innerHTML =
+      breadcrumbsHtml([
+        { label: window.BD_T("catalog.breadcrumbHome"), href: "index.html" },
+        { label: window.BD_T("type." + product.type), href: "catalog.html?type=" + encodeURIComponent(product.type) },
+        { label: localizedText(product.name) },
+      ]) +
       '<section class="product-page container">' +
-      '<div class="product-page__media">' +
-      '<img src="' +
-      product.image +
-      '" alt="" width="420" height="420">' +
+      '<div class="product-layout">' +
+      '<div class="product-layout__media">' +
+      '<div class="gallery__main"><img id="bd-gallery-main-img" src="' +
+      images[0] +
+      '" alt="" width="420" height="420"></div>' +
+      galleryThumbs +
       "</div>" +
-      '<div class="product-page__info">' +
+      '<div class="product-layout__info">' +
+      (productBadgesHtml(product) ? '<div class="product-layout__badges">' + productBadgesHtml(product) + "</div>" : "") +
       "<h1>" +
       escapeHtml(localizedText(product.name)) +
       "</h1>" +
-      '<p class="product-page__price" id="bd-product-price">' +
+      '<p class="product-page__price" data-live-price>' +
       formatPrice(product.price) +
       "</p>" +
       '<p class="product-page__desc">' +
-      escapeHtml(localizedText(product.description)) +
+      escapeHtml(localizedText(product.shortDescription)) +
       "</p>" +
       '<form id="bd-add-to-cart-form" novalidate>' +
       '<fieldset class="form-field">' +
@@ -575,9 +1615,9 @@
       '<input type="checkbox" id="bd-personalize-check">' +
       "<span>" +
       escapeHtml(window.BD_T("product.personalizationLabel")) +
-      " (" +
+      ' <span class="checkbox-field__price">(' +
       window.BD_T("product.extraPrice", { price: formatPrice(personalizationPrice) }) +
-      ")</span>" +
+      ")</span></span>" +
       "</label>" +
       '<div class="form-field" id="bd-child-name-wrap" hidden>' +
       '<label for="bd-child-name" class="visually-hidden">' +
@@ -605,86 +1645,159 @@
       "</div>" +
       '<button type="submit" class="btn btn--primary btn--large">' +
       escapeHtml(window.BD_T("product.addToCart")) +
-      "</button>" +
+      " — " +
+      '<span data-live-price>' +
+      formatPrice(product.price) +
+      "</span></button>" +
       "</form>" +
+      '<div class="trust-lines">' +
+      '<div class="trust-lines__item">' +
+      ICONS.handmade +
+      "<span>" +
+      escapeHtml(window.BD_T("product.trustHandmade")) +
+      "</span></div>" +
+      '<div class="trust-lines__item">' +
+      ICONS.clock +
+      "<span>" +
+      escapeHtml(window.BD_T("product.trustDelivery")) +
+      "</span></div>" +
+      '<div class="trust-lines__item">' +
+      ICONS.lock +
+      "<span>" +
+      escapeHtml(window.BD_T("product.trustPayment")) +
+      "</span></div>" +
       "</div>" +
-      "</section>";
+      accordionHtml(product) +
+      "</div>" +
+      "</div>" +
+      relatedProductsHtml(product) +
+      "</section>" +
+      '<div class="sticky-buybar">' +
+      '<span class="sticky-buybar__price" id="bd-sticky-price">' +
+      formatPrice(product.price) +
+      "</span>" +
+      '<button type="button" class="btn btn--primary" id="bd-sticky-add">' +
+      escapeHtml(window.BD_T("product.addToCart")) +
+      "</button>" +
+      "</div>";
+
+    wireAccordion(mount);
+
+    // gallery thumbnails
+    Array.prototype.forEach.call(mount.querySelectorAll(".gallery__thumb"), function (thumb) {
+      thumb.addEventListener("click", function () {
+        var idx = parseInt(thumb.getAttribute("data-thumb"), 10);
+        document.getElementById("bd-gallery-main-img").src = images[idx];
+        Array.prototype.forEach.call(mount.querySelectorAll(".gallery__thumb"), function (t) {
+          t.classList.toggle("is-active", t === thumb);
+        });
+      });
+    });
+
+    // language pills
+    Array.prototype.forEach.call(mount.querySelectorAll('input[name="bd-product-lang"]'), function (input) {
+      input.addEventListener("change", function () {
+        if (input.checked) currentProductState.language = input.value;
+      });
+    });
 
     var checkbox = document.getElementById("bd-personalize-check");
     var nameWrap = document.getElementById("bd-child-name-wrap");
     var nameInput = document.getElementById("bd-child-name");
     var nameError = document.getElementById("bd-child-name-error");
     checkbox.addEventListener("change", function () {
+      currentProductState.personalized = checkbox.checked;
       nameWrap.hidden = !checkbox.checked;
       if (!checkbox.checked) {
         nameInput.value = "";
         nameError.hidden = true;
       }
+      updateProductPrices(product);
     });
 
     var qtyInput = document.getElementById("bd-quantity");
+    function setQty(next) {
+      next = Math.max(1, Math.min(99, next));
+      qtyInput.value = next;
+      currentProductState.quantity = next;
+      updateProductPrices(product);
+    }
     document.getElementById("bd-qty-dec").addEventListener("click", function () {
-      qtyInput.value = Math.max(1, (parseInt(qtyInput.value, 10) || 1) - 1);
+      setQty((parseInt(qtyInput.value, 10) || 1) - 1);
     });
     document.getElementById("bd-qty-inc").addEventListener("click", function () {
-      qtyInput.value = Math.min(99, (parseInt(qtyInput.value, 10) || 1) + 1);
+      setQty((parseInt(qtyInput.value, 10) || 1) + 1);
+    });
+    qtyInput.addEventListener("change", function () {
+      setQty(parseInt(qtyInput.value, 10) || 1);
     });
 
     document.getElementById("bd-add-to-cart-form").addEventListener("submit", function (evt) {
       evt.preventDefault();
-      var personalized = checkbox.checked;
-      var childName = nameInput.value.trim();
-      if (personalized && (!childName || childName.length > 20)) {
-        nameError.textContent = window.BD_T("product.nameRequired");
-        nameError.hidden = false;
-        nameInput.focus();
-        return;
-      }
-      nameError.hidden = true;
-
-      var langInput = mount.querySelector('input[name="bd-product-lang"]:checked');
-      var productLanguage = langInput ? langInput.value : product.availableLanguages[0];
-      var quantity = Math.max(1, parseInt(qtyInput.value, 10) || 1);
-      var unitPrice = product.price + (personalized ? personalizationPrice : 0);
-
-      window.BD_CART.add({
-        productId: product.id,
-        productLanguage: productLanguage,
-        personalized: personalized,
-        childName: personalized ? childName.slice(0, 20) : "",
-        quantity: quantity,
-        unitPrice: unitPrice,
-      });
-
-      updateCartCount();
-      showToast(window.BD_T("product.addedToast"));
+      handleAddToCart(product);
+    });
+    document.getElementById("bd-sticky-add").addEventListener("click", function () {
+      handleAddToCart(product);
     });
   }
 
   // ---------- cart page ----------
+
+  var checkoutSubmitted = false;
+
+  function stepIndicatorHtml() {
+    var steps = [
+      { key: "stepCart", active: true },
+      { key: "stepDetails", active: true },
+      { key: "stepPayment", active: checkoutSubmitted },
+    ];
+    return (
+      '<div class="step-indicator">' +
+      steps
+        .map(function (step, i) {
+          return (
+            (i > 0 ? '<span class="step-indicator__arrow">&rarr;</span>' : "") +
+            '<span class="step-indicator__step' +
+            (step.active ? " is-active" : "") +
+            '"><span class="step-indicator__num">' +
+            (i + 1) +
+            "</span>" +
+            escapeHtml(window.BD_T("cart." + step.key)) +
+            "</span>"
+          );
+        })
+        .join("") +
+      "</div>"
+    );
+  }
 
   function renderCartLines() {
     var cart = window.BD_CART.read();
     var listMount = document.getElementById("bd-cart-list");
     var summaryMount = document.getElementById("bd-cart-summary");
     var formSection = document.getElementById("bd-order-section");
+    var emptyMount = document.getElementById("bd-cart-empty");
     if (!listMount) return;
 
     if (!cart.length) {
-      listMount.innerHTML =
-        '<div class="cart-empty">' +
-        "<p>" +
-        escapeHtml(window.BD_T("cart.emptyMessage")) +
-        "</p>" +
-        '<a class="btn btn--primary" href="index.html">' +
-        escapeHtml(window.BD_T("cart.emptyCta")) +
-        "</a>" +
-        "</div>";
+      listMount.innerHTML = "";
       if (summaryMount) summaryMount.innerHTML = "";
       if (formSection) formSection.hidden = true;
+      if (emptyMount) {
+        emptyMount.hidden = false;
+        emptyMount.innerHTML =
+          '<img src="assets/brand/astronaut-rocket.svg" alt="" width="200" height="167">' +
+          "<p>" +
+          escapeHtml(window.BD_T("cart.emptyMessage")) +
+          "</p>" +
+          '<a class="btn btn--primary" href="index.html#bd-chooser">' +
+          escapeHtml(window.BD_T("cart.emptyCta")) +
+          "</a>";
+      }
       return;
     }
 
+    if (emptyMount) emptyMount.hidden = true;
     if (formSection) formSection.hidden = false;
 
     listMount.innerHTML =
@@ -735,7 +1848,9 @@
             "</div>" +
             '<button type="button" class="cart-line__remove" aria-label="' +
             escapeHtml(window.BD_T("cart.removeAria")) +
-            '">&times;</button>' +
+            '">' +
+            escapeHtml(window.BD_T("cart.tableRemove")) +
+            "</button>" +
             "</li>"
           );
         })
@@ -749,6 +1864,11 @@
         escapeHtml(window.BD_T("cart.subtotal")) +
         "</span><span>" +
         formatPrice(total) +
+        "</span></div>" +
+        '<div class="cart-summary__row"><span>' +
+        escapeHtml(window.BD_T("cart.deliveryLabel")) +
+        "</span><span>" +
+        escapeHtml(window.BD_T("cart.deliveryCalculated")) +
         "</span></div>" +
         '<div class="cart-summary__row cart-summary__row--total"><span>' +
         escapeHtml(window.BD_T("cart.total")) +
@@ -800,22 +1920,30 @@
       errors.phone = window.BD_T("cart.errorPhone");
     }
     if (!fields.address.trim()) errors.address = window.BD_T("cart.errorRequired");
+    if (!fields.city.trim()) errors.city = window.BD_T("cart.errorRequired");
+    if (!fields.postalCode.trim()) errors.postalCode = window.BD_T("cart.errorRequired");
+    if (!fields.country.trim()) errors.country = window.BD_T("cart.errorRequired");
     return errors;
   }
 
   function renderCart() {
     var mount = document.getElementById("bd-page");
     if (!mount) return;
-
-    document.title = window.BD_T("cart.title") + " — " + ((window.BD_CONFIG && window.BD_CONFIG.shopName) || "Barn Dom");
+    setTitle(window.BD_T("cart.title"));
+    checkoutSubmitted = false;
 
     mount.innerHTML =
       '<section class="cart-page container">' +
       "<h1>" +
       escapeHtml(window.BD_T("cart.title")) +
       "</h1>" +
+      '<div id="bd-step-indicator">' +
+      stepIndicatorHtml() +
+      "</div>" +
+      '<div class="cart-empty" id="bd-cart-empty" hidden></div>' +
+      '<div class="cart-layout">' +
+      '<div class="cart-layout__main">' +
       '<div id="bd-cart-list"></div>' +
-      '<div class="cart-summary" id="bd-cart-summary"></div>' +
       '<section class="order-section" id="bd-order-section">' +
       "<h2>" +
       escapeHtml(window.BD_T("cart.orderFormTitle")) +
@@ -828,6 +1956,7 @@
       '<input type="text" id="bd-order-name" name="fullName" autocomplete="name">' +
       '<p class="form-error" data-error-for="fullName" hidden></p>' +
       "</div>" +
+      '<div class="form-row form-row--2">' +
       '<div class="form-field">' +
       '<label for="bd-order-email">' +
       escapeHtml(window.BD_T("cart.email")) +
@@ -842,12 +1971,52 @@
       '<input type="tel" id="bd-order-phone" name="phone" autocomplete="tel">' +
       '<p class="form-error" data-error-for="phone" hidden></p>' +
       "</div>" +
+      "</div>" +
       '<div class="form-field">' +
       '<label for="bd-order-address">' +
       escapeHtml(window.BD_T("cart.address")) +
       " *</label>" +
       '<input type="text" id="bd-order-address" name="address" autocomplete="street-address">' +
       '<p class="form-error" data-error-for="address" hidden></p>' +
+      "</div>" +
+      '<div class="form-row form-row--2">' +
+      '<div class="form-field">' +
+      '<label for="bd-order-city">' +
+      escapeHtml(window.BD_T("cart.city")) +
+      " *</label>" +
+      '<input type="text" id="bd-order-city" name="city" autocomplete="address-level2">' +
+      '<p class="form-error" data-error-for="city" hidden></p>' +
+      "</div>" +
+      '<div class="form-field">' +
+      '<label for="bd-order-postal">' +
+      escapeHtml(window.BD_T("cart.postalCode")) +
+      " *</label>" +
+      '<input type="text" id="bd-order-postal" name="postalCode" autocomplete="postal-code">' +
+      '<p class="form-error" data-error-for="postalCode" hidden></p>' +
+      "</div>" +
+      "</div>" +
+      '<div class="form-field">' +
+      '<label for="bd-order-country">' +
+      escapeHtml(window.BD_T("cart.country")) +
+      " *</label>" +
+      '<select id="bd-order-country" name="country" autocomplete="country-name">' +
+      '<option value="">' +
+      escapeHtml(window.BD_T("cart.selectCountry")) +
+      "</option>" +
+      '<option value="PL">' +
+      escapeHtml(window.BD_T("cart.countryPoland")) +
+      "</option>" +
+      '<option value="UA">' +
+      escapeHtml(window.BD_T("cart.countryUkraine")) +
+      "</option>" +
+      '<option value="SE">' +
+      escapeHtml(window.BD_T("cart.countrySweden")) +
+      "</option>" +
+      '<option value="other">' +
+      escapeHtml(window.BD_T("cart.countryOther")) +
+      "</option>" +
+      "</select>" +
+      '<p class="form-error" data-error-for="country" hidden></p>' +
       "</div>" +
       '<div class="form-field">' +
       '<label for="bd-order-comment">' +
@@ -864,6 +2033,11 @@
       "</form>" +
       '<div class="order-confirmation" id="bd-order-confirmation" hidden></div>' +
       "</section>" +
+      "</div>" +
+      '<div class="cart-layout__side">' +
+      '<div class="cart-summary" id="bd-cart-summary"></div>' +
+      "</div>" +
+      "</div>" +
       "</section>";
 
     renderCartLines();
@@ -884,23 +2058,32 @@
         email: document.getElementById("bd-order-email").value,
         phone: document.getElementById("bd-order-phone").value,
         address: document.getElementById("bd-order-address").value,
+        city: document.getElementById("bd-order-city").value,
+        postalCode: document.getElementById("bd-order-postal").value,
+        country: document.getElementById("bd-order-country").value,
         comment: document.getElementById("bd-order-comment").value,
       };
       var errors = validateOrderForm(fields);
 
       Array.prototype.forEach.call(evt.target.querySelectorAll(".form-error"), function (errEl) {
+        if (errEl.id === "bd-order-cart-error") return;
         errEl.hidden = true;
         errEl.textContent = "";
       });
+      Array.prototype.forEach.call(evt.target.querySelectorAll(".form-field"), function (fieldEl) {
+        fieldEl.classList.remove("has-error");
+      });
 
       var firstInvalid = null;
+      var fieldElementId = { fullName: "name", email: "email", phone: "phone", address: "address", city: "city", postalCode: "postal", country: "country" };
       Object.keys(errors).forEach(function (field) {
         var errEl = evt.target.querySelector('[data-error-for="' + field + '"]');
         if (errEl) {
           errEl.textContent = errors[field];
           errEl.hidden = false;
+          if (errEl.parentElement) errEl.parentElement.classList.add("has-error");
         }
-        if (!firstInvalid) firstInvalid = document.getElementById("bd-order-" + field.replace("fullName", "name"));
+        if (!firstInvalid) firstInvalid = document.getElementById("bd-order-" + fieldElementId[field]);
       });
 
       if (Object.keys(errors).length) {
@@ -913,6 +2096,9 @@
         email: fields.email.trim(),
         phone: fields.phone.trim(),
         address: fields.address.trim(),
+        city: fields.city.trim(),
+        postalCode: fields.postalCode.trim(),
+        country: fields.country,
         comment: fields.comment.trim(),
         cart: cart,
         total: window.BD_CART.total(cart),
@@ -920,7 +2106,8 @@
 
       window.BD_CART.startCheckout(order);
 
-      evt.target.hidden = true;
+      checkoutSubmitted = true;
+      document.getElementById("bd-step-indicator").innerHTML = stepIndicatorHtml();
       var confirmation = document.getElementById("bd-order-confirmation");
       confirmation.hidden = false;
       confirmation.innerHTML =
@@ -931,9 +2118,6 @@
         "</p>";
       confirmation.setAttribute("tabindex", "-1");
       confirmation.focus();
-
-      renderCartLines();
-      updateCartCount();
     });
   }
 
@@ -941,6 +2125,7 @@
 
   function init() {
     document.documentElement.lang = window.BD_getLang();
+    renderAnnouncementBar();
     renderHeader();
     renderFooter();
 

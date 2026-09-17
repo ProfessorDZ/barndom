@@ -132,26 +132,20 @@
 
   /**
    * Runs the checkout for a validated order.
-   * Payments are not connected yet — this only stores the order intent
-   * locally, clears the cart and tells startCheckout's caller that it
-   * finished so the page can show a "payment coming soon" message.
+   * Online payment is not connected yet, so this does not charge anyone,
+   * does not save the order anywhere, and does NOT clear the cart or the
+   * order form — the visitor just sees a message that online ordering is
+   * coming soon, and can safely try again later without re-typing
+   * anything or losing their cart.
    *
-   * order = { fullName, email, phone, address, comment, cart, total }
+   * order = { fullName, email, phone, address, city, postalCode, country,
+   *           comment, cart, total }
    */
   function startCheckout(order) {
     // TODO: connect payment provider here (e.g. redirect to a payment
     // page or call a payment API) once the shop is ready to take real
-    // payments. For now we just record the order intent and clear the
-    // cart so the visitor sees a clean confirmation.
-    try {
-      var pending = JSON.parse(window.localStorage.getItem("bd_last_order") || "null") || [];
-      if (!Array.isArray(pending)) pending = [];
-      pending.push({ order: order, createdAt: new Date().toISOString() });
-      window.localStorage.setItem("bd_last_order", JSON.stringify(pending.slice(-5)));
-    } catch (e) {
-      /* ignore storage errors */
-    }
-    clearCart();
+    // payments. Once that's wired up, this is also the place to actually
+    // record/send the order and to clear the cart on success.
     return { ok: true };
   }
 

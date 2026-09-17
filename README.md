@@ -2,7 +2,11 @@
 
 This is the website for **Barn Dom**, a small shop selling handmade
 educational products for kids (books on velcro, coloring books, games,
-playdough activities, wipe-clean workbooks and themed notebooks).
+playdough activities, wipe-clean workbooks and themed notebooks). The
+site looks and works like a real online shop: a header with search and
+a shopping cart, a home page where visitors pick what they're looking
+for, a filterable catalog, product pages with a mini-cart, and a full
+cart/checkout page.
 
 It is a plain website — just HTML, CSS and JavaScript files. There is
 nothing to install and nothing to "build". You can open it directly on
@@ -27,15 +31,25 @@ and then open `http://localhost:8000` in your browser.
 
 ## What's on each page
 
-- `index.html` — the home page, with the 6 big category cards.
-- `catalog.html` — the list of products for one category (opened by
-  clicking a category card).
-- `product.html` — a single product's page, where a customer picks the
-  book language, adds a name for personalization, and adds it to cart.
+- `index.html` — the home page: a welcome banner, four short "why buy
+  from us" points, the 6 big category cards ("What are you looking
+  for?"), a row of bestselling products, and a short "why parents
+  choose us" section.
+- `catalog.html` — the list of products for one category, or for a
+  search (opened by typing in the search box). Sorting is available
+  everywhere; for the velcro-book category there are also filters by
+  age and by topic (with a sidebar on desktop and a slide-in panel on
+  phones).
+- `product.html` — a single product's page: photo(s), the price, the
+  book-language choice, adding a name for personalization, quantity,
+  and the "Add to cart" button. A small cart preview panel slides in
+  from the right after adding something.
 - `cart.html` — the shopping cart and the order form.
 
 Online payment is not connected yet — when someone places an order,
-they see a message saying payment is coming soon. Nobody is charged.
+they see a message saying payment is coming soon. Nobody is charged,
+nothing is saved anywhere, and the cart is not emptied, so the visitor
+can still see what they were ordering.
 
 ## How to add or edit products and prices
 
@@ -48,6 +62,16 @@ all 4 languages (Ukrainian, Polish, English, Swedish).
 To change the price of an existing product, find it in that file (you
 can search for its name) and change the `price:` number.
 
+Two extra things you can add to any product:
+- `bestseller: true` — shows the product in the "Bestsellers" row on
+  the home page, and adds a small "Bestseller" badge on its card.
+- `isNew: true` — adds a small "New" badge on its card.
+- `images: [...]` — once you have real product photos, list them here
+  (e.g. `images: ["assets/products/my-photo-1.jpg", "assets/products/my-photo-2.jpg"]`)
+  and the product page will show them as a photo gallery with clickable
+  thumbnails. If you leave this out, the single `image` picture is used
+  everywhere instead — nothing else needs to change.
+
 ## How to change the currency
 
 Open `js/config.js` and change the `currency:` value (for example from
@@ -55,13 +79,18 @@ Open `js/config.js` and change the `currency:` value (for example from
 display everywhere on the site — you do not need to touch anything
 else.
 
-## How to change the shop name, contact email, or personalization price
+## How to change the shop name, contacts, or personalization price
 
 Also in `js/config.js`:
 - `shopName` — the name shown in the header, footer and browser tab.
 - `contactEmail` — the email shown in the footer.
+- `contactPhone` — the phone number shown in the footer.
 - `personalizationPrice` — the extra cost for adding a child's name to
   a product's cover.
+- `announcementKey` — which line of text (from `js/i18n.js`) shows in
+  the thin bar at the very top of every page. To change what that bar
+  actually *says*, edit the `announcement.text` entry in `js/i18n.js`
+  (in all 4 languages) — this setting only points to which text to use.
 
 ## How to change or add website text / translations
 
