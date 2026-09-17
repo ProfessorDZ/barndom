@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300" role="img">
+  <title>Velcro activity book with colorful attachable shapes</title>
+  <rect x="8" y="8" width="384" height="284" rx="32" fill="#EDE9FE" stroke="#4C1D95" stroke-width="5"/>
+
+  <path d="M64 52 L70 66 L84 72 L70 78 L64 92 L58 78 L44 72 L58 66 Z" fill="#FACC15"/>
+  <path d="M338 218 L342 227 L351 231 L342 235 L338 244 L334 235 L325 231 L334 227 Z" fill="#FACC15"/>
+
+  <!-- open book -->
+  <path d="M200 236 L88 210 L82 96 L196 96 Z" fill="#FFFFFF" stroke="#4C1D95" stroke-width="6" stroke-linejoin="round"/>
+  <path d="M200 236 L312 210 L318 96 L204 96 Z" fill="#FFFFFF" stroke="#4C1D95" stroke-width="6" stroke-linejoin="round"/>
+  <path d="M200 236 L200 96" stroke="#4C1D95" stroke-width="5" stroke-linecap="round"/>
+
+  <!-- page lines -->
+  <rect x="102" y="112" width="70" height="10" rx="5" fill="#C4B5FD"/>
+  <rect x="228" y="112" width="70" height="10" rx="5" fill="#C4B5FD"/>
+
+  <!-- velcro backing dots (dashed) -->
+  <circle cx="140" cy="158" r="30" fill="none" stroke="#4C1D95" stroke-width="3.5" stroke-dasharray="5 6" opacity="0.55"/>
+  <circle cx="130" cy="207" r="28" fill="none" stroke="#4C1D95" stroke-width="3.5" stroke-dasharray="5 6" opacity="0.55"/>
+  <circle cx="284" cy="168" r="30" fill="none" stroke="#4C1D95" stroke-width="3.5" stroke-dasharray="5 6" opacity="0.55"/>
+
+  <!-- circle piece -->
+  <circle cx="140" cy="158" r="23" fill="#FACC15" stroke="#4C1D95" stroke-width="5"/>
+
+  <!-- square piece -->
+  <rect x="110" y="187" width="40" height="40" rx="10" fill="#F472B6" stroke="#4C1D95" stroke-width="5"/>
+
+  <!-- triangle piece, lifted mid-attach with a soft shadow -->
+  <ellipse cx="286" cy="196" rx="22" ry="7" fill="#4C1D95" opacity="0.15"/>
+  <g transform="rotate(-10 284 168)">
+    <path d="M284 148 L308 186 L260 186 Z" fill="#7C3AED" stroke="#4C1D95" stroke-width="5" stroke-linejoin="round"/>
+  </g>
+</svg>

@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300" role="img">
+  <title>Wipe-clean workbook page with dotted tracing letter and a marker</title>
+  <rect x="8" y="8" width="384" height="284" rx="32" fill="#EDE9FE" stroke="#4C1D95" stroke-width="5"/>
+
+  <path d="M42 32 L46 41 L55 45 L46 49 L42 58 L38 49 L29 45 L38 41 Z" fill="#FACC15"/>
+  <path d="M356 250 L360 259 L369 263 L360 267 L356 276 L352 267 L343 263 L352 259 Z" fill="#FACC15"/>
+
+  <!-- page -->
+  <rect x="86" y="46" width="230" height="178" rx="16" fill="#FFFFFF" stroke="#4C1D95" stroke-width="5"/>
+
+  <!-- ruled writing lines -->
+  <line x1="104" y1="102" x2="298" y2="102" stroke="#C4B5FD" stroke-width="4"/>
+  <line x1="104" y1="140" x2="298" y2="140" stroke="#4C1D95" stroke-width="3" stroke-dasharray="8 8" opacity="0.6"/>
+  <line x1="104" y1="178" x2="298" y2="178" stroke="#C4B5FD" stroke-width="4"/>
+
+  <!-- dotted tracing letter A -->
+  <path d="M178 178 L201 106 L224 178" fill="none" stroke="#4C1D95" stroke-width="7" stroke-linecap="round" stroke-dasharray="1 14"/>
+  <path d="M188 152 L214 152" fill="none" stroke="#4C1D95" stroke-width="7" stroke-linecap="round" stroke-dasharray="1 13"/>
+
+  <!-- dry-erase marker -->
+  <g transform="translate(300,222) rotate(35)">
+    <path d="M-14 -70 L14 -70 L0 -96 Z" fill="#7C3AED" stroke="#4C1D95" stroke-width="5" stroke-linejoin="round"/>
+    <rect x="-14" y="-70" width="28" height="98" rx="10" fill="#EDE9FE" stroke="#4C1D95" stroke-width="5"/>
+    <rect x="-14" y="-16" width="28" height="16" fill="#F472B6" stroke="#4C1D95" stroke-width="4"/>
+  </g>
+</svg>

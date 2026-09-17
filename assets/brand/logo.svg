@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" role="img">
+  <title>Barn Dom logo mark</title>
+  <path d="M94 12 L99 23 L111 28 L99 33 L94 44 L89 33 L77 28 L89 23 Z" fill="#FACC15"/>
+  <circle cx="58" cy="66" r="46" fill="#EDE9FE" stroke="#4C1D95" stroke-width="7"/>
+  <circle cx="58" cy="68" r="33" fill="#4C1D95"/>
+  <circle cx="47" cy="66" r="5.5" fill="#FFFFFF"/>
+  <circle cx="47" cy="68" r="2.8" fill="#1E1B4B"/>
+  <circle cx="69" cy="66" r="5.5" fill="#FFFFFF"/>
+  <circle cx="69" cy="68" r="2.8" fill="#1E1B4B"/>
+  <path d="M49 84 C54 90 62 90 67 84" fill="none" stroke="#FFFFFF" stroke-width="5" stroke-linecap="round"/>
+  <ellipse cx="34" cy="78" rx="5" ry="4" fill="#F472B6" opacity="0.7"/>
+  <ellipse cx="82" cy="78" rx="5" ry="4" fill="#F472B6" opacity="0.7"/>
+  <ellipse cx="38" cy="42" rx="12" ry="7" fill="#FFFFFF" opacity="0.3" transform="rotate(-20 38 42)"/>
+</svg>

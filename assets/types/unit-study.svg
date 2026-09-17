@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300" role="img">
+  <title>Themed unit study folder with a globe, magnifier, and plant sticker</title>
+  <rect x="8" y="8" width="384" height="284" rx="32" fill="#EDE9FE" stroke="#4C1D95" stroke-width="5"/>
+
+  <path d="M38 36 L42 45 L51 49 L42 53 L38 62 L34 53 L25 49 L34 45 Z" fill="#FACC15"/>
+  <path d="M38 254 L42 263 L51 267 L42 271 L38 280 L34 271 L25 267 L34 263 Z" fill="#FACC15"/>
+
+  <!-- folder -->
+  <rect x="140" y="54" width="64" height="22" rx="8" fill="#FFFFFF" stroke="#4C1D95" stroke-width="5"/>
+  <rect x="104" y="72" width="196" height="156" rx="18" fill="#FFFFFF" stroke="#4C1D95" stroke-width="6"/>
+
+  <!-- globe -->
+  <circle cx="178" cy="158" r="40" fill="#C4B5FD" stroke="#4C1D95" stroke-width="5"/>
+  <ellipse cx="178" cy="158" rx="14" ry="40" fill="none" stroke="#7C3AED" stroke-width="3"/>
+  <line x1="138" y1="158" x2="218" y2="158" stroke="#7C3AED" stroke-width="3"/>
+  <circle cx="163" cy="144" r="4" fill="#7C3AED" opacity="0.6"/>
+  <circle cx="192" cy="172" r="5" fill="#7C3AED" opacity="0.6"/>
+
+  <!-- plant sticker -->
+  <g>
+    <ellipse cx="245" cy="88" rx="6" ry="15" fill="#C4B5FD" stroke="#4C1D95" stroke-width="3"/>
+    <ellipse cx="245" cy="92" rx="6" ry="14" transform="rotate(-22 245 100)" fill="#F472B6" stroke="#4C1D95" stroke-width="3"/>
+    <ellipse cx="245" cy="92" rx="6" ry="14" transform="rotate(22 245 100)" fill="#F472B6" stroke="#4C1D95" stroke-width="3"/>
+    <rect x="233" y="106" width="24" height="17" rx="4" fill="#7C3AED" stroke="#4C1D95" stroke-width="4"/>
+  </g>
+
+  <!-- magnifying glass -->
+  <g transform="translate(268,214)">
+    <rect x="10" y="10" width="16" height="42" rx="7" fill="#7C3AED" stroke="#4C1D95" stroke-width="5" transform="rotate(45 18 31)"/>
+    <circle cx="0" cy="0" r="26" fill="#EDE9FE" stroke="#4C1D95" stroke-width="6"/>
+    <circle cx="-6" cy="-6" r="12" fill="#FFFFFF" opacity="0.5"/>
+  </g>
+</svg>

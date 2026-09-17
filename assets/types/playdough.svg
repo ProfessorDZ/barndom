@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300" role="img">
+  <title>Playdough mat with colorful dough balls and a rolled coil</title>
+  <rect x="8" y="8" width="384" height="284" rx="32" fill="#EDE9FE" stroke="#4C1D95" stroke-width="5"/>
+
+  <path d="M32 262 L36 271 L45 275 L36 279 L32 288 L28 279 L19 275 L28 271 Z" fill="#FACC15"/>
+  <path d="M368 30 L372 39 L381 43 L372 47 L368 56 L364 47 L355 43 L364 39 Z" fill="#FACC15"/>
+
+  <!-- mat -->
+  <rect x="68" y="55" width="264" height="190" rx="26" fill="#FFFFFF" stroke="#4C1D95" stroke-width="5"/>
+  <circle cx="128" cy="100" r="26" fill="none" stroke="#4C1D95" stroke-width="3" stroke-dasharray="4 5" opacity="0.5"/>
+
+  <!-- rolled dough coil -->
+  <path d="M128 198 C126 178 146 164 166 172 C182 179 180 200 163 203 C150 205 142 196 148 188" fill="none" stroke="#4C1D95" stroke-width="17" stroke-linecap="round"/>
+  <path d="M128 198 C126 178 146 164 166 172 C182 179 180 200 163 203 C150 205 142 196 148 188" fill="none" stroke="#C4B5FD" stroke-width="10" stroke-linecap="round"/>
+
+  <!-- dough balls -->
+  <circle cx="230" cy="190" r="26" fill="#7C3AED" stroke="#4C1D95" stroke-width="5"/>
+  <ellipse cx="221" cy="179" rx="7" ry="5" fill="#FFFFFF" opacity="0.35"/>
+
+  <circle cx="277" cy="163" r="24" fill="#F472B6" stroke="#4C1D95" stroke-width="5"/>
+  <ellipse cx="269" cy="153" rx="6.5" ry="4.5" fill="#FFFFFF" opacity="0.35"/>
+
+  <circle cx="260" cy="211" r="20" fill="#FACC15" stroke="#4C1D95" stroke-width="5"/>
+  <ellipse cx="253" cy="203" rx="5.5" ry="4" fill="#FFFFFF" opacity="0.35"/>
+</svg>

@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300" role="img">
+  <title>Two matching-symbol game cards with one highlighted matching star</title>
+  <rect x="8" y="8" width="384" height="284" rx="32" fill="#EDE9FE" stroke="#4C1D95" stroke-width="5"/>
+
+  <path d="M32 26 L36 35 L45 39 L36 43 L32 52 L28 43 L19 39 L28 35 Z" fill="#FACC15"/>
+  <path d="M368 250 L372 259 L381 263 L372 267 L368 276 L364 267 L355 263 L364 259 Z" fill="#FACC15"/>
+
+  <!-- game cards -->
+  <circle cx="135" cy="150" r="80" fill="#FFFFFF" stroke="#4C1D95" stroke-width="6"/>
+  <circle cx="265" cy="150" r="80" fill="#FFFFFF" stroke="#4C1D95" stroke-width="6"/>
+
+  <!-- match highlight rings -->
+  <circle cx="108" cy="112" r="24" fill="none" stroke="#F472B6" stroke-width="3.5" stroke-dasharray="4 5"/>
+  <circle cx="292" cy="112" r="24" fill="none" stroke="#F472B6" stroke-width="3.5" stroke-dasharray="4 5"/>
+
+  <!-- card 1 symbols -->
+  <path d="M0,-1 L0.3,-0.3 L1,0 L0.3,0.3 L0,1 L-0.3,0.3 L-1,0 L-0.3,-0.3 Z" fill="#FACC15" transform="translate(108,112) scale(14)"/>
+  <path d="M0,-0.5 C -0.6,-1.1 -1.3,-0.6 -1.3,0 C -1.3,0.6 -0.6,1.0 0,1.5 C 0.6,1.0 1.3,0.6 1.3,0 C 1.3,-0.6 0.6,-1.1 0,-0.5 Z" fill="#F472B6" stroke="#4C1D95" stroke-width="0.22" transform="translate(150,196) scale(15)"/>
+  <g transform="translate(95,182) scale(13)">
+    <ellipse cx="0" cy="0" rx="1.15" ry="0.32" transform="rotate(-20)" fill="none" stroke="#7C3AED" stroke-width="0.24"/>
+    <circle cx="0" cy="0" r="0.62" fill="#C4B5FD" stroke="#4C1D95" stroke-width="0.24"/>
+  </g>
+  <g transform="translate(168,118) scale(13) rotate(15)">
+    <path d="M-0.4,0.6 L-0.4,-0.3 C-0.4,-1 0.4,-1 0.4,-0.3 L0.4,0.6 L0.6,1.05 L-0.6,1.05 Z" fill="#FFFFFF" stroke="#4C1D95" stroke-width="0.24" stroke-linejoin="round"/>
+    <circle cx="0" cy="-0.1" r="0.22" fill="#7C3AED"/>
+    <path d="M-0.15,1.05 C-0.25,1.25 0,1.5 0,1.5 C0,1.5 0.25,1.25 0.15,1.05 Z" fill="#FB923C"/>
+  </g>
+
+  <!-- card 2 symbols -->
+  <path d="M0,-1 L0.3,-0.3 L1,0 L0.3,0.3 L0,1 L-0.3,0.3 L-1,0 L-0.3,-0.3 Z" fill="#FACC15" transform="translate(292,112) scale(14)"/>
+  <path d="M0,-0.5 C -0.6,-1.1 -1.3,-0.6 -1.3,0 C -1.3,0.6 -0.6,1.0 0,1.5 C 0.6,1.0 1.3,0.6 1.3,0 C 1.3,-0.6 0.6,-1.1 0,-0.5 Z" fill="#F472B6" stroke="#4C1D95" stroke-width="0.22" transform="translate(250,196) scale(15)"/>
+  <g transform="translate(305,182) scale(13)">
+    <ellipse cx="0" cy="0" rx="1.15" ry="0.32" transform="rotate(-20)" fill="none" stroke="#7C3AED" stroke-width="0.24"/>
+    <circle cx="0" cy="0" r="0.62" fill="#C4B5FD" stroke="#4C1D95" stroke-width="0.24"/>
+  </g>
+  <g transform="translate(232,118) scale(13) rotate(-15)">
+    <path d="M-0.4,0.6 L-0.4,-0.3 C-0.4,-1 0.4,-1 0.4,-0.3 L0.4,0.6 L0.6,1.05 L-0.6,1.05 Z" fill="#FFFFFF" stroke="#4C1D95" stroke-width="0.24" stroke-linejoin="round"/>
+    <circle cx="0" cy="-0.1" r="0.22" fill="#7C3AED"/>
+    <path d="M-0.15,1.05 C-0.25,1.25 0,1.5 0,1.5 C0,1.5 0.25,1.25 0.15,1.05 Z" fill="#FB923C"/>
+  </g>
+</svg>
