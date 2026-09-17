@@ -33,7 +33,7 @@
   --font-body: "Manrope", system-ui, -apple-system, "Segoe UI", sans-serif;
   --font-heading: "Manrope", system-ui, -apple-system, "Segoe UI", sans-serif;
 
-  --container-width: 1280px;
+  --container-width: 1240px;
   color-scheme: light;
 }
 
@@ -117,7 +117,7 @@ button {
   width: 100%;
   max-width: var(--container-width);
   margin: 0 auto;
-  padding-inline: 20px;
+  padding-inline: clamp(16px, 4vw, 32px);
 }
 
 .visually-hidden {
@@ -847,9 +847,11 @@ button {
   }
   .hero__text {
     flex: 1.1;
+    max-width: 560px;
   }
   .hero__text p {
     margin-inline: 0;
+    max-width: none;
   }
   .hero__image {
     flex: 1;
@@ -911,6 +913,83 @@ button {
 
 /* ---------- chooser (type tiles) ---------- */
 
+/* featured type banner: wide horizontal card above the tile grid so the
+   flagship product (velcro-books) never has to share a grid cell — this
+   is what keeps the remaining tiles an even number (no orphans). */
+.type-banner {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  background: var(--color-lavender);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  text-decoration: none;
+  color: var(--color-ink);
+  box-shadow: var(--shadow-soft);
+  transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
+}
+
+.type-banner:hover,
+.type-banner:focus-visible {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-lift);
+  border-color: var(--color-primary);
+}
+
+.type-banner__image {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+
+.type-banner__image img {
+  width: min(220px, 60%);
+  height: auto;
+}
+
+.type-banner__body {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 0 24px 24px;
+}
+
+.type-banner__name {
+  font-family: var(--font-heading);
+  font-weight: 800;
+  color: var(--color-deep-purple);
+  font-size: 1.2rem;
+}
+
+.type-banner__tagline {
+  color: var(--color-muted);
+  font-size: 0.92rem;
+  max-width: 46ch;
+}
+
+.type-banner__cta {
+  margin-top: 6px;
+}
+
+@media (min-width: 640px) {
+  .type-banner {
+    flex-direction: row;
+    align-items: center;
+  }
+  .type-banner__image {
+    flex: 0 0 38%;
+    padding: 28px;
+  }
+  .type-banner__body {
+    flex: 1;
+    padding: 24px 28px 24px 0;
+  }
+}
+
 .type-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -924,14 +1003,19 @@ button {
   }
 }
 
-@media (min-width: 900px) {
+@media (min-width: 1100px) {
   .type-grid {
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-    gap: 22px;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 20px;
   }
-  .type-grid .type-card--featured {
+}
+
+/* below the 3-col tablet breakpoint the grid is 2 columns; with 5 tiles
+   that leaves the last one alone on its own row, so span it full width
+   instead of leaving an orphan next to empty space. */
+@media (max-width: 639px) {
+  .type-grid > *:last-child {
     grid-column: span 2;
-    grid-row: span 2;
   }
 }
 
@@ -978,20 +1062,6 @@ button {
   object-fit: contain;
 }
 
-.type-card--featured .type-card__image {
-  aspect-ratio: 4 / 3;
-}
-
-@media (min-width: 900px) {
-  .type-card--featured .type-card__image {
-    aspect-ratio: auto;
-    flex: 1;
-  }
-  .type-card--featured {
-    justify-content: center;
-  }
-}
-
 .type-card__featured-flag {
   position: absolute;
   top: 10px;
@@ -1013,10 +1083,6 @@ button {
   font-size: 1rem;
   overflow-wrap: break-word;
   word-break: break-word;
-}
-
-.type-card--featured .type-card__name {
-  font-size: 1.15rem;
 }
 
 .type-card__tagline {
@@ -1884,7 +1950,7 @@ fieldset.form-field {
 
 .checkbox-field {
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   gap: 10px;
   font-weight: 600;
   cursor: pointer;
@@ -1892,9 +1958,8 @@ fieldset.form-field {
 }
 
 .checkbox-field input {
-  margin-top: 4px;
-  width: 19px;
-  height: 19px;
+  width: 18px;
+  height: 18px;
   flex-shrink: 0;
   accent-color: var(--color-primary);
 }
@@ -2129,6 +2194,10 @@ fieldset.form-field {
   display: flex;
   flex-direction: column;
   gap: 28px;
+}
+
+.cart-layout[hidden] {
+  display: none;
 }
 
 @media (min-width: 1000px) {

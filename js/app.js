@@ -361,7 +361,7 @@
     var mount = document.getElementById("bd-announcement");
     if (!mount) return;
     var key = (window.BD_CONFIG && window.BD_CONFIG.announcementKey) || "announcement.text";
-    mount.innerHTML = '<p class="announcement-bar__inner">' + escapeHtml(window.BD_T(key)) + "</p>";
+    mount.innerHTML = '<div class="container"><p class="announcement-bar__inner">' + escapeHtml(window.BD_T(key)) + "</p></div>";
   }
 
   function searchFormHtml(idSuffix) {
@@ -765,15 +765,12 @@
     );
   }
 
-  function typeCardHtml(type, featured) {
+  function typeCardHtml(type) {
     return (
-      '<a class="type-card' +
-      (featured ? " type-card--featured" : "") +
-      '" href="catalog.html?type=' +
+      '<a class="type-card" href="catalog.html?type=' +
       encodeURIComponent(type.id) +
       '">' +
       '<span class="type-card__image">' +
-      (featured ? '<span class="type-card__featured-flag">' + escapeHtml(window.BD_T("home.featuredBadge")) + "</span>" : "") +
       '<img src="' +
       type.image +
       '" alt="" width="160" height="160" loading="lazy">' +
@@ -788,6 +785,49 @@
       escapeHtml(window.BD_T("home.cardView")) +
       " &rarr;</span>" +
       "</a>"
+    );
+  }
+
+  // The flagship type (velcro-books) gets a wide horizontal banner of its
+  // own instead of a grid cell, so the remaining types divide evenly into
+  // the tile grid with no leftover/orphan tile.
+  function typeBannerHtml(type) {
+    return (
+      '<a class="type-banner" href="catalog.html?type=' +
+      encodeURIComponent(type.id) +
+      '">' +
+      '<span class="type-banner__image">' +
+      '<span class="type-card__featured-flag">' +
+      escapeHtml(window.BD_T("home.featuredBadge")) +
+      "</span>" +
+      '<img src="' +
+      type.image +
+      '" alt="" width="220" height="220" loading="lazy">' +
+      "</span>" +
+      '<span class="type-banner__body">' +
+      '<span class="type-banner__name">' +
+      escapeHtml(window.BD_T("type." + type.id)) +
+      "</span>" +
+      '<span class="type-banner__tagline">' +
+      escapeHtml(window.BD_T("typeTagline." + type.id)) +
+      "</span>" +
+      '<span class="btn btn--primary type-banner__cta">' +
+      escapeHtml(window.BD_T("home.cardView")) +
+      "</span>" +
+      "</span>" +
+      "</a>"
+    );
+  }
+
+  function typeChooserHtml() {
+    var types = orderedTypes();
+    var featured = types[0];
+    var rest = types.slice(1);
+    return (
+      typeBannerHtml(featured) +
+      '<div class="type-grid" style="margin-top: 20px;">' +
+      rest.map(typeCardHtml).join("") +
+      "</div>"
     );
   }
 
@@ -807,13 +847,6 @@
     var mount = document.getElementById("bd-page");
     if (!mount) return;
     setTitle(window.BD_T("home.sectionTitle"));
-
-    var typesOrdered = orderedTypes();
-    var typeTiles = typesOrdered
-      .map(function (type, i) {
-        return typeCardHtml(type, i === 0);
-      })
-      .join("");
 
     var bestsellers = getBestsellers(8);
 
@@ -876,8 +909,8 @@
       '<p class="section-lede section-lede--center">' +
       escapeHtml(window.BD_T("home.chooserSubtitle")) +
       "</p>" +
-      '<div class="type-grid" style="margin-top: 28px;">' +
-      typeTiles +
+      '<div style="margin-top: 28px;">' +
+      typeChooserHtml() +
       "</div>" +
       "</section>" +
       (bestsellers.length
@@ -1180,12 +1213,8 @@
         '<h1 class="section-title">' +
         escapeHtml(window.BD_T("home.sectionTitle")) +
         "</h1>" +
-        '<div class="type-grid">' +
-        orderedTypes()
-          .map(function (t, i) {
-            return typeCardHtml(t, i === 0);
-          })
-          .join("") +
+        '<div>' +
+        typeChooserHtml() +
         "</div>" +
         "</section>";
       return;
@@ -1746,9 +1775,11 @@
   var checkoutSubmitted = false;
 
   function stepIndicatorHtml() {
+    // Step 1 is active as soon as you land on the cart page; steps 2-3
+    // only light up once the order form has been submitted (checkout).
     var steps = [
       { key: "stepCart", active: true },
-      { key: "stepDetails", active: true },
+      { key: "stepDetails", active: checkoutSubmitted },
       { key: "stepPayment", active: checkoutSubmitted },
     ];
     return (
@@ -1777,12 +1808,16 @@
     var summaryMount = document.getElementById("bd-cart-summary");
     var formSection = document.getElementById("bd-order-section");
     var emptyMount = document.getElementById("bd-cart-empty");
+    var layoutMount = document.getElementById("bd-cart-layout");
     if (!listMount) return;
 
     if (!cart.length) {
       listMount.innerHTML = "";
       if (summaryMount) summaryMount.innerHTML = "";
       if (formSection) formSection.hidden = true;
+      // Nothing to show a summary or order form for — hide the whole
+      // two-column layout so no empty boxes are left floating around.
+      if (layoutMount) layoutMount.hidden = true;
       if (emptyMount) {
         emptyMount.hidden = false;
         emptyMount.innerHTML =
@@ -1798,6 +1833,7 @@
     }
 
     if (emptyMount) emptyMount.hidden = true;
+    if (layoutMount) layoutMount.hidden = false;
     if (formSection) formSection.hidden = false;
 
     listMount.innerHTML =
@@ -1941,7 +1977,7 @@
       stepIndicatorHtml() +
       "</div>" +
       '<div class="cart-empty" id="bd-cart-empty" hidden></div>' +
-      '<div class="cart-layout">' +
+      '<div class="cart-layout" id="bd-cart-layout">' +
       '<div class="cart-layout__main">' +
       '<div id="bd-cart-list"></div>' +
       '<section class="order-section" id="bd-order-section">' +
