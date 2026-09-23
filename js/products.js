@@ -38,6 +38,15 @@
  *      the product page (main photo + clickable thumbnails). Leave it
  *      out and the single "image" is used everywhere instead. Once real
  *      product photos exist, this is the only thing you need to add.
+ *    - "ageLabel: "4+"" overrides the age text shown to visitors
+ *      (product card, related products, and the Details tab on the
+ *      product page) without changing which age filter the product
+ *      matches — that still comes from "ages". Use this when the age
+ *      filter has no option that matches the box exactly (see
+ *      "vb-little-traveller" below, tagged ages: ["3"] but shown as
+ *      "4+"). Leave it out and the label is built from "ages" as
+ *      before. The same text is used in all 4 languages, so no
+ *      translation is needed.
  * That's it — the new product will automatically show up in its
  * catalog page and can be linked to directly.
  */
@@ -93,7 +102,9 @@
     // years" (see the description and "ageNote" below), but it's tagged
     // ages: ["3"] on purpose so it still shows up under the 3+ filter.
     // Please don't "fix" this to ["5"] — that would just hide it from
-    // shoppers browsing 3+.
+    // shoppers browsing 3+. The card, related products and Details tab
+    // instead show "4+" to visitors via "ageLabel" below, which only
+    // changes the displayed text — it does not affect the 3+ filter.
     {
       id: "vb-little-traveller",
       type: "velcro-books",
@@ -107,7 +118,9 @@
         "assets/products/velcro/little-traveller-israel-georgia.webp",
       ],
       thumb: "assets/products/velcro/thumbs/little-traveller-cover.jpg",
+      bestseller: true,
       ages: ["3"],
+      ageLabel: "4+",
       ageNote: {
         uk: "рекомендовано від 4 років",
         pl: "zalecane od 4 lat",

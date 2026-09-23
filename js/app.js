@@ -748,6 +748,10 @@
 
   function productAgeLabel(p) {
     if (p.type !== "velcro-books" || !p.ages || !p.ages.length) return "";
+    // "ageLabel" lets a product override the displayed text (e.g. show
+    // "4+" for a product tagged ages: ["3"] for filtering purposes).
+    // It's the same in every language, so no translation lookup here.
+    if (p.ageLabel) return p.ageLabel;
     return p.ages
       .map(function (a) {
         return window.BD_T("age." + a);
@@ -1395,8 +1399,10 @@
     // "ageNote" is an optional, localized bit of extra text shown right
     // after the age-filter label in the Details tab (e.g. a product tagged
     // "3+" for filtering purposes but whose box actually recommends 4+).
-    // See js/products.js for an example.
-    if (ageLabel && product.ageNote) {
+    // See js/products.js for an example. Skipped when "ageLabel" already
+    // overrides the displayed text (e.g. "4+") — appending the note there
+    // would just repeat the same age back ("4+ (recommended from 4 years)").
+    if (ageLabel && product.ageNote && !product.ageLabel) {
       ageLabel += " (" + localizedText(product.ageNote) + ")";
     }
     var categoryLabels = (product.categories || [])

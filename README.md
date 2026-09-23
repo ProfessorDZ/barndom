@@ -89,6 +89,14 @@ Extra things you can add to any product:
   Leave this out and the option shows up normally — it's only meant
   for products where adding a name isn't offered, like the coloring
   books.
+- `ageLabel: "4+"` — for a velcro book whose age doesn't match any of
+  the site's age filter options (6 mo+ / 1+ / 3+ / 5+ / 10+) exactly.
+  It changes only the age text shown to shoppers (the product card,
+  "you may also like", and the Details tab on the product's page) —
+  it does not change which filter the product shows up under, that
+  still comes from `ages`. Leave it out and the label is worked out
+  from `ages` as usual. The same text works for all 4 languages, no
+  translation needed.
 
 ## The "coming soon" section
 
