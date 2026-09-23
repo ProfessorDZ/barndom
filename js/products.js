@@ -96,7 +96,7 @@
   ];
 
   window.BD_PRODUCTS = [
-    // ---------- velcro-books (1 real product) ----------
+    // ---------- velcro-books (2 real products) ----------
     // NOTE on "ages": the site's age filter only has 6m / 1+ / 3+ / 5+ /
     // 10+ — there is no "4+" option. This book's own box says "from 4
     // years" (see the description and "ageNote" below), but it's tagged
@@ -146,6 +146,42 @@
         pl: "„Little traveller” to rozwijająca książeczka na rzepy o 32 krajach świata. Na stronie każdego kraju dziecko poznaje jego flagę, stolicę, zabytki, potrawy i tradycje — wśród nich Polskę (Wawel, pierogi, żurek, wrocławskie krasnale, żubr), Szwecję (Sztokholm, konik dala, bułeczki cynamonowe, klopsiki z sosem borówkowym, Pippi Pończoszankę i Carlssona), Ukrainę (Kijów, wyszywankę, barszcz, pisanki, zamek Lubarta), Finlandię (Muminki, Joulupukkiego, korvapuusti, saunę), Wielką Brytanię (Big Ben, czerwone autobusy, gwardię królewską, angielskie śniadanie), Australię (Operę w Sydney, kangura, koalę, bumerang), Izrael (Jerozolimę, hamsę, falafel, hummus, Chanukę) oraz Gruzję (Tbilisi, pomnik Matki Kartli, chinkali, chaczapuri). Dziecko odrywa i przykleja rzepy wprost na stronach, ćwicząc małą motorykę podczas podróży. Zalecany wiek: od 4 lat.",
         en: "Little Traveller is a velcro activity book about 32 countries of the world. Each country's page introduces its flag, capital, landmarks, food and traditions — including Poland (Wawel Castle, pierogi, żurek, the Wrocław gnomes, the bison), Sweden (Stockholm, the Dala horse, cinnamon buns, meatballs with lingonberry sauce, Pippi Longstocking and Karlsson), Ukraine (Kyiv, vyshyvanka embroidery, borscht, pysanky, Lubart's Castle), Finland (the Moomins, Joulupukki, korvapuusti buns, sauna), Great Britain (Big Ben, red buses, the royal guards, an English breakfast), Australia (the Sydney Opera House, kangaroos, koalas, boomerangs), Israel (Jerusalem, the hamsa, falafel, hummus, Hanukkah) and Georgia (Tbilisi, the Mother of Kartli monument, khinkali, khachapuri). Your child peels off and attaches the velcro pieces right on the pages while exploring. Recommended age: from 4 years.",
         sv: "„Little traveller” är en kardborreaktivitetsbok om 32 länder i världen. På varje lands sida möter barnet dess flagga, huvudstad, sevärdheter, mat och traditioner — bland dem Polen (Wawel, pierogi, żurek, Wrocławs troll, bisonoxen), Sverige (Stockholm, dalahästen, kanelbullar, köttbullar med lingonsylt, Pippi Långstrump och Karlsson), Ukraina (Kiev, vysjyvanka-broderi, borsjtj, pysanky-ägg, Lubarts slott), Finland (mumintrollen, Joulupukki, korvapuusti, bastu), Storbritannien (Big Ben, röda bussar, den kungliga vakten, engelsk frukost), Australien (Sydneys operahus, känguru, koala, bumerang), Israel (Jerusalem, hamsa, falafel, hummus, Chanukka) och Georgien (Tbilisi, Moder Kartli-monumentet, khinkali, khachapuri). Barnet lossar och fäster kardborrebitarna direkt på sidorna under resans gång. Rekommenderad ålder: från 4 år.",
+      },
+    },
+    {
+      id: "vb-dinosaur-album",
+      type: "velcro-books",
+      price: 115,
+      image: "assets/products/velcro/dinosaur-album-cover.webp",
+      thumb: "assets/products/velcro/thumbs/dinosaur-album-cover.jpg",
+      bestseller: true,
+      ages: ["3"],
+      ageLabel: "4+",
+      ageNote: {
+        uk: "рекомендовано від 4 років",
+        pl: "zalecane od 4 lat",
+        en: "recommended from age 4",
+        sv: "rekommenderas från 4 år",
+      },
+      categories: ["dinosaurs"],
+      availableLanguages: ["uk", "pl", "en", "sv"],
+      name: {
+        uk: "Динозаврознавець — альбом на липучках",
+        pl: "Dinozaurolog — album na rzepy",
+        en: "Dinosaur Explorer — velcro activity album",
+        sv: "Dinosaurolog — kardborrealbum",
+      },
+      shortDescription: {
+        uk: "Альбом на липучках, що перетворює дитину на справжнього юного палеонтолога серед динозаврів.",
+        pl: "Album na rzepy, który zamienia dziecko w prawdziwego młodego paleontologa wśród dinozaurów.",
+        en: "A velcro activity album that turns your child into a real young palaeontologist among the dinosaurs.",
+        sv: "Ett kardborrealbum som förvandlar barnet till en riktig ung paleontolog bland dinosaurier.",
+      },
+      description: {
+        uk: "«Динозаврознавець» — розвивальний альбом на липучках про світ динозаврів, у якому дитина сама стає юним палеонтологом. Малюк розкопує та чистить пензликом череп динозавра, знайомиться з тираннозавром, довгошиим динозавром і птеродактилем, а також спостерігає, як з яйця вилуплюється маленьке динозавреня біля димливого вулкана. Дитина відриває й приклеює липучки просто на сторінках, тренуючи дрібну моторику. Рекомендований вік: від 4 років.",
+        pl: "„Dinozaurolog” to rozwijający album na rzepy o świecie dinozaurów, w którym dziecko wciela się w młodego paleontologa. Maluch odkopuje i czyści pędzelkiem czaszkę dinozaura, poznaje tyranozaura, dinozaura o długiej szyi i pterodaktyla, a także obserwuje, jak z jajka wykluwa się małe dinozaurątko przy dymiącym wulkanie. Dziecko odrywa i przykleja rzepy wprost na stronach, ćwicząc małą motorykę. Zalecany wiek: od 4 lat.",
+        en: "Dinosaur Explorer is a velcro activity album about the world of dinosaurs, where your child becomes a young palaeontologist. They dig up and brush clean a dinosaur skull, meet a T-rex, a long-necked dinosaur and a pterodactyl, and watch a baby dinosaur hatch from its egg near a smoking volcano. Your child peels off and attaches the velcro pieces right on the pages, practicing fine motor skills while playing. Recommended age: from 4 years.",
+        sv: "„Dinosaurolog” är ett kardborrealbum om dinosauriernas värld, där barnet får bli en ung paleontolog. Barnet gräver fram och borstar rent en dinosaurieskalle, möter en T-rex, en långhalsad dinosaurie och en pterodaktyl, och ser en liten dinosaurieunge kläckas ur sitt ägg vid en rykande vulkan. Barnet lossar och fäster kardborrebitarna direkt på sidorna och tränar finmotoriken under lekens gång. Rekommenderad ålder: från 4 år.",
       },
     },
 
