@@ -7,8 +7,23 @@
  *    in the product page URL: product.html?id=your-id).
  * 3. Set "type" to one of: velcro-books, coloring, spot-it, playdough,
  *    wipe-clean, unit-study.
- * 4. Set "price" (a plain number, in the currency set in js/config.js)
- *    and "image" (the full-size picture, shown on the product page).
+ * 4. Set "price" and "image" (the full-size picture, shown on the
+ *    product page).
+ *
+ *    PRICES AND CURRENCIES — READ THIS FIRST
+ *    The site shows PLN, EUR or SEK depending on which language the
+ *    visitor has picked (see "currencyByLanguage" in js/config.js) — NOT
+ *    one currency for the whole shop. So "price" is not a single number
+ *    any more, it's one plain number PER currency:
+ *      price: { PLN: 21, EUR: 5, SEK: 55 }
+ *    There is no automatic conversion between them — nothing here is
+ *    calculated from anything else, so you can enter whatever round
+ *    number makes sense for shoppers paying in that currency. To change
+ *    what a product costs in one currency, just edit that one number
+ *    (e.g. change EUR: 5 to EUR: 6) — the other currencies are untouched.
+ *    Every product must have all 3: PLN, EUR and SEK, or a shopper using
+ *    that language will see the shop's fallback currency ("defaultCurrency"
+ *    in js/config.js) instead for that one product.
  *    You can also add "thumb" — a smaller, faster-loading version of
  *    the same picture, used everywhere else (catalog cards, "you may
  *    also like", cart lines). Leave "thumb" out and the full-size
@@ -108,7 +123,7 @@
     {
       id: "vb-little-traveller",
       type: "velcro-books",
-      price: 240,
+      price: { PLN: 240, EUR: 56, SEK: 620 },
       image: "assets/products/velcro/little-traveller-cover.webp",
       images: [
         "assets/products/velcro/little-traveller-cover.webp",
@@ -151,7 +166,7 @@
     {
       id: "vb-dinosaur-album",
       type: "velcro-books",
-      price: 115,
+      price: { PLN: 115, EUR: 27, SEK: 300 },
       image: "assets/products/velcro/dinosaur-album-cover.webp",
       thumb: "assets/products/velcro/thumbs/dinosaur-album-cover.jpg",
       bestseller: true,
@@ -199,13 +214,14 @@
     // 2. Copy one whole block below (from "{" to the matching "},").
     // 3. Give it a new, unique "id".
     // 4. Point "image" (and "thumb") at the new picture's file name.
-    // 5. Change "price" if it's different.
+    // 5. Change "price" if it's different (one number per currency — see
+    //    the note about prices near the top of this file).
     // 6. Fill in "name", "shortDescription" and "description" in all 4
     //    languages (uk / pl / en / sv).
     {
       id: "col-christmas-magic",
       type: "coloring",
-      price: 21,
+      price: { PLN: 21, EUR: 5, SEK: 55 },
       image: "assets/products/coloring/christmas-magic.webp",
       thumb: "assets/products/coloring/thumbs/christmas-magic.jpg",
       personalizable: false,
@@ -231,7 +247,7 @@
     {
       id: "col-magical-world-of-books",
       type: "coloring",
-      price: 21,
+      price: { PLN: 21, EUR: 5, SEK: 55 },
       image: "assets/products/coloring/magical-world-of-books.webp",
       thumb: "assets/products/coloring/thumbs/magical-world-of-books.jpg",
       personalizable: false,
@@ -257,7 +273,7 @@
     {
       id: "col-pirates-treasure-islands",
       type: "coloring",
-      price: 21,
+      price: { PLN: 21, EUR: 5, SEK: 55 },
       image: "assets/products/coloring/pirates-treasure-islands.webp",
       thumb: "assets/products/coloring/thumbs/pirates-treasure-islands.jpg",
       personalizable: false,
@@ -283,7 +299,7 @@
     {
       id: "col-candy-store",
       type: "coloring",
-      price: 21,
+      price: { PLN: 21, EUR: 5, SEK: 55 },
       image: "assets/products/coloring/candy-store.webp",
       thumb: "assets/products/coloring/thumbs/candy-store.jpg",
       personalizable: false,
@@ -309,7 +325,7 @@
     {
       id: "col-magical-forest",
       type: "coloring",
-      price: 21,
+      price: { PLN: 21, EUR: 5, SEK: 55 },
       image: "assets/products/coloring/magical-forest-b.webp",
       thumb: "assets/products/coloring/thumbs/magical-forest-b.jpg",
       personalizable: false,
@@ -335,7 +351,7 @@
     {
       id: "col-cities-of-the-future",
       type: "coloring",
-      price: 21,
+      price: { PLN: 21, EUR: 5, SEK: 55 },
       image: "assets/products/coloring/cities-of-the-future.webp",
       thumb: "assets/products/coloring/thumbs/cities-of-the-future.jpg",
       personalizable: false,
@@ -361,7 +377,7 @@
     {
       id: "col-robots-future-world",
       type: "coloring",
-      price: 21,
+      price: { PLN: 21, EUR: 5, SEK: 55 },
       image: "assets/products/coloring/robots-future-world-b.webp",
       thumb: "assets/products/coloring/thumbs/robots-future-world-b.jpg",
       personalizable: false,
@@ -387,7 +403,7 @@
     {
       id: "col-jungle-safari",
       type: "coloring",
-      price: 21,
+      price: { PLN: 21, EUR: 5, SEK: 55 },
       image: "assets/products/coloring/jungle-safari.webp",
       thumb: "assets/products/coloring/thumbs/jungle-safari.jpg",
       personalizable: false,
@@ -413,7 +429,7 @@
     {
       id: "col-snowy-rainy-days",
       type: "coloring",
-      price: 21,
+      price: { PLN: 21, EUR: 5, SEK: 55 },
       image: "assets/products/coloring/snowy-rainy-days.webp",
       thumb: "assets/products/coloring/thumbs/snowy-rainy-days.jpg",
       personalizable: false,
@@ -439,7 +455,7 @@
     {
       id: "col-beach-day-sandcastles",
       type: "coloring",
-      price: 21,
+      price: { PLN: 21, EUR: 5, SEK: 55 },
       image: "assets/products/coloring/beach-day-sandcastles.webp",
       thumb: "assets/products/coloring/thumbs/beach-day-sandcastles.jpg",
       personalizable: false,
@@ -465,7 +481,7 @@
     {
       id: "col-insects-and-bugs",
       type: "coloring",
-      price: 21,
+      price: { PLN: 21, EUR: 5, SEK: 55 },
       image: "assets/products/coloring/insects-and-bugs.webp",
       thumb: "assets/products/coloring/thumbs/insects-and-bugs.jpg",
       personalizable: false,
@@ -491,7 +507,7 @@
     {
       id: "col-farm-animals",
       type: "coloring",
-      price: 21,
+      price: { PLN: 21, EUR: 5, SEK: 55 },
       image: "assets/products/coloring/farm-animals.webp",
       thumb: "assets/products/coloring/thumbs/farm-animals.jpg",
       personalizable: false,
@@ -517,7 +533,7 @@
     {
       id: "col-sports-outdoor",
       type: "coloring",
-      price: 21,
+      price: { PLN: 21, EUR: 5, SEK: 55 },
       image: "assets/products/coloring/sports-outdoor.webp",
       thumb: "assets/products/coloring/thumbs/sports-outdoor.jpg",
       personalizable: false,
@@ -543,7 +559,7 @@
     {
       id: "col-under-the-sea",
       type: "coloring",
-      price: 21,
+      price: { PLN: 21, EUR: 5, SEK: 55 },
       image: "assets/products/coloring/under-the-sea.webp",
       thumb: "assets/products/coloring/thumbs/under-the-sea.jpg",
       personalizable: false,
@@ -569,7 +585,7 @@
     {
       id: "col-dragons-mythical-beasts",
       type: "coloring",
-      price: 21,
+      price: { PLN: 21, EUR: 5, SEK: 55 },
       image: "assets/products/coloring/dragons-mythical-beasts.webp",
       thumb: "assets/products/coloring/thumbs/dragons-mythical-beasts.jpg",
       personalizable: false,
@@ -595,7 +611,7 @@
     {
       id: "col-alphabet-adventures",
       type: "coloring",
-      price: 21,
+      price: { PLN: 21, EUR: 5, SEK: 55 },
       image: "assets/products/coloring/alphabet-adventures.webp",
       thumb: "assets/products/coloring/thumbs/alphabet-adventures.jpg",
       personalizable: false,
@@ -621,7 +637,7 @@
     {
       id: "col-numbers-shapes-nature",
       type: "coloring",
-      price: 21,
+      price: { PLN: 21, EUR: 5, SEK: 55 },
       image: "assets/products/coloring/numbers-shapes-nature.webp",
       thumb: "assets/products/coloring/thumbs/numbers-shapes-nature.jpg",
       personalizable: false,
@@ -647,7 +663,7 @@
     {
       id: "col-a-day-at-the-zoo",
       type: "coloring",
-      price: 21,
+      price: { PLN: 21, EUR: 5, SEK: 55 },
       image: "assets/products/coloring/a-day-at-the-zoo.webp",
       thumb: "assets/products/coloring/thumbs/a-day-at-the-zoo.jpg",
       personalizable: false,
@@ -673,7 +689,7 @@
     {
       id: "col-elements",
       type: "coloring",
-      price: 21,
+      price: { PLN: 21, EUR: 5, SEK: 55 },
       image: "assets/products/coloring/elements-earth-water-fire-air.webp",
       thumb: "assets/products/coloring/thumbs/elements-earth-water-fire-air.jpg",
       personalizable: false,
@@ -699,7 +715,7 @@
     {
       id: "col-fairy-tales-castles",
       type: "coloring",
-      price: 21,
+      price: { PLN: 21, EUR: 5, SEK: 55 },
       image: "assets/products/coloring/fairy-tales-castles.webp",
       thumb: "assets/products/coloring/thumbs/fairy-tales-castles.jpg",
       personalizable: false,
@@ -725,7 +741,7 @@
     {
       id: "col-rainforest-animals",
       type: "coloring",
-      price: 21,
+      price: { PLN: 21, EUR: 5, SEK: 55 },
       image: "assets/products/coloring/rainforest-animals.webp",
       thumb: "assets/products/coloring/thumbs/rainforest-animals.jpg",
       personalizable: false,
@@ -751,7 +767,7 @@
     {
       id: "col-cars-trucks-trains",
       type: "coloring",
-      price: 21,
+      price: { PLN: 21, EUR: 5, SEK: 55 },
       image: "assets/products/coloring/cars-trucks-trains.webp",
       thumb: "assets/products/coloring/thumbs/cars-trucks-trains.jpg",
       personalizable: false,
@@ -777,7 +793,7 @@
     {
       id: "col-musical-instruments",
       type: "coloring",
-      price: 21,
+      price: { PLN: 21, EUR: 5, SEK: 55 },
       image: "assets/products/coloring/musical-instruments-orchestra.webp",
       thumb: "assets/products/coloring/thumbs/musical-instruments-orchestra.jpg",
       personalizable: false,
@@ -803,7 +819,7 @@
     {
       id: "col-friendly-monsters",
       type: "coloring",
-      price: 21,
+      price: { PLN: 21, EUR: 5, SEK: 55 },
       image: "assets/products/coloring/friendly-monsters.webp",
       thumb: "assets/products/coloring/thumbs/friendly-monsters.jpg",
       personalizable: false,
@@ -829,7 +845,7 @@
     {
       id: "col-knights-medieval",
       type: "coloring",
-      price: 21,
+      price: { PLN: 21, EUR: 5, SEK: 55 },
       image: "assets/products/coloring/knights-medieval-life.webp",
       thumb: "assets/products/coloring/thumbs/knights-medieval-life.jpg",
       personalizable: false,
@@ -855,7 +871,7 @@
     {
       id: "col-outer-space",
       type: "coloring",
-      price: 21,
+      price: { PLN: 21, EUR: 5, SEK: 55 },
       image: "assets/products/coloring/outer-space-astronauts.webp",
       thumb: "assets/products/coloring/thumbs/outer-space-astronauts.jpg",
       personalizable: false,
@@ -881,7 +897,7 @@
     {
       id: "col-cooking-baking",
       type: "coloring",
-      price: 21,
+      price: { PLN: 21, EUR: 5, SEK: 55 },
       image: "assets/products/coloring/cooking-baking-fun.webp",
       thumb: "assets/products/coloring/thumbs/cooking-baking-fun.jpg",
       personalizable: false,
@@ -907,7 +923,7 @@
     {
       id: "col-princesses-knights",
       type: "coloring",
-      price: 21,
+      price: { PLN: 21, EUR: 5, SEK: 55 },
       image: "assets/products/coloring/princesses-and-knights.webp",
       thumb: "assets/products/coloring/thumbs/princesses-and-knights.jpg",
       personalizable: false,
@@ -933,7 +949,7 @@
     {
       id: "col-desert-animals",
       type: "coloring",
-      price: 21,
+      price: { PLN: 21, EUR: 5, SEK: 55 },
       image: "assets/products/coloring/desert-animals.webp",
       thumb: "assets/products/coloring/thumbs/desert-animals.jpg",
       personalizable: false,
@@ -959,7 +975,7 @@
     {
       id: "col-dinosaurs",
       type: "coloring",
-      price: 21,
+      price: { PLN: 21, EUR: 5, SEK: 55 },
       image: "assets/products/coloring/dinosaurs-prehistoric.webp",
       thumb: "assets/products/coloring/thumbs/dinosaurs-prehistoric.jpg",
       personalizable: false,
@@ -985,7 +1001,7 @@
     {
       id: "col-solar-system",
       type: "coloring",
-      price: 21,
+      price: { PLN: 21, EUR: 5, SEK: 55 },
       image: "assets/products/coloring/solar-system-planets.webp",
       thumb: "assets/products/coloring/thumbs/solar-system-planets.jpg",
       personalizable: false,
@@ -1011,7 +1027,7 @@
     {
       id: "col-festivals-world",
       type: "coloring",
-      price: 21,
+      price: { PLN: 21, EUR: 5, SEK: 55 },
       image: "assets/products/coloring/festivals-around-the-world.webp",
       thumb: "assets/products/coloring/thumbs/festivals-around-the-world.jpg",
       personalizable: false,
@@ -1037,7 +1053,7 @@
     {
       id: "col-halloween",
       type: "coloring",
-      price: 21,
+      price: { PLN: 21, EUR: 5, SEK: 55 },
       image: "assets/products/coloring/halloween-costumes.webp",
       thumb: "assets/products/coloring/thumbs/halloween-costumes.jpg",
       personalizable: false,
@@ -1063,7 +1079,7 @@
     {
       id: "col-superheroes",
       type: "coloring",
-      price: 21,
+      price: { PLN: 21, EUR: 5, SEK: 55 },
       image: "assets/products/coloring/superheroes-in-action.webp",
       thumb: "assets/products/coloring/thumbs/superheroes-in-action.jpg",
       personalizable: false,
@@ -1089,7 +1105,7 @@
     {
       id: "col-arctic-animals",
       type: "coloring",
-      price: 21,
+      price: { PLN: 21, EUR: 5, SEK: 55 },
       image: "assets/products/coloring/arctic-polar-animals.webp",
       thumb: "assets/products/coloring/thumbs/arctic-polar-animals.jpg",
       personalizable: false,
@@ -1115,7 +1131,7 @@
     {
       id: "col-seasons",
       type: "coloring",
-      price: 21,
+      price: { PLN: 21, EUR: 5, SEK: 55 },
       image: "assets/products/coloring/seasons-of-the-year.webp",
       thumb: "assets/products/coloring/thumbs/seasons-of-the-year.jpg",
       personalizable: false,
@@ -1141,7 +1157,7 @@
     {
       id: "col-tea-party",
       type: "coloring",
-      price: 21,
+      price: { PLN: 21, EUR: 5, SEK: 55 },
       image: "assets/products/coloring/tea-party-in-the-garden.webp",
       thumb: "assets/products/coloring/thumbs/tea-party-in-the-garden.jpg",
       personalizable: false,
@@ -1167,7 +1183,7 @@
     {
       id: "col-cities-landmarks",
       type: "coloring",
-      price: 21,
+      price: { PLN: 21, EUR: 5, SEK: 55 },
       image: "assets/products/coloring/cities-famous-landmarks.webp",
       thumb: "assets/products/coloring/thumbs/cities-famous-landmarks.jpg",
       personalizable: false,
@@ -1193,7 +1209,7 @@
     {
       id: "col-balloons-parties",
       type: "coloring",
-      price: 21,
+      price: { PLN: 21, EUR: 5, SEK: 55 },
       image: "assets/products/coloring/balloons-festive-parties.webp",
       thumb: "assets/products/coloring/thumbs/balloons-festive-parties.jpg",
       personalizable: false,
@@ -1219,7 +1235,7 @@
     {
       id: "col-underwater-mermaids",
       type: "coloring",
-      price: 21,
+      price: { PLN: 21, EUR: 5, SEK: 55 },
       image: "assets/products/coloring/underwater-kingdoms-mermaids.webp",
       thumb: "assets/products/coloring/thumbs/underwater-kingdoms-mermaids.jpg",
       personalizable: false,
@@ -1245,7 +1261,7 @@
     {
       id: "col-butterflies-flowers",
       type: "coloring",
-      price: 21,
+      price: { PLN: 21, EUR: 5, SEK: 55 },
       image: "assets/products/coloring/butterflies-and-flowers.webp",
       thumb: "assets/products/coloring/thumbs/butterflies-and-flowers.jpg",
       personalizable: false,
@@ -1273,7 +1289,7 @@
     {
       id: "spot-it-animals",
       type: "spot-it",
-      price: 49,
+      price: { PLN: 49, EUR: 11.5, SEK: 125 },
       image: "assets/types/spot-it.svg",
       ages: ["5", "10"],
       categories: [],
@@ -1300,7 +1316,7 @@
     {
       id: "spot-it-numbers",
       type: "spot-it",
-      price: 49,
+      price: { PLN: 49, EUR: 11.5, SEK: 125 },
       image: "assets/types/spot-it.svg",
       ages: ["5", "10"],
       categories: [],
@@ -1329,7 +1345,7 @@
     {
       id: "playdough-shapes-mats",
       type: "playdough",
-      price: 28,
+      price: { PLN: 28, EUR: 6.5, SEK: 75 },
       image: "assets/types/playdough.svg",
       ages: ["1", "3"],
       categories: [],
@@ -1356,7 +1372,7 @@
     {
       id: "playdough-alphabet-mats",
       type: "playdough",
-      price: 28,
+      price: { PLN: 28, EUR: 6.5, SEK: 75 },
       image: "assets/types/playdough.svg",
       ages: ["3", "5"],
       categories: [],
@@ -1385,7 +1401,7 @@
     {
       id: "wipe-clean-numbers",
       type: "wipe-clean",
-      price: 32,
+      price: { PLN: 32, EUR: 7.5, SEK: 85 },
       image: "assets/types/wipe-clean.svg",
       ages: ["3", "5"],
       categories: [],
@@ -1412,7 +1428,7 @@
     {
       id: "wipe-clean-letters",
       type: "wipe-clean",
-      price: 32,
+      price: { PLN: 32, EUR: 7.5, SEK: 85 },
       image: "assets/types/wipe-clean.svg",
       ages: ["5", "10"],
       categories: [],
@@ -1441,7 +1457,7 @@
     {
       id: "unit-space",
       type: "unit-study",
-      price: 48,
+      price: { PLN: 48, EUR: 11, SEK: 125 },
       image: "assets/types/unit-study.svg",
       ages: ["5", "10"],
       categories: [],
@@ -1468,7 +1484,7 @@
     {
       id: "unit-dinosaurs",
       type: "unit-study",
-      price: 48,
+      price: { PLN: 48, EUR: 11, SEK: 125 },
       image: "assets/types/unit-study.svg",
       ages: ["5", "10"],
       categories: [],
@@ -1495,7 +1511,7 @@
     {
       id: "unit-seasons",
       type: "unit-study",
-      price: 45,
+      price: { PLN: 45, EUR: 10.5, SEK: 115 },
       image: "assets/types/unit-study.svg",
       ages: ["3", "5"],
       categories: [],

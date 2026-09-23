@@ -9,15 +9,30 @@ window.BD_CONFIG = {
   // Shown in the header, footer and browser tab title.
   shopName: "Barndom",
 
-  // ISO currency code used everywhere prices are shown.
-  // Change this ONE value to switch the whole shop to another currency
-  // (e.g. "UAH", "EUR", "USD"). Prices themselves (in js/products.js)
-  // are plain numbers in this currency.
-  currency: "PLN",
+  // Which currency is shown depends on the site's language — not on
+  // where the visitor happens to be. Change any value below to switch
+  // that language to a different currency (must be an ISO currency code
+  // that Intl.NumberFormat knows, e.g. "PLN", "EUR", "SEK", "UAH", "USD").
+  // "defaultCurrency" is only a safety net: it's used if a product (or
+  // the personalization surcharge below) is ever missing a price for the
+  // currency a language maps to here — see js/products.js for where
+  // product prices are entered, one number per currency.
+  currencyByLanguage: {
+    uk: "PLN",
+    pl: "PLN",
+    en: "EUR",
+    sv: "SEK",
+  },
+  defaultCurrency: "PLN",
 
-  // Extra cost (in the currency above) for adding a child's name to the
-  // cover of a product ("Personalization").
-  personalizationPrice: 10,
+  // Extra cost for adding a child's name to the cover ("Personalization").
+  // Entered the same way as a product price (see js/products.js) — one
+  // plain number per currency, no automatic conversion between them.
+  personalizationPrice: {
+    PLN: 10,
+    EUR: 2.5,
+    SEK: 25,
+  },
 
   // Default site language if nothing is saved yet in the visitor's browser.
   defaultLanguage: "uk",

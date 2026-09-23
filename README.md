@@ -61,8 +61,35 @@ change an existing one — mainly: copy an existing product block,
 change its `id`, `price`, `image`, and fill in its name/description in
 all 4 languages (Ukrainian, Polish, English, Swedish).
 
+**Every product has one price per currency, not one price overall.**
+The shop shows PLN, EUR or SEK depending on the site's language (see
+"Which language shows which currency" below), and each of those is
+just a plain number you type in yourself — there is no automatic
+conversion between them, on purpose, so the site keeps working as
+plain files with no internet connection needed. A price looks like
+this in `js/products.js`:
+```
+price: { PLN: 21, EUR: 5, SEK: 55 },
+```
 To change the price of an existing product, find it in that file (you
-can search for its name) and change the `price:` number.
+can search for its name) and change the number after the currency you
+want to change — for example, change `EUR: 5` to `EUR: 6` to raise only
+the euro price. The other two currencies are left exactly as they were.
+Every product should have all three (PLN, EUR and SEK) filled in; if
+one is ever missing, that one product will show the shop's fallback
+currency instead (see below) rather than a broken price.
+
+## Which language shows which currency
+
+- Ukrainian and Polish → **PLN** (zł)
+- English → **EUR** (€)
+- Swedish → **SEK** (kr)
+
+This is set in `js/config.js`, in `currencyByLanguage`. To change which
+currency a language uses, edit that one line (for example, to show EUR
+for Polish too). `defaultCurrency` right below it is only a safety net
+— it's the currency shown for one product if that product is ever
+missing a price for the currency its language normally uses.
 
 Extra things you can add to any product:
 - `bestseller: true` — shows the product in the "Bestsellers" row on
@@ -120,10 +147,9 @@ switches back on by itself, nothing else needs to change.
 
 ## How to change the currency
 
-Open `js/config.js` and change the `currency:` value (for example from
-`"PLN"` to `"UAH"` or `"EUR"`). That one change updates the price
-display everywhere on the site — you do not need to touch anything
-else.
+See "Which language shows which currency" above — that's the setting
+to change. There is no single shop-wide currency any more; it always
+follows the visitor's chosen language.
 
 ## How to change the shop name, contacts, or personalization price
 
@@ -132,7 +158,8 @@ Also in `js/config.js`:
 - `contactEmail` — the email shown in the footer.
 - `contactPhone` — the phone number shown in the footer.
 - `personalizationPrice` — the extra cost for adding a child's name to
-  a product's cover.
+  a product's cover, entered the same way as a product price: one
+  number per currency (`{ PLN: 10, EUR: 2.5, SEK: 25 }`).
 - `announcementKey` — which line of text (from `js/i18n.js`) shows in
   the thin bar at the very top of every page. To change what that bar
   actually *says*, edit the `announcement.text` entry in `js/i18n.js`

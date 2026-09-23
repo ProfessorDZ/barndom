@@ -15,10 +15,18 @@
  *   personalized: true,      // whether a name was added to the cover
  *   childName: "Олеся",      // only meaningful when personalized
  *   quantity: 2,
- *   unitPrice: 49            // product price + personalization if any
+ *   unitPrice: 49,           // product price + personalization if any
+ *   currency: "PLN"          // which currency "unitPrice" is in
  * }
  *
  * The SAME product with DIFFERENT chosen options becomes a separate line.
+ *
+ * "currency" is stored on the line because the shop's currency depends on
+ * the site language (see js/config.js), and a visitor can switch language
+ * after adding something to the cart. js/app.js calls reprice() (below) on
+ * every page load to recompute "unitPrice"/"currency" for the CURRENT
+ * language from the product data — cart.js itself never converts between
+ * currencies, it only stores whatever it's told.
  */
 (function () {
   var STORAGE_KEY = "bd_cart";
@@ -80,6 +88,7 @@
         childName: item.personalized ? item.childName || "" : "",
         quantity: item.quantity,
         unitPrice: item.unitPrice,
+        currency: item.currency,
       });
     }
     writeCart(cart);
@@ -131,6 +140,34 @@
   }
 
   /**
+   * Recomputes "unitPrice"/"currency" on every line, using whatever
+   * "priceForLine(line)" returns for it — this is how a language (and so
+   * a currency) switch also re-prices whatever is already in the cart,
+   * instead of leaving stale amounts behind in the old currency. cart.js
+   * itself has no idea what a "product" or a "currency" is; js/app.js
+   * passes in the actual lookup (see repriceCartToCurrentCurrency there).
+   *
+   * priceForLine(line) returns { amount, currency }, or null/undefined to
+   * leave that one line exactly as it is (e.g. its product no longer
+   * exists — nothing sensible to re-price it from).
+   */
+  function reprice(priceForLine) {
+    var cart = readCart();
+    var changed = false;
+    for (var i = 0; i < cart.length; i++) {
+      var priced = priceForLine(cart[i]);
+      if (!priced) continue;
+      if (cart[i].unitPrice !== priced.amount || cart[i].currency !== priced.currency) {
+        cart[i].unitPrice = priced.amount;
+        cart[i].currency = priced.currency;
+        changed = true;
+      }
+    }
+    if (changed) writeCart(cart);
+    return cart;
+  }
+
+  /**
    * Runs the checkout for a validated order.
    * Online payment is not connected yet, so this does not charge anyone,
    * does not save the order anywhere, and does NOT clear the cart or the
@@ -157,6 +194,7 @@
     clear: clearCart,
     count: cartCount,
     total: cartTotal,
+    reprice: reprice,
     startCheckout: startCheckout,
   };
 })();

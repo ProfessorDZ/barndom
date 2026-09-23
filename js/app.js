@@ -42,15 +42,104 @@
     });
   }
 
-  function formatPrice(amount) {
+  // ---------- currency / pricing ----------
+  //
+  // The displayed currency follows the site LANGUAGE (see
+  // "currencyByLanguage" in js/config.js) — it is the same for every
+  // visitor viewing the site in that language, wherever they are.
+  //
+  // Every price in js/products.js (and the personalization surcharge in
+  // js/config.js) is a plain object with one number per currency, e.g.
+  // { PLN: 21, EUR: 5, SEK: 55 } — there is no exchange-rate conversion
+  // anywhere in this file, on purpose (the site has to keep working from
+  // plain files, offline, with no external API). These two helpers are
+  // used everywhere a price is shown, so nothing else formats money on
+  // its own:
+  //   - BD_PRICE(product) looks up a product's price for the current
+  //     language's currency, and returns { amount, currency }.
+  //   - BD_MONEY(amount, currency) turns a plain number into the text a
+  //     shopper sees ("21,00 zł", "€5.00", "55 kr", ...). "currency" is
+  //     optional — leave it out to use the current language's currency.
+
+  function currentCurrency() {
+    var lang = window.BD_getLang();
+    var map = (window.BD_CONFIG && window.BD_CONFIG.currencyByLanguage) || {};
+    return map[lang] || (window.BD_CONFIG && window.BD_CONFIG.defaultCurrency) || "EUR";
+  }
+
+  function priceAmount(map, currency) {
+    return map && typeof map[currency] === "number" ? map[currency] : null;
+  }
+
+  // Looks up a price map (a product's "price", or config's
+  // "personalizationPrice") for the current language's currency. Falls
+  // back to the shop's default currency (js/config.js) if that one is
+  // missing, so a product that's incomplete never shows "undefined" or
+  // "NaN" — it just shows the fallback currency for that one item. Every
+  // real product in js/products.js has all 3 currencies, so this fallback
+  // shouldn't normally be visible at all.
+  function resolvePrice(map) {
+    var currency = currentCurrency();
+    var defaultCurrency = (window.BD_CONFIG && window.BD_CONFIG.defaultCurrency) || "EUR";
+    var amount = priceAmount(map, currency);
+    if (amount != null) return { amount: amount, currency: currency };
+    amount = priceAmount(map, defaultCurrency);
+    return { amount: amount != null ? amount : 0, currency: defaultCurrency };
+  }
+
+  function personalizationPricing() {
+    return resolvePrice(window.BD_CONFIG && window.BD_CONFIG.personalizationPrice);
+  }
+
+  // A product's price, plus the personalization surcharge when asked for
+  // — both looked up in the SAME currency, so the two numbers added
+  // together are never from two different currencies. (If the surcharge
+  // somehow had no price in the product's currency, both are re-looked-up
+  // in the shop's default currency instead, for the same reason.)
+  function unitPricing(product, personalized) {
+    var base = resolvePrice(product && product.price);
+    if (!personalized) return base;
+    var extra = priceAmount(window.BD_CONFIG && window.BD_CONFIG.personalizationPrice, base.currency);
+    if (extra != null) return { amount: base.amount + extra, currency: base.currency };
+    var defaultCurrency = (window.BD_CONFIG && window.BD_CONFIG.defaultCurrency) || "EUR";
+    var baseDefault = priceAmount(product && product.price, defaultCurrency) || 0;
+    var extraDefault = priceAmount(window.BD_CONFIG && window.BD_CONFIG.personalizationPrice, defaultCurrency) || 0;
+    return { amount: baseDefault + extraDefault, currency: defaultCurrency };
+  }
+
+  function formatMoney(amount, currency) {
     var lang = window.BD_getLang();
     var locale = LOCALE_BY_LANG[lang] || "en-GB";
-    var currency = (window.BD_CONFIG && window.BD_CONFIG.currency) || "PLN";
+    var cur = currency || currentCurrency();
     try {
-      return new Intl.NumberFormat(locale, { style: "currency", currency: currency }).format(amount);
+      // "narrowSymbol" is what gets "zł"/"kr"/"€" instead of the plain
+      // "PLN"/"SEK"/"EUR" code — some locales (e.g. Ukrainian, which
+      // isn't a native PLN market) only have a symbol on file for their
+      // OWN currency and fall back to the bare code for others unless
+      // this is set explicitly.
+      return new Intl.NumberFormat(locale, { style: "currency", currency: cur, currencyDisplay: "narrowSymbol" }).format(amount);
     } catch (e) {
-      return amount + " " + currency;
+      return amount + " " + cur;
     }
+  }
+
+  function getProductPrice(product) {
+    return resolvePrice(product && product.price);
+  }
+
+  // Recomputes every cart line's stored price from the product data,
+  // using the CURRENT language's currency — called once on every page
+  // load (see init() below), so switching language always re-prices the
+  // cart instead of leaving old-currency numbers in the totals. Lines for
+  // a product that no longer exists are left untouched (nothing sensible
+  // to reprice them from).
+  function repriceCartToCurrentCurrency() {
+    if (!window.BD_CART || typeof window.BD_CART.reprice !== "function") return;
+    window.BD_CART.reprice(function (line) {
+      var product = getProductById(line.productId);
+      if (!product) return null;
+      return unitPricing(product, !!line.personalized);
+    });
   }
 
   function shopName() {
@@ -272,7 +361,7 @@
       '">+</button>' +
       "</div>" +
       '<p class="mini-cart-line__price">' +
-      formatPrice(line.unitPrice * line.quantity) +
+      formatMoney(line.unitPrice * line.quantity, line.currency) +
       "</p>" +
       "</div>" +
       "</div>" +
@@ -347,12 +436,16 @@
     var qtyInput = lineEl.querySelector(".mini-cart-qty-input");
     if (qtyInput) qtyInput.value = line.quantity;
     var priceEl = lineEl.querySelector(".mini-cart-line__price");
-    if (priceEl) priceEl.textContent = formatPrice(line.unitPrice * line.quantity);
+    if (priceEl) priceEl.textContent = formatMoney(line.unitPrice * line.quantity, line.currency);
   }
 
+  // The subtotal is shown in the site's current currency (not any one
+  // line's currency) — every line is re-priced into that currency on
+  // every page load (see repriceCartToCurrentCurrency), so in normal use
+  // they always agree and the subtotal is never a mix of two currencies.
   function patchMiniCartSubtotal(cart) {
     var subtotalValueEl = document.querySelector("#bd-minicart-foot .mini-cart__subtotal span:last-child");
-    if (subtotalValueEl) subtotalValueEl.textContent = formatPrice(window.BD_CART.total(cart));
+    if (subtotalValueEl) subtotalValueEl.textContent = formatMoney(window.BD_CART.total(cart));
   }
 
   function applyMiniCartQuantity(lineEl, lineId, quantity) {
@@ -438,7 +531,7 @@
         '<div class="mini-cart__subtotal"><span>' +
         escapeHtml(window.BD_T("miniCart.subtotal")) +
         "</span><span>" +
-        formatPrice(total) +
+        formatMoney(total) +
         "</span></div>" +
         '<div class="mini-cart__actions">' +
         '<a class="btn btn--primary btn--large" href="cart.html">' +
@@ -910,6 +1003,7 @@
 
   function productCardHtml(p) {
     var ageLabel = productAgeLabel(p);
+    var priced = getProductPrice(p);
     // Coloring-book covers are portrait photos (about 3:4), not the
     // square type icons other products use — give them a taller image
     // box so the cover isn't squeezed into a square with empty space.
@@ -941,7 +1035,7 @@
       "</a>" +
       "</h3>" +
       '<p class="product-card__price">' +
-      formatPrice(p.price) +
+      formatMoney(priced.amount, priced.currency) +
       "</p>" +
       '<a class="btn btn--secondary product-card__cta" href="product.html?id=' +
       encodeURIComponent(p.id) +
@@ -1186,8 +1280,11 @@
 
   function sortProducts(products) {
     var sorted = products.slice();
-    if (catalogState.sort === "price-asc") sorted.sort(function (a, b) { return a.price - b.price; });
-    else if (catalogState.sort === "price-desc") sorted.sort(function (a, b) { return b.price - a.price; });
+    // Sorting compares each product's price in the CURRENT currency (its
+    // "price" is now one number per currency, not a single number) so the
+    // order shoppers see always matches what they're actually looking at.
+    if (catalogState.sort === "price-asc") sorted.sort(function (a, b) { return getProductPrice(a).amount - getProductPrice(b).amount; });
+    else if (catalogState.sort === "price-desc") sorted.sort(function (a, b) { return getProductPrice(b).amount - getProductPrice(a).amount; });
     else if (catalogState.sort === "name-asc") {
       sorted.sort(function (a, b) {
         return localizedText(a.name).localeCompare(localizedText(b.name));
@@ -1527,20 +1624,22 @@
 
   var currentProductState = null;
 
+  // Returns { amount, currency } for one unit of the product, including
+  // the personalization surcharge when it's currently checked (see
+  // unitPricing() above — it keeps both numbers in the same currency).
   function computeUnitPrice(product) {
-    var personalizationPrice = (window.BD_CONFIG && window.BD_CONFIG.personalizationPrice) || 0;
-    return product.price + (currentProductState.personalized ? personalizationPrice : 0);
+    return unitPricing(product, currentProductState.personalized);
   }
 
   function updateProductPrices(product) {
-    var unit = computeUnitPrice(product);
+    var priced = computeUnitPrice(product);
     var qty = currentProductState.quantity;
     var priceEls = document.querySelectorAll("[data-live-price]");
     Array.prototype.forEach.call(priceEls, function (elx) {
-      elx.textContent = formatPrice(unit * qty);
+      elx.textContent = formatMoney(priced.amount * qty, priced.currency);
     });
     var stickyPrice = document.getElementById("bd-sticky-price");
-    if (stickyPrice) stickyPrice.textContent = formatPrice(unit * qty);
+    if (stickyPrice) stickyPrice.textContent = formatMoney(priced.amount * qty, priced.currency);
   }
 
   function accordionHtml(product) {
@@ -1677,8 +1776,11 @@
       childNameWrap.classList.remove("has-error");
     }
 
-    var unitPrice = computeUnitPrice(product);
     var personalized = personalizable && currentProductState.personalized;
+    // Stored on the line so a later language switch can re-price it (see
+    // repriceCartToCurrentCurrency) instead of leaving stale amounts in a
+    // currency the site no longer shows.
+    var priced = unitPricing(product, personalized);
 
     window.BD_CART.add({
       productId: product.id,
@@ -1686,7 +1788,8 @@
       personalized: personalized,
       childName: personalized ? childName.slice(0, 20) : "",
       quantity: currentProductState.quantity,
-      unitPrice: unitPrice,
+      unitPrice: priced.amount,
+      currency: priced.currency,
     });
 
     updateCartCount();
@@ -1731,7 +1834,8 @@
       quantity: 1,
     };
 
-    var personalizationPrice = (window.BD_CONFIG && window.BD_CONFIG.personalizationPrice) || 0;
+    var personalizationExtra = personalizationPricing();
+    var initialPrice = computeUnitPrice(product); // personalized: false, quantity: 1 at this point
     var images = getProductImages(product);
 
     var languageOptions = hasLanguages
@@ -1794,7 +1898,7 @@
       escapeHtml(localizedText(product.name)) +
       "</h1>" +
       '<p class="product-page__price" data-live-price>' +
-      formatPrice(product.price) +
+      formatMoney(initialPrice.amount, initialPrice.currency) +
       "</p>" +
       '<p class="product-page__desc">' +
       escapeHtml(localizedText(product.shortDescription)) +
@@ -1817,7 +1921,7 @@
           "<span>" +
           escapeHtml(window.BD_T("product.personalizationLabel")) +
           ' <span class="checkbox-field__price">(' +
-          window.BD_T("product.extraPrice", { price: formatPrice(personalizationPrice) }) +
+          window.BD_T("product.extraPrice", { price: formatMoney(personalizationExtra.amount, personalizationExtra.currency) }) +
           ")</span></span>" +
           "</label>" +
           '<div class="form-field" id="bd-child-name-wrap" hidden>' +
@@ -1849,7 +1953,7 @@
       escapeHtml(window.BD_T("product.addToCart")) +
       " — " +
       '<span data-live-price>' +
-      formatPrice(product.price) +
+      formatMoney(initialPrice.amount, initialPrice.currency) +
       "</span></button>" +
       "</form>" +
       '<div class="trust-lines">' +
@@ -1876,7 +1980,7 @@
       "</section>" +
       '<div class="sticky-buybar">' +
       '<span class="sticky-buybar__price" id="bd-sticky-price">' +
-      formatPrice(product.price) +
+      formatMoney(initialPrice.amount, initialPrice.currency) +
       "</span>" +
       '<button type="button" class="btn btn--primary" id="bd-sticky-add">' +
       escapeHtml(window.BD_T("product.addToCart")) +
@@ -2046,7 +2150,7 @@
                 "</p>"
               : "") +
             '<p class="cart-line__price">' +
-            formatPrice(line.unitPrice) +
+            formatMoney(line.unitPrice, line.currency) +
             "</p>" +
             "</div>" +
             '<div class="cart-line__qty quantity-stepper">' +
@@ -2079,7 +2183,7 @@
         '<div class="cart-summary__row"><span>' +
         escapeHtml(window.BD_T("cart.subtotal")) +
         "</span><span>" +
-        formatPrice(total) +
+        formatMoney(total) +
         "</span></div>" +
         '<div class="cart-summary__row"><span>' +
         escapeHtml(window.BD_T("cart.deliveryLabel")) +
@@ -2089,7 +2193,7 @@
         '<div class="cart-summary__row cart-summary__row--total"><span>' +
         escapeHtml(window.BD_T("cart.total")) +
         "</span><span>" +
-        formatPrice(total) +
+        formatMoney(total) +
         "</span></div>";
     }
 
@@ -2109,10 +2213,10 @@
     var summaryMount = document.getElementById("bd-cart-summary");
     if (!summaryMount) return;
     var subtotalValueEl = summaryMount.querySelector(".cart-summary__row span:last-child");
-    if (subtotalValueEl) subtotalValueEl.textContent = formatPrice(total);
+    if (subtotalValueEl) subtotalValueEl.textContent = formatMoney(total);
     var totalRow = summaryMount.querySelector(".cart-summary__row--total");
     var totalValueEl = totalRow && totalRow.querySelector("span:last-child");
-    if (totalValueEl) totalValueEl.textContent = formatPrice(total);
+    if (totalValueEl) totalValueEl.textContent = formatMoney(total);
   }
 
   /*
@@ -2398,6 +2502,11 @@
 
   function init() {
     document.documentElement.lang = window.BD_getLang();
+    // Re-price the cart into the current language's currency BEFORE
+    // anything reads it (cart count, mini-cart, cart page) — this is what
+    // makes switching language also switch the currency of whatever is
+    // already in the cart, instead of leaving old amounts behind.
+    repriceCartToCurrentCurrency();
     renderAnnouncementBar();
     renderHeader();
     renderFooter();
@@ -2415,5 +2524,7 @@
     init();
   }
 
-  window.BD_APP = { formatPrice: formatPrice, escapeHtml: escapeHtml, qs: qs };
+  window.BD_PRICE = getProductPrice;
+  window.BD_MONEY = formatMoney;
+  window.BD_APP = { formatPrice: formatMoney, escapeHtml: escapeHtml, qs: qs };
 })();
