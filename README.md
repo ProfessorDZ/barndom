@@ -64,7 +64,7 @@ all 4 languages (Ukrainian, Polish, English, Swedish).
 To change the price of an existing product, find it in that file (you
 can search for its name) and change the `price:` number.
 
-Two extra things you can add to any product:
+Extra things you can add to any product:
 - `bestseller: true` — shows the product in the "Bestsellers" row on
   the home page, and adds a small "Bestseller" badge on its card.
 - `isNew: true` — adds a small "New" badge on its card.
@@ -73,6 +73,22 @@ Two extra things you can add to any product:
   and the product page will show them as a photo gallery with clickable
   thumbnails. If you leave this out, the single `image` picture is used
   everywhere instead — nothing else needs to change.
+- `thumb: "..."` — a smaller, faster-loading copy of the product's
+  picture. The small copy is used everywhere except the product's own
+  page (catalog cards, "you may also like", cart lines), so those pages
+  load faster when there are a lot of products with big photos. If you
+  leave this out, the full-size `image` is used everywhere instead —
+  it still works, just a little slower to load.
+- `availableLanguages: []` (or leave it out) — for a product that only
+  comes in one version, this removes the "book language" choice from
+  its page and the "Language" line from the cart. Only add
+  `availableLanguages: ["uk", "pl", ...]` for products that really do
+  come in different printed languages.
+- `personalizable: false` — hides the "add child's name on the cover"
+  option on the product's page, and the "Name" line in the cart.
+  Leave this out and the option shows up normally — it's only meant
+  for products where adding a name isn't offered, like the coloring
+  books.
 
 ## The "coming soon" section
 
@@ -134,7 +150,12 @@ Illustrations live in the `assets/` folder:
 - `assets/types/` — one picture per product category, shown on the
   home page's 6 tiles, also used as a placeholder photo for every
   product until real product photos are ready.
+- `assets/products/coloring/` — the real coloring-book covers, with a
+  `thumbs/` folder inside holding smaller, faster-loading copies of the
+  same pictures (used everywhere except the product's own page — see
+  the `thumb` field above).
 
 To use a real photo for a specific product, put the image file
 somewhere in `assets/` and change that product's `image:` path in
-`js/products.js`.
+`js/products.js`. If you also make a smaller copy for faster loading,
+point `thumb:` at it too.

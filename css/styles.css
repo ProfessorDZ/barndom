@@ -1448,6 +1448,13 @@ button {
   position: relative;
 }
 
+/* Coloring-book covers are portrait photos (about 3:4) — give them a
+   taller box instead of the square one used for the other product
+   types' icons, so covers aren't squeezed with empty space. */
+.product-card__image--portrait {
+  aspect-ratio: 3 / 4;
+}
+
 .product-card__image img {
   width: 100%;
   height: 100%;

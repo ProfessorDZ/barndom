@@ -1,5 +1,5 @@
 /*
- * Barndom — product catalog (sample data)
+ * Barndom — product catalog
  * --------------------------------
  * HOW TO ADD OR EDIT A PRODUCT
  * 1. Copy one of the objects inside window.BD_PRODUCTS below.
@@ -8,19 +8,32 @@
  * 3. Set "type" to one of: velcro-books, coloring, spot-it, playdough,
  *    wipe-clean, unit-study.
  * 4. Set "price" (a plain number, in the currency set in js/config.js)
- *    and "image" (path to a picture — for now we reuse the type
- *    illustration in assets/types/, real photos can replace it later).
+ *    and "image" (the full-size picture, shown on the product page).
+ *    You can also add "thumb" — a smaller, faster-loading version of
+ *    the same picture, used everywhere else (catalog cards, "you may
+ *    also like", cart lines). Leave "thumb" out and the full-size
+ *    "image" is used everywhere instead — nothing breaks, it's just a
+ *    bit slower to load on pages with many products.
  * 5. "ages" and "categories" only really matter for velcro-books
  *    (they power the catalog filters there) but every product can have
  *    them. Use the ids listed in window.BD_AGES / window.BD_CATEGORIES.
  * 6. "availableLanguages" lists which printed-book languages a customer
  *    can choose on the product page: any of "uk", "pl", "en", "sv".
+ *    Leave it out (or leave it empty) for a product that only comes in
+ *    one version — its product page then shows no language choice at
+ *    all, and no "Language" line in the cart (that's what the coloring
+ *    books below do).
  * 7. Fill in "name", "shortDescription" and "description" for all 4
  *    languages (uk / pl / en / sv) — these are shown to the visitor.
  * 8. Optional flags:
  *    - "bestseller: true" shows the product in the homepage bestsellers
  *      row and adds a "Bestseller" badge on its card.
  *    - "isNew: true" adds a "New" badge on its card.
+ *    - "personalizable: false" hides the "add child's name on the
+ *      cover" option on the product page (and the "Name" line in the
+ *      cart). Every product is personalizable unless you add this —
+ *      the coloring books below turn it off because that option isn't
+ *      offered for them.
  *    - "images: [...]" — a list of image paths for a photo gallery on
  *      the product page (main photo + clickable thumbnails). Leave it
  *      out and the single "image" is used everywhere instead. Once real
@@ -432,86 +445,540 @@
     },
 
     // ---------- coloring ----------
+    // Coloring books do NOT have a language choice and do NOT have the
+    // "child's name on the cover" option (that's what "personalizable:
+    // false" means below, and why there is no "availableLanguages" line).
+    //
+    // HOW TO ADD ANOTHER COLORING BOOK:
+    // 1. Save the new cover picture in assets/products/coloring/, and
+    //    (if you can) a smaller version in assets/products/coloring/thumbs/
+    //    — the small version loads faster in the catalog. If you skip
+    //    the small version, just remove the "thumb" line below and the
+    //    site will use the full picture everywhere instead.
+    // 2. Copy one whole block below (from "{" to the matching "},").
+    // 3. Give it a new, unique "id".
+    // 4. Point "image" (and "thumb") at the new picture's file name.
+    // 5. Change "price" if it's different.
+    // 6. Fill in "name", "shortDescription" and "description" in all 4
+    //    languages (uk / pl / en / sv).
     {
-      id: "col-animals",
+      id: "col-christmas-magic",
       type: "coloring",
-      price: 18,
-      image: "assets/types/coloring.svg",
-      bestseller: true,
-      ages: ["3", "5"],
-      categories: [],
-      availableLanguages: ["uk", "pl", "en", "sv"],
+      price: 21,
+      image: "assets/products/coloring/christmas-magic.webp",
+      thumb: "assets/products/coloring/thumbs/christmas-magic.jpg",
+      personalizable: false,
       name: {
-        uk: "Розмальовка «Тваринки»",
-        pl: "Kolorowanka „Zwierzątka”",
-        en: "Coloring Book: Animals",
-        sv: "Målarbok: Djur",
+        uk: "Різдвяна магія та затишні свята",
+        pl: "Bożonarodzeniowa magia i przytulne święta",
+        en: "Christmas Magic and Cozy Holidays",
+        sv: "Julmagi och mysiga högtider",
       },
       shortDescription: {
-        uk: "Великі контури тваринок для перших розмальовок.",
-        pl: "Duże kontury zwierzątek do pierwszych kolorowanek.",
-        en: "Large animal outlines for first coloring experiences.",
-        sv: "Stora djurkonturer för de första målarstunderna.",
+        uk: "Різдвяний настрій, ялинка та подарунки для затишного розфарбовування.",
+        pl: "Świąteczny nastrój, choinka i prezenty do przytulnego kolorowania.",
+        en: "A festive mood with a decorated tree and gifts for cozy coloring time.",
+        sv: "Julstämning med gran och paket för mysig målarstund.",
       },
       description: {
-        uk: "Збірка сторінок-розмальовок із великими та простими контурами тваринок. Ідеально підходить для перших спроб малювання та розвитку дрібної моторики.",
-        pl: "Zbiór stron do kolorowania z dużymi, prostymi konturami zwierzątek. Idealny na pierwsze próby rysowania i rozwój małej motoryki.",
-        en: "A collection of coloring pages with large, simple animal outlines. Perfect for first drawing attempts and fine motor development.",
-        sv: "En samling målarsidor med stora, enkla djurkonturer. Perfekt för de första ritförsöken och finmotorisk utveckling.",
+        uk: "На сторінках — діти прикрашають ялинку, готують подарунки та милуються сніжною зимою. У наборі розмальовка, олівці та наклейки, тож можна одразу починати творити святковий настрій.",
+        pl: "Na stronach dzieci ozdabiają choinkę, przygotowują prezenty i podziwiają śnieżną zimę. W zestawie znajdziesz kolorowankę, kredki i naklejki, więc od razu można zacząć tworzyć świąteczny nastrój.",
+        en: "On these pages, children decorate the tree, wrap gifts and admire the snowy winter outside. The set includes the coloring book, pencils and stickers, so your child can start creating festive magic right away.",
+        sv: "På sidorna pyntar barnen granen, slår in paket och beundrar den snöiga vintern. I setet ingår målarboken, färgpennor och klistermärken, så det går att sätta igång direkt med julmagin.",
       },
     },
     {
-      id: "col-space",
+      id: "col-magical-world-of-books",
       type: "coloring",
-      price: 18,
-      image: "assets/types/coloring.svg",
-      ages: ["3", "5"],
-      categories: [],
-      availableLanguages: ["uk", "pl", "en"],
+      price: 21,
+      image: "assets/products/coloring/magical-world-of-books.webp",
+      thumb: "assets/products/coloring/thumbs/magical-world-of-books.jpg",
+      personalizable: false,
       name: {
-        uk: "Розмальовка «Космос»",
-        pl: "Kolorowanka „Kosmos”",
-        en: "Coloring Book: Space",
-        sv: "Målarbok: Rymden",
+        uk: "Чарівний світ книжок і читання",
+        pl: "Magiczny świat książek i czytania",
+        en: "The Magical World of Books and Reading",
+        sv: "Böckernas magiska värld och läsning",
       },
       shortDescription: {
-        uk: "Ракети, планети й зорельоти для юних мрійників.",
-        pl: "Rakiety, planety i statki kosmiczne dla młodych marzycieli.",
-        en: "Rockets, planets and spaceships for young dreamers.",
-        sv: "Raketer, planeter och rymdskepp för unga drömmare.",
+        uk: "Затишна бібліотека та маленькі читачі, які люблять історії.",
+        pl: "Przytulna biblioteka i mali czytelnicy, którzy kochają historie.",
+        en: "A cozy library and little readers who love a good story.",
+        sv: "Ett mysigt bibliotek och små läsare som älskar berättelser.",
       },
       description: {
-        uk: "Космічна розмальовка з ракетами, планетами та астронавтами. Розвиває фантазію та охайність під час розфарбовування деталей.",
-        pl: "Kosmiczna kolorowanka z rakietami, planetami i astronautami. Rozwija wyobraźnię i staranność podczas kolorowania detali.",
-        en: "A space-themed coloring book with rockets, planets and astronauts. Builds imagination and neatness while coloring in the details.",
-        sv: "En rymdtemamålarbok med raketer, planeter och astronauter. Utvecklar fantasi och noggrannhet när detaljerna målas.",
+        uk: "Тут малюки читають книжки серед стосів томів і затишних куточків бібліотеки. У наборі розмальовка, олівці та наклейки — чудовий привід влаштувати спільний вечір читання й малювання.",
+        pl: "Tutaj maluchy czytają książki wśród stosów tomów i przytulnych kącików biblioteki. W zestawie kolorowanka, kredki i naklejki — świetny pretekst na wspólny wieczór czytania i rysowania.",
+        en: "Here little ones read books among tall stacks and cozy library corners. The set includes the coloring book, pencils and stickers — a lovely reason for a shared evening of reading and coloring.",
+        sv: "Här läser barnen böcker bland höga bokstaplar och mysiga hörn i biblioteket. I setet ingår målarboken, färgpennor och klistermärken — en fin anledning till en gemensam kväll med läsning och målning.",
       },
     },
     {
-      id: "col-fairytale",
+      id: "col-pirates-treasure-islands",
       type: "coloring",
-      price: 18,
-      image: "assets/types/coloring.svg",
-      ages: ["3", "5"],
-      categories: [],
-      availableLanguages: ["uk", "pl", "en", "sv"],
+      price: 21,
+      image: "assets/products/coloring/pirates-treasure-islands.webp",
+      thumb: "assets/products/coloring/thumbs/pirates-treasure-islands.jpg",
+      personalizable: false,
       name: {
-        uk: "Розмальовка «Казковий ліс»",
-        pl: "Kolorowanka „Baśniowy las”",
-        en: "Coloring Book: Fairytale Forest",
-        sv: "Målarbok: Sagoskogen",
+        uk: "Пірати та острови скарбів",
+        pl: "Piraci i wyspy skarbów",
+        en: "Pirates and Treasure Islands",
+        sv: "Pirater och skattöar",
       },
       shortDescription: {
-        uk: "Ельфи, гриби-будиночки та лісові звірята.",
-        pl: "Elfy, grzybowe domki i leśne zwierzątka.",
-        en: "Elves, mushroom houses and forest creatures.",
-        sv: "Alver, svamphus och skogsdjur.",
+        uk: "Піратський корабель, скриня зі скарбами й пригоди на морі.",
+        pl: "Piracki statek, skrzynia ze skarbami i przygody na morzu.",
+        en: "A pirate ship, a treasure chest and adventures on the high seas.",
+        sv: "Ett piratskepp, en skattkista och äventyr till havs.",
       },
       description: {
-        uk: "Чарівна розмальовка з мешканцями казкового лісу. Розвиває уяву й дарує затишні хвилини творчості разом із дитиною.",
-        pl: "Magiczna kolorowanka z mieszkańcami baśniowego lasu. Rozwija wyobraźnię i daje przytulne chwile twórczości z dzieckiem.",
-        en: "A magical coloring book featuring fairytale-forest characters. Sparks imagination and offers cozy creative time with your child.",
-        sv: "En magisk målarbok med sagoskogens invånare. Väcker fantasin och ger mysiga stunder av skapande tillsammans med barnet.",
+        uk: "На сторінках — піратський корабель пливе до острова, де чекає скриня зі скарбами, а поруч сидить папуга. У наборі розмальовка, олівці та наклейки для справжньої піратської пригоди.",
+        pl: "Na stronach piracki statek płynie ku wyspie, gdzie czeka skrzynia ze skarbami, a obok siedzi papuga. W zestawie kolorowanka, kredki i naklejki na prawdziwą piracką przygodę.",
+        en: "On these pages, a pirate ship sails toward an island where a treasure chest waits, with a parrot perched nearby. The set includes the coloring book, pencils and stickers for a real pirate adventure.",
+        sv: "På sidorna seglar ett piratskepp mot en ö där en skattkista väntar, med en papegoja i närheten. I setet ingår målarboken, färgpennor och klistermärken för ett riktigt piratäventyr.",
+      },
+    },
+    {
+      id: "col-candy-store",
+      type: "coloring",
+      price: 21,
+      image: "assets/products/coloring/candy-store.webp",
+      thumb: "assets/products/coloring/thumbs/candy-store.jpg",
+      personalizable: false,
+      name: {
+        uk: "Подорож до крамниці солодощів",
+        pl: "Wyprawa do sklepu ze słodyczami",
+        en: "A Trip to the Candy Store",
+        sv: "En resa till godisaffären",
+      },
+      shortDescription: {
+        uk: "Цукерки, льодяники та солодкий настрій крамниці.",
+        pl: "Cukierki, lizaki i słodki nastrój sklepiku.",
+        en: "Candy, lollipops and the sweet mood of a candy shop.",
+        sv: "Godis, klubbor och den söta stämningen i godisaffären.",
+      },
+      description: {
+        uk: "У цій розмальовці — вітрина з цукерками, барвисті льодяники та затишна крамниця солодощів. У наборі розмальовка, олівці та наклейки для найсолодшого творчого дня.",
+        pl: "W tej kolorowance znajdziesz witrynę pełną cukierków, kolorowe lizaki i przytulny sklepik ze słodyczami. W zestawie kolorowanka, kredki i naklejki na najsłodszy dzień pełen twórczości.",
+        en: "This coloring book features a candy display, colorful lollipops and a cozy little sweet shop. The set includes the coloring book, pencils and stickers for the sweetest creative day.",
+        sv: "Den här målarboken visar en godisdisk, färgglada klubbor och en mysig liten godisaffär. I setet ingår målarboken, färgpennor och klistermärken för den sötaste skapardagen.",
+      },
+    },
+    {
+      id: "col-magical-forest",
+      type: "coloring",
+      price: 21,
+      image: "assets/products/coloring/magical-forest-a.webp",
+      thumb: "assets/products/coloring/thumbs/magical-forest-a.jpg",
+      personalizable: false,
+      name: {
+        uk: "Чарівний ліс",
+        pl: "Zaczarowany las",
+        en: "Magical Forest and Enchanted Trees",
+        sv: "Den magiska skogen",
+      },
+      shortDescription: {
+        uk: "Дівчинка читає казку серед чарівного лісу.",
+        pl: "Dziewczynka czyta bajkę w zaczarowanym lesie.",
+        en: "A girl reading a story deep in an enchanted forest.",
+        sv: "En flicka som läser en saga i den förtrollade skogen.",
+      },
+      description: {
+        uk: "На сторінці дівчинка вмостилася з книжкою серед дерев чарівного лісу, оточена таємничою природою. У наборі розмальовка, олівці та наклейки для спокійного творчого відпочинку.",
+        pl: "Na stronie dziewczynka usadowiła się z książką wśród drzew zaczarowanego lasu, otoczona tajemniczą przyrodą. W zestawie kolorowanka, kredki i naklejki na spokojny, twórczy odpoczynek.",
+        en: "On this page, a girl settles in with a book among the trees of an enchanted forest, surrounded by mysterious nature. The set includes the coloring book, pencils and stickers for calm, creative downtime.",
+        sv: "På sidan har en flicka slagit sig ner med en bok bland träden i den förtrollade skogen, omgiven av mystisk natur. I setet ingår målarboken, färgpennor och klistermärken för en lugn och kreativ stund.",
+      },
+    },
+    {
+      id: "col-magical-forest-2",
+      type: "coloring",
+      price: 21,
+      image: "assets/products/coloring/magical-forest-b.webp",
+      thumb: "assets/products/coloring/thumbs/magical-forest-b.jpg",
+      personalizable: false,
+      name: {
+        uk: "Чарівний ліс. Частина 2",
+        pl: "Zaczarowany las. Część 2",
+        en: "Magical Forest and Enchanted Trees. Part 2",
+        sv: "Den magiska skogen. Del 2",
+      },
+      shortDescription: {
+        uk: "Двоє дітей вирушають на прогулянку чарівним лісом.",
+        pl: "Dwoje dzieci wyrusza na spacer po zaczarowanym lesie.",
+        en: "Two children set off on a walk through the enchanted forest.",
+        sv: "Två barn ger sig ut på en promenad genom den förtrollade skogen.",
+      },
+      description: {
+        uk: "Продовження улюбленої теми: двоє дітей крокують стежкою чарівного лісу серед дерев і таємничих затінків. У наборі розмальовка, олівці та наклейки для нової порції пригод.",
+        pl: "Kontynuacja ulubionego motywu: dwoje dzieci idzie ścieżką przez zaczarowany las, wśród drzew i tajemniczych cieni. W zestawie kolorowanka, kredki i naklejki na kolejną porcję przygód.",
+        en: "A continuation of the favorite theme: two children walk a path through the enchanted forest, among trees and mysterious shadows. The set includes the coloring book, pencils and stickers for another round of adventures.",
+        sv: "En fortsättning på den älskade sagovärlden: två barn vandrar längs en stig genom den förtrollade skogen, bland träd och mystiska skuggor. I setet ingår målarboken, färgpennor och klistermärken för ännu fler äventyr.",
+      },
+    },
+    {
+      id: "col-cities-of-the-future",
+      type: "coloring",
+      price: 21,
+      image: "assets/products/coloring/cities-of-the-future.webp",
+      thumb: "assets/products/coloring/thumbs/cities-of-the-future.jpg",
+      personalizable: false,
+      name: {
+        uk: "Міста майбутнього",
+        pl: "Miasta przyszłości",
+        en: "Cities of the Future",
+        sv: "Framtidens städer",
+      },
+      shortDescription: {
+        uk: "Футуристичне місто з літаючим транспортом.",
+        pl: "Futurystyczne miasto z latającym transportem.",
+        en: "A futuristic city with flying vehicles overhead.",
+        sv: "En futuristisk stad med flygande fordon.",
+      },
+      description: {
+        uk: "На сторінках — місто майбутнього з високими будівлями та транспортом, що літає прямо між ними. У наборі розмальовка, олівці та наклейки для мандрівки у світ фантазії.",
+        pl: "Na stronach miasto przyszłości z wysokimi budynkami i pojazdami latającymi tuż między nimi. W zestawie kolorowanka, kredki i naklejki na podróż do świata fantazji.",
+        en: "These pages show a future city with tall buildings and vehicles flying right between them. The set includes the coloring book, pencils and stickers for a journey into a world of imagination.",
+        sv: "Sidorna visar en framtidsstad med höga byggnader och fordon som flyger rakt mellan dem. I setet ingår målarboken, färgpennor och klistermärken för en resa in i fantasins värld.",
+      },
+    },
+    {
+      id: "col-robots-future-world",
+      type: "coloring",
+      price: 21,
+      image: "assets/products/coloring/robots-future-world-a.webp",
+      thumb: "assets/products/coloring/thumbs/robots-future-world-a.jpg",
+      personalizable: false,
+      name: {
+        uk: "Роботи та світ майбутнього",
+        pl: "Roboty i świat przyszłości",
+        en: "Robots and Future World",
+        sv: "Robotar och framtidens värld",
+      },
+      shortDescription: {
+        uk: "Дружній робот і діти, які з ним товаришують.",
+        pl: "Przyjazny robot i dzieci, które się z nim zaprzyjaźniają.",
+        en: "A friendly robot and the children who become its friends.",
+        sv: "En vänlig robot och barnen som blir dess vänner.",
+      },
+      description: {
+        uk: "На малюнку діти граються поруч із дружнім роботом із світу майбутнього. У наборі розмальовка, олівці та наклейки для веселого знайомства з технологіями майбутнього.",
+        pl: "Na rysunku dzieci bawią się obok przyjaznego robota ze świata przyszłości. W zestawie kolorowanka, kredki i naklejki na wesołe spotkanie z technologią przyszłości.",
+        en: "The picture shows children playing alongside a friendly robot from a future world. The set includes the coloring book, pencils and stickers for a fun introduction to tomorrow's technology.",
+        sv: "Bilden visar barn som leker tillsammans med en vänlig robot från framtidens värld. I setet ingår målarboken, färgpennor och klistermärken för ett roligt möte med morgondagens teknik.",
+      },
+    },
+    {
+      id: "col-robots-future-world-2",
+      type: "coloring",
+      price: 21,
+      image: "assets/products/coloring/robots-future-world-b.webp",
+      thumb: "assets/products/coloring/thumbs/robots-future-world-b.jpg",
+      personalizable: false,
+      name: {
+        uk: "Роботи та світ майбутнього. Частина 2",
+        pl: "Roboty i świat przyszłości. Część 2",
+        en: "Robots and Future World. Part 2",
+        sv: "Robotar och framtidens värld. Del 2",
+      },
+      shortDescription: {
+        uk: "Ціле місто роботів чекає на розфарбовування.",
+        pl: "Całe miasto robotów czeka na pokolorowanie.",
+        en: "A whole city of robots waiting to be colored in.",
+        sv: "En hel robotstad väntar på att målas.",
+      },
+      description: {
+        uk: "Друга частина переносить у місто роботів із високими механічними будівлями та цікавими деталями. У наборі розмальовка, олівці та наклейки для продовження пригоди.",
+        pl: "Druga część przenosi do miasta robotów z wysokimi, mechanicznymi budynkami i ciekawymi detalami. W zestawie kolorowanka, kredki i naklejki na kontynuację przygody.",
+        en: "This second part takes your child into a city of robots, full of tall mechanical buildings and fun details. The set includes the coloring book, pencils and stickers to continue the adventure.",
+        sv: "Del två tar med barnet till en robotstad, full av höga mekaniska byggnader och roliga detaljer. I setet ingår målarboken, färgpennor och klistermärken för att fortsätta äventyret.",
+      },
+    },
+    {
+      id: "col-jungle-safari",
+      type: "coloring",
+      price: 21,
+      image: "assets/products/coloring/jungle-safari.webp",
+      thumb: "assets/products/coloring/thumbs/jungle-safari.jpg",
+      personalizable: false,
+      name: {
+        uk: "Сафарі в джунглях",
+        pl: "Safari w dżungli",
+        en: "Jungle Safari Adventure",
+        sv: "Safariäventyr i djungeln",
+      },
+      shortDescription: {
+        uk: "Джип вирушає у сафарі серед джунглевих тварин.",
+        pl: "Jeep wyrusza na safari wśród zwierząt dżungli.",
+        en: "A jeep sets off on safari among the animals of the jungle.",
+        sv: "En jeep ger sig ut på safari bland djungelns djur.",
+      },
+      description: {
+        uk: "На сторінках — сафарі-джип їде через густі джунглі, а навколо ховаються різні тварини. У наборі розмальовка, олівці та наклейки для справжньої пригоди в джунглях.",
+        pl: "Na stronach jeep safari jedzie przez gęstą dżunglę, a wokół czają się różne zwierzęta. W zestawie kolorowanka, kredki i naklejki na prawdziwą przygodę w dżungli.",
+        en: "These pages show a safari jeep driving through dense jungle, with animals peeking out all around. The set includes the coloring book, pencils and stickers for a real jungle adventure.",
+        sv: "Sidorna visar en safarijeep som kör genom tät djungel, med djur som tittar fram överallt. I setet ingår målarboken, färgpennor och klistermärken för ett riktigt djungeläventyr.",
+      },
+    },
+    {
+      id: "col-snowy-rainy-days",
+      type: "coloring",
+      price: 21,
+      image: "assets/products/coloring/snowy-rainy-days.webp",
+      thumb: "assets/products/coloring/thumbs/snowy-rainy-days.jpg",
+      personalizable: false,
+      name: {
+        uk: "Сніжні та дощові дні",
+        pl: "Śnieżne i deszczowe dni",
+        en: "Snowy Day Activities, Rainy Days and Puddles",
+        sv: "Snöiga och regniga dagar",
+      },
+      shortDescription: {
+        uk: "Сніговик, санчата й веселі калюжі під парасолькою.",
+        pl: "Bałwanek, sanki i wesołe kałuże pod parasolem.",
+        en: "A snowman, a sledge and cheerful puddles under an umbrella.",
+        sv: "En snögubbe, en pulka och glada pölar under paraplyet.",
+      },
+      description: {
+        uk: "Тут — сніговик і санчата для зимових забав, а поруч дощові калюжі й парасолька для дощової пори. У наборі розмальовка, олівці та наклейки для будь-якої погоди за вікном.",
+        pl: "Tutaj bałwanek i sanki na zimowe zabawy, a obok kałuże i parasol na deszczowe dni. W zestawie kolorowanka, kredki i naklejki na każdą pogodę za oknem.",
+        en: "Here you'll find a snowman and a sledge for winter fun, alongside rain puddles and an umbrella for rainy days. The set includes the coloring book, pencils and stickers for whatever the weather brings.",
+        sv: "Här finns en snögubbe och en pulka för vinterlek, tillsammans med regnpölar och ett paraply för regniga dagar. I setet ingår målarboken, färgpennor och klistermärken oavsett vädret utanför.",
+      },
+    },
+    {
+      id: "col-beach-day-sandcastles",
+      type: "coloring",
+      price: 21,
+      image: "assets/products/coloring/beach-day-sandcastles.webp",
+      thumb: "assets/products/coloring/thumbs/beach-day-sandcastles.jpg",
+      personalizable: false,
+      name: {
+        uk: "День на пляжі та замки з піску",
+        pl: "Dzień na plaży i zamki z piasku",
+        en: "Beach Day and Sand Castles",
+        sv: "En dag på stranden och sandslott",
+      },
+      shortDescription: {
+        uk: "Замок із піску, море та пляжні іграшки.",
+        pl: "Zamek z piasku, morze i plażowe zabawki.",
+        en: "A sandcastle, the sea and beach toys.",
+        sv: "Ett sandslott, havet och strandleksaker.",
+      },
+      description: {
+        uk: "На сторінках — замок із піску на березі моря, а поруч пляжні відерця та лопатки. У наборі розмальовка, олівці та наклейки, щоб відчути літній настрій у будь-яку пору року.",
+        pl: "Na stronach zamek z piasku nad brzegiem morza, a obok plażowe wiaderka i łopatki. W zestawie kolorowanka, kredki i naklejki, by poczuć letni nastrój o każdej porze roku.",
+        en: "These pages show a sandcastle by the sea, along with beach buckets and spades. The set includes the coloring book, pencils and stickers to bring summer mood any time of year.",
+        sv: "Sidorna visar ett sandslott vid havet, tillsammans med strandhinkar och spadar. I setet ingår målarboken, färgpennor och klistermärken för att fånga sommarkänslan när som helst på året.",
+      },
+    },
+    {
+      id: "col-insects-and-bugs",
+      type: "coloring",
+      price: 21,
+      image: "assets/products/coloring/insects-and-bugs.webp",
+      thumb: "assets/products/coloring/thumbs/insects-and-bugs.jpg",
+      personalizable: false,
+      name: {
+        uk: "Комахи та жучки",
+        pl: "Owady i robaczki",
+        en: "Insects and Bugs",
+        sv: "Insekter och kryp",
+      },
+      shortDescription: {
+        uk: "Бджілка, сонечко, бабка та равлик у одній розмальовці.",
+        pl: "Pszczółka, biedronka, ważka i ślimak w jednej kolorowance.",
+        en: "A bee, a ladybird, a dragonfly and a snail in one coloring book.",
+        sv: "En bi, en nyckelpiga, en trollslända och en snigel i en och samma målarbok.",
+      },
+      description: {
+        uk: "Тут дитина зустріне бджілку, сонечко, бабку та равлика — маленьких, але цікавих мешканців саду. У наборі розмальовка, олівці та наклейки для знайомства зі світом комах.",
+        pl: "Tu dziecko spotka pszczółkę, biedronkę, ważkę i ślimaka — małych, ale ciekawych mieszkańców ogrodu. W zestawie kolorowanka, kredki i naklejki na poznanie świata owadów.",
+        en: "Here your child will meet a bee, a ladybird, a dragonfly and a snail — small but fascinating garden dwellers. The set includes the coloring book, pencils and stickers for exploring the world of insects.",
+        sv: "Här möter barnet ett bi, en nyckelpiga, en trollslända och en snigel — små men fascinerande invånare i trädgården. I setet ingår målarboken, färgpennor och klistermärken för att utforska insekternas värld.",
+      },
+    },
+    {
+      id: "col-farm-animals",
+      type: "coloring",
+      price: 21,
+      image: "assets/products/coloring/farm-animals.webp",
+      thumb: "assets/products/coloring/thumbs/farm-animals.jpg",
+      personalizable: false,
+      name: {
+        uk: "Тваринки на фермі",
+        pl: "Zwierzątka na farmie",
+        en: "Farm Animals and Life",
+        sv: "Djuren på bondgården",
+      },
+      shortDescription: {
+        uk: "Корівка, овечка, коник, порося й курчата на фермі.",
+        pl: "Krówka, owieczka, konik, świnka i kurczaczki na farmie.",
+        en: "A cow, a sheep, a horse, a pig and chickens on the farm.",
+        sv: "En ko, ett får, en häst, en gris och kycklingar på gården.",
+      },
+      description: {
+        uk: "На сторінках — корівка, овечка, коник, порося та курчата, які живуть на затишній фермі. У наборі розмальовка, олівці та наклейки для перших знайомств із тваринками ферми.",
+        pl: "Na stronach krówka, owieczka, konik, świnka i kurczaczki, które mieszkają na przytulnej farmie. W zestawie kolorowanka, kredki i naklejki na pierwsze spotkania ze zwierzątkami z farmy.",
+        en: "These pages feature a cow, a sheep, a horse, a pig and chickens living on a cozy farm. The set includes the coloring book, pencils and stickers for a first meeting with farm animals.",
+        sv: "Sidorna visar en ko, ett får, en häst, en gris och kycklingar som bor på en mysig bondgård. I setet ingår målarboken, färgpennor och klistermärken för ett första möte med gårdens djur.",
+      },
+    },
+    {
+      id: "col-sports-outdoor",
+      type: "coloring",
+      price: 21,
+      image: "assets/products/coloring/sports-outdoor.webp",
+      thumb: "assets/products/coloring/thumbs/sports-outdoor.jpg",
+      personalizable: false,
+      name: {
+        uk: "Спорт та активний відпочинок",
+        pl: "Sport i aktywny wypoczynek",
+        en: "Sports and Outdoor Activities",
+        sv: "Sport och utomhusaktiviteter",
+      },
+      shortDescription: {
+        uk: "Велосипед, м'яч, намет і скелелазіння для активних днів.",
+        pl: "Rower, piłka, namiot i wspinaczka na aktywne dni.",
+        en: "A bike, a ball, a tent and climbing for active days.",
+        sv: "Cykel, boll, tält och klättring för aktiva dagar.",
+      },
+      description: {
+        uk: "Тут — велосипед, м'яч, намет для походу та скелелазіння для найактивніших днів. У наборі розмальовка, олівці та наклейки, що надихають рухатися й досліджувати світ.",
+        pl: "Tutaj rower, piłka, namiot na wyprawę i wspinaczka na najbardziej aktywne dni. W zestawie kolorowanka, kredki i naklejki, które zachęcają do ruchu i odkrywania świata.",
+        en: "Here you'll find a bike, a ball, a camping tent and climbing for the most active days. The set includes the coloring book, pencils and stickers that inspire moving and exploring the world.",
+        sv: "Här finns en cykel, en boll, ett tält för utflykter och klättring för de mest aktiva dagarna. I setet ingår målarboken, färgpennor och klistermärken som inspirerar till rörelse och upptäckter.",
+      },
+    },
+    {
+      id: "col-under-the-sea",
+      type: "coloring",
+      price: 21,
+      image: "assets/products/coloring/under-the-sea.webp",
+      thumb: "assets/products/coloring/thumbs/under-the-sea.jpg",
+      personalizable: false,
+      name: {
+        uk: "Підводний світ",
+        pl: "Podwodny świat",
+        en: "Under the Sea: Marine Life",
+        sv: "Under havet: havets liv",
+      },
+      shortDescription: {
+        uk: "Кит, восьминіг, підводний човен і корали в глибині моря.",
+        pl: "Wieloryb, ośmiornica, łódź podwodna i koralowce w głębinach morza.",
+        en: "A whale, an octopus, a submarine and corals deep in the sea.",
+        sv: "En val, en bläckfisk, en ubåt och koraller djupt i havet.",
+      },
+      description: {
+        uk: "На сторінках — кит, восьминіг і підводний човен пропливають повз барвисті корали. У наборі розмальовка, олівці та наклейки для занурення у підводний світ.",
+        pl: "Na stronach wieloryb, ośmiornica i łódź podwodna przepływają obok kolorowych koralowców. W zestawie kolorowanka, kredki i naklejki na zanurzenie się w podwodnym świecie.",
+        en: "These pages show a whale, an octopus and a submarine passing by colorful coral reefs. The set includes the coloring book, pencils and stickers for diving into the underwater world.",
+        sv: "Sidorna visar en val, en bläckfisk och en ubåt som passerar färgglada korallrev. I setet ingår målarboken, färgpennor och klistermärken för en dykning ner i havets värld.",
+      },
+    },
+    {
+      id: "col-dragons-mythical-beasts",
+      type: "coloring",
+      price: 21,
+      image: "assets/products/coloring/dragons-mythical-beasts.webp",
+      thumb: "assets/products/coloring/thumbs/dragons-mythical-beasts.jpg",
+      personalizable: false,
+      name: {
+        uk: "Дракони та міфічні істоти",
+        pl: "Smoki i mityczne stworzenia",
+        en: "Dragons and Mythical Beasts",
+        sv: "Drakar och mytiska varelser",
+      },
+      shortDescription: {
+        uk: "Дракони, єдинороги й грифон біля старовинного замку.",
+        pl: "Smoki, jednorożce i gryf przy starym zamku.",
+        en: "Dragons, unicorns and a griffin near an ancient castle.",
+        sv: "Drakar, enhörningar och ett gripdjur nära ett gammalt slott.",
+      },
+      description: {
+        uk: "На сторінках оживають дракони, єдинороги та грифон на тлі величного старовинного замку. У наборі розмальовка, олівці та наклейки для мандрівки у світ казкових істот.",
+        pl: "Na stronach ożywają smoki, jednorożce i gryf na tle okazałego, starego zamku. W zestawie kolorowanka, kredki i naklejki na podróż do świata baśniowych stworzeń.",
+        en: "On these pages, dragons, unicorns and a griffin come to life against the backdrop of a grand old castle. The set includes the coloring book, pencils and stickers for a journey into a world of legendary creatures.",
+        sv: "På sidorna får drakar, enhörningar och ett gripdjur liv mot bakgrunden av ett ståtligt gammalt slott. I setet ingår målarboken, färgpennor och klistermärken för en resa in i de mytiska varelsernas värld.",
+      },
+    },
+    {
+      id: "col-alphabet-adventures",
+      type: "coloring",
+      price: 21,
+      image: "assets/products/coloring/alphabet-adventures.webp",
+      thumb: "assets/products/coloring/thumbs/alphabet-adventures.jpg",
+      personalizable: false,
+      name: {
+        uk: "Пригоди з абеткою",
+        pl: "Przygody z alfabetem",
+        en: "Alphabet Adventures",
+        sv: "Äventyr med alfabetet",
+      },
+      shortDescription: {
+        uk: "Літери, тваринки й розгорнута книжка для перших букв.",
+        pl: "Litery, zwierzątka i otwarta książka na pierwsze litery.",
+        en: "Letters, animals and an open book for learning first letters.",
+        sv: "Bokstäver, djur och en uppslagen bok för de första bokstäverna.",
+      },
+      description: {
+        uk: "На сторінках — літери абетки поруч із тваринками та розгорнутою книжкою. У наборі розмальовка, олівці та наклейки для веселого знайомства з буквами.",
+        pl: "Na stronach litery alfabetu obok zwierzątek i otwartej książki. W zestawie kolorowanka, kredki i naklejki na wesołe poznawanie liter.",
+        en: "These pages feature the letters of the alphabet alongside animals and an open storybook. The set includes the coloring book, pencils and stickers for a fun first meeting with letters.",
+        sv: "Sidorna visar alfabetets bokstäver tillsammans med djur och en uppslagen bok. I setet ingår målarboken, färgpennor och klistermärken för ett roligt möte med bokstäverna.",
+      },
+    },
+    {
+      id: "col-numbers-shapes-nature",
+      type: "coloring",
+      price: 21,
+      image: "assets/products/coloring/numbers-shapes-nature.webp",
+      thumb: "assets/products/coloring/thumbs/numbers-shapes-nature.jpg",
+      personalizable: false,
+      name: {
+        uk: "Цифри та форми в природі",
+        pl: "Liczby i kształty w przyrodzie",
+        en: "Numbers and Shapes in Nature",
+        sv: "Siffror och former i naturen",
+      },
+      shortDescription: {
+        uk: "Цифри від 1 до 8 і фігури серед природних мотивів.",
+        pl: "Liczby od 1 do 8 i kształty wśród motywów przyrody.",
+        en: "Numbers from 1 to 8 and shapes set among nature motifs.",
+        sv: "Siffrorna 1 till 8 och former bland naturmotiv.",
+      },
+      description: {
+        uk: "На сторінках цифри від 1 до 8 та різні геометричні фігури переплітаються з мотивами природи. У наборі розмальовка, олівці та наклейки для веселого вивчення цифр і форм.",
+        pl: "Na stronach liczby od 1 do 8 oraz różne kształty geometryczne przeplatają się z motywami przyrody. W zestawie kolorowanka, kredki i naklejki na wesołą naukę liczb i kształtów.",
+        en: "These pages weave numbers from 1 to 8 and various geometric shapes together with nature motifs. The set includes the coloring book, pencils and stickers for a fun way to learn numbers and shapes.",
+        sv: "Sidorna väver samman siffrorna 1 till 8 och olika geometriska former med naturmotiv. I setet ingår målarboken, färgpennor och klistermärken för ett roligt sätt att lära sig siffror och former.",
+      },
+    },
+    {
+      id: "col-a-day-at-the-zoo",
+      type: "coloring",
+      price: 21,
+      image: "assets/products/coloring/a-day-at-the-zoo.webp",
+      thumb: "assets/products/coloring/thumbs/a-day-at-the-zoo.jpg",
+      personalizable: false,
+      name: {
+        uk: "День у зоопарку",
+        pl: "Dzień w zoo",
+        en: "A Day at the Zoo",
+        sv: "En dag i djurparken",
+      },
+      shortDescription: {
+        uk: "Лев, жирафа, слон, панда й мавпочка чекають у зоопарку.",
+        pl: "Lew, żyrafa, słoń, panda i małpka czekają w zoo.",
+        en: "A lion, a giraffe, an elephant, a panda and a monkey at the zoo.",
+        sv: "Ett lejon, en giraff, en elefant, en panda och en apa i djurparken.",
+      },
+      description: {
+        uk: "На сторінках — лев, жирафа, слон, панда та мавпочка, які чекають на зустріч у зоопарку. У наборі розмальовка, олівці та наклейки для веселої мандрівки зоопарком.",
+        pl: "Na stronach lew, żyrafa, słoń, panda i małpka czekają na spotkanie w zoo. W zestawie kolorowanka, kredki i naklejki na wesołą wyprawę do zoo.",
+        en: "These pages bring a lion, a giraffe, an elephant, a panda and a monkey ready to meet at the zoo. The set includes the coloring book, pencils and stickers for a fun trip to the zoo.",
+        sv: "Sidorna bjuder på ett lejon, en giraff, en elefant, en panda och en apa som väntar på att hälsas på i djurparken. I setet ingår målarboken, färgpennor och klistermärken för ett roligt besök i djurparken.",
       },
     },
 

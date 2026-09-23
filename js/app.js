@@ -237,20 +237,19 @@
   var miniCartOverlay = null;
 
   function miniCartLineHtml(line, product) {
-    var metaBits = [window.BD_T("langName." + line.productLanguage)];
+    var metaBits = [];
+    if (line.productLanguage) metaBits.push(window.BD_T("langName." + line.productLanguage));
     if (line.personalized) metaBits.push(window.BD_T("cart.tableChildName") + ": " + line.childName);
     return (
       '<div class="mini-cart-line">' +
       '<img class="mini-cart-line__image" src="' +
-      product.image +
-      '" alt="" width="56" height="56">' +
+      (product.thumb || product.image) +
+      '" alt="" width="56" height="56" loading="lazy" decoding="async">' +
       '<div>' +
       '<p class="mini-cart-line__name">' +
       escapeHtml(localizedText(product.name)) +
       "</p>" +
-      '<p class="mini-cart-line__meta">' +
-      escapeHtml(metaBits.join(" · ")) +
-      "</p>" +
+      (metaBits.length ? '<p class="mini-cart-line__meta">' + escapeHtml(metaBits.join(" · ")) + "</p>" : "") +
       '<p class="mini-cart-line__meta">' +
       escapeHtml(window.BD_T("cart.tableQuantity")) +
       ": " +
@@ -758,15 +757,27 @@
 
   function productCardHtml(p) {
     var ageLabel = productAgeLabel(p);
+    // Coloring-book covers are portrait photos (about 3:4), not the
+    // square type icons other products use — give them a taller image
+    // box so the cover isn't squeezed into a square with empty space.
+    var isPortrait = p.type === "coloring";
+    var cardW = 220;
+    var cardH = isPortrait ? 293 : 220;
     return (
       '<article class="product-card">' +
-      '<a class="product-card__image" href="product.html?id=' +
+      '<a class="product-card__image' +
+      (isPortrait ? " product-card__image--portrait" : "") +
+      '" href="product.html?id=' +
       encodeURIComponent(p.id) +
       '">' +
       (productBadgesHtml(p) ? '<span class="product-card__badges">' + productBadgesHtml(p) + "</span>" : "") +
       '<img src="' +
-      p.image +
-      '" alt="" width="220" height="220" loading="lazy">' +
+      (p.thumb || p.image) +
+      '" alt="" width="' +
+      cardW +
+      '" height="' +
+      cardH +
+      '" loading="lazy" decoding="async">' +
       "</a>" +
       (ageLabel ? '<p class="product-card__age">' + escapeHtml(ageLabel) + "</p>" : "") +
       '<h3 class="product-card__name">' +
@@ -1373,7 +1384,13 @@
 
     var items = [
       { title: window.BD_T("product.tabDescription"), body: "<p>" + escapeHtml(localizedText(product.description)) + "</p>", open: true },
-      {
+    ];
+
+    // Only show the "Details" tab when there's actually something to put
+    // in it — a product with no ages, no categories and no language
+    // choice (like the coloring books) would otherwise show an empty box.
+    if (ageLabel || categoryLabels || languageLabels) {
+      items.push({
         title: window.BD_T("product.tabDetails"),
         body:
           "<dl>" +
@@ -1381,16 +1398,15 @@
           (categoryLabels
             ? "<dt>" + escapeHtml(window.BD_T("product.detailsCategoriesLabel")) + "</dt><dd>" + escapeHtml(categoryLabels) + "</dd>"
             : "") +
-          "<dt>" +
-          escapeHtml(window.BD_T("product.detailsLanguagesLabel")) +
-          "</dt><dd>" +
-          escapeHtml(languageLabels) +
-          "</dd>" +
+          (languageLabels
+            ? "<dt>" + escapeHtml(window.BD_T("product.detailsLanguagesLabel")) + "</dt><dd>" + escapeHtml(languageLabels) + "</dd>"
+            : "") +
           "</dl>",
         open: false,
-      },
-      { title: window.BD_T("product.tabDelivery"), body: "<p>" + escapeHtml(window.BD_T("product.deliveryText")) + "</p>", open: false },
-    ];
+      });
+    }
+
+    items.push({ title: window.BD_T("product.tabDelivery"), body: "<p>" + escapeHtml(window.BD_T("product.deliveryText")) + "</p>", open: false });
 
     return (
       '<div class="accordion">' +
@@ -1456,27 +1472,36 @@
   }
 
   function handleAddToCart(product) {
-    var nameInput = document.getElementById("bd-child-name");
-    var nameError = document.getElementById("bd-child-name-error");
-    var childNameWrap = document.getElementById("bd-child-name-wrap");
-    var childName = nameInput.value.trim();
-    if (currentProductState.personalized && (!childName || childName.length > 20)) {
-      nameError.textContent = window.BD_T("product.nameRequired");
-      nameError.hidden = false;
-      childNameWrap.classList.add("has-error");
-      nameInput.focus();
-      return;
+    // Coloring books (and any product with "personalizable: false") skip
+    // the "child's name on the cover" option entirely — there's no name
+    // field on the page to read or validate for them.
+    var personalizable = product.personalizable !== false;
+    var childName = "";
+
+    if (personalizable) {
+      var nameInput = document.getElementById("bd-child-name");
+      var nameError = document.getElementById("bd-child-name-error");
+      var childNameWrap = document.getElementById("bd-child-name-wrap");
+      childName = nameInput.value.trim();
+      if (currentProductState.personalized && (!childName || childName.length > 20)) {
+        nameError.textContent = window.BD_T("product.nameRequired");
+        nameError.hidden = false;
+        childNameWrap.classList.add("has-error");
+        nameInput.focus();
+        return;
+      }
+      nameError.hidden = true;
+      childNameWrap.classList.remove("has-error");
     }
-    nameError.hidden = true;
-    childNameWrap.classList.remove("has-error");
 
     var unitPrice = computeUnitPrice(product);
+    var personalized = personalizable && currentProductState.personalized;
 
     window.BD_CART.add({
       productId: product.id,
-      productLanguage: currentProductState.language,
-      personalized: currentProductState.personalized,
-      childName: currentProductState.personalized ? childName.slice(0, 20) : "",
+      productLanguage: currentProductState.language || "",
+      personalized: personalized,
+      childName: personalized ? childName.slice(0, 20) : "",
       quantity: currentProductState.quantity,
       unitPrice: unitPrice,
     });
@@ -1510,27 +1535,40 @@
     }
 
     setTitle(localizedText(product.name));
-    currentProductState = { language: product.availableLanguages[0], personalized: false, quantity: 1 };
+    // Some products (e.g. coloring books) don't offer a book-language
+    // choice or the "child's name on the cover" option — hasLanguages
+    // and personalizable below decide whether those controls show up
+    // at all, so nothing gets shown (or later validated / saved to the
+    // cart) for a product that doesn't actually support it.
+    var hasLanguages = !!(product.availableLanguages && product.availableLanguages.length);
+    var personalizable = product.personalizable !== false;
+    currentProductState = {
+      language: hasLanguages ? product.availableLanguages[0] : "",
+      personalized: false,
+      quantity: 1,
+    };
 
     var personalizationPrice = (window.BD_CONFIG && window.BD_CONFIG.personalizationPrice) || 0;
     var images = getProductImages(product);
 
-    var languageOptions = (product.availableLanguages || [])
-      .map(function (code, i) {
-        return (
-          '<label class="radio-pill">' +
-          '<input type="radio" name="bd-product-lang" value="' +
-          code +
-          '"' +
-          (i === 0 ? " checked" : "") +
-          ' required>' +
-          "<span>" +
-          escapeHtml(window.BD_T("langName." + code)) +
-          "</span>" +
-          "</label>"
-        );
-      })
-      .join("");
+    var languageOptions = hasLanguages
+      ? product.availableLanguages
+          .map(function (code, i) {
+            return (
+              '<label class="radio-pill">' +
+              '<input type="radio" name="bd-product-lang" value="' +
+              code +
+              '"' +
+              (i === 0 ? " checked" : "") +
+              ' required>' +
+              "<span>" +
+              escapeHtml(window.BD_T("langName." + code)) +
+              "</span>" +
+              "</label>"
+            );
+          })
+          .join("")
+      : "";
 
     var galleryThumbs =
       images.length > 1
@@ -1579,33 +1617,37 @@
       escapeHtml(localizedText(product.shortDescription)) +
       "</p>" +
       '<form id="bd-add-to-cart-form" novalidate>' +
-      '<fieldset class="form-field">' +
-      "<legend>" +
-      escapeHtml(window.BD_T("product.languageLabel")) +
-      " *</legend>" +
-      '<div class="radio-pill-row">' +
-      languageOptions +
-      "</div>" +
-      "</fieldset>" +
-      '<div class="form-field form-field--checkbox">' +
-      '<label class="checkbox-field">' +
-      '<input type="checkbox" id="bd-personalize-check">' +
-      "<span>" +
-      escapeHtml(window.BD_T("product.personalizationLabel")) +
-      ' <span class="checkbox-field__price">(' +
-      window.BD_T("product.extraPrice", { price: formatPrice(personalizationPrice) }) +
-      ")</span></span>" +
-      "</label>" +
-      '<div class="form-field" id="bd-child-name-wrap" hidden>' +
-      '<label for="bd-child-name" class="visually-hidden">' +
-      escapeHtml(window.BD_T("product.namePlaceholder")) +
-      "</label>" +
-      '<input type="text" id="bd-child-name" maxlength="20" placeholder="' +
-      escapeHtml(window.BD_T("product.namePlaceholder")) +
-      '">' +
-      '<p class="form-error" id="bd-child-name-error" hidden></p>' +
-      "</div>" +
-      "</div>" +
+      (hasLanguages
+        ? '<fieldset class="form-field">' +
+          "<legend>" +
+          escapeHtml(window.BD_T("product.languageLabel")) +
+          " *</legend>" +
+          '<div class="radio-pill-row">' +
+          languageOptions +
+          "</div>" +
+          "</fieldset>"
+        : "") +
+      (personalizable
+        ? '<div class="form-field form-field--checkbox">' +
+          '<label class="checkbox-field">' +
+          '<input type="checkbox" id="bd-personalize-check">' +
+          "<span>" +
+          escapeHtml(window.BD_T("product.personalizationLabel")) +
+          ' <span class="checkbox-field__price">(' +
+          window.BD_T("product.extraPrice", { price: formatPrice(personalizationPrice) }) +
+          ")</span></span>" +
+          "</label>" +
+          '<div class="form-field" id="bd-child-name-wrap" hidden>' +
+          '<label for="bd-child-name" class="visually-hidden">' +
+          escapeHtml(window.BD_T("product.namePlaceholder")) +
+          "</label>" +
+          '<input type="text" id="bd-child-name" maxlength="20" placeholder="' +
+          escapeHtml(window.BD_T("product.namePlaceholder")) +
+          '">' +
+          '<p class="form-error" id="bd-child-name-error" hidden></p>' +
+          "</div>" +
+          "</div>"
+        : "") +
       '<div class="form-field">' +
       '<label for="bd-quantity">' +
       escapeHtml(window.BD_T("product.quantityLabel")) +
@@ -1671,26 +1713,31 @@
       });
     });
 
-    // language pills
-    Array.prototype.forEach.call(mount.querySelectorAll('input[name="bd-product-lang"]'), function (input) {
-      input.addEventListener("change", function () {
-        if (input.checked) currentProductState.language = input.value;
+    // language pills (only present when the product has a language choice)
+    if (hasLanguages) {
+      Array.prototype.forEach.call(mount.querySelectorAll('input[name="bd-product-lang"]'), function (input) {
+        input.addEventListener("change", function () {
+          if (input.checked) currentProductState.language = input.value;
+        });
       });
-    });
+    }
 
-    var checkbox = document.getElementById("bd-personalize-check");
-    var nameWrap = document.getElementById("bd-child-name-wrap");
-    var nameInput = document.getElementById("bd-child-name");
-    var nameError = document.getElementById("bd-child-name-error");
-    checkbox.addEventListener("change", function () {
-      currentProductState.personalized = checkbox.checked;
-      nameWrap.hidden = !checkbox.checked;
-      if (!checkbox.checked) {
-        nameInput.value = "";
-        nameError.hidden = true;
-      }
-      updateProductPrices(product);
-    });
+    // personalization checkbox (only present when the product allows it)
+    if (personalizable) {
+      var checkbox = document.getElementById("bd-personalize-check");
+      var nameWrap = document.getElementById("bd-child-name-wrap");
+      var nameInput = document.getElementById("bd-child-name");
+      var nameError = document.getElementById("bd-child-name-error");
+      checkbox.addEventListener("change", function () {
+        currentProductState.personalized = checkbox.checked;
+        nameWrap.hidden = !checkbox.checked;
+        if (!checkbox.checked) {
+          nameInput.value = "";
+          nameError.hidden = true;
+        }
+        updateProductPrices(product);
+      });
+    }
 
     var qtyInput = document.getElementById("bd-quantity");
     function setQty(next) {
@@ -1795,17 +1842,19 @@
             line.lineId +
             '">' +
             '<img class="cart-line__image" src="' +
-            product.image +
-            '" alt="" width="90" height="90">' +
+            (product.thumb || product.image) +
+            '" alt="" width="90" height="90" loading="lazy" decoding="async">' +
             '<div class="cart-line__info">' +
             '<p class="cart-line__name">' +
             escapeHtml(localizedText(product.name)) +
             "</p>" +
-            '<p class="cart-line__meta">' +
-            escapeHtml(window.BD_T("cart.tableLanguage")) +
-            ": " +
-            escapeHtml(window.BD_T("langName." + line.productLanguage)) +
-            "</p>" +
+            (line.productLanguage
+              ? '<p class="cart-line__meta">' +
+                escapeHtml(window.BD_T("cart.tableLanguage")) +
+                ": " +
+                escapeHtml(window.BD_T("langName." + line.productLanguage)) +
+                "</p>"
+              : "") +
             (line.personalized
               ? '<p class="cart-line__meta">' +
                 escapeHtml(window.BD_T("cart.tableChildName")) +
