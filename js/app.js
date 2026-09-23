@@ -941,53 +941,68 @@
     }).length;
   }
 
-  function filterOptionsHtml(group, values, allProductsOfType) {
-    return values
-      .map(function (value) {
-        var count = countFor(allProductsOfType, group, value);
-        var checked = catalogState[group].indexOf(value) !== -1;
-        var label = window.BD_T((group === "ages" ? "age." : "category.") + value);
-        return (
-          '<label class="filter-option' +
-          (count === 0 ? " is-zero" : "") +
-          '">' +
-          '<input type="checkbox" data-group="' +
-          group +
-          '" data-value="' +
-          value +
-          '"' +
-          (checked ? " checked" : "") +
-          ">" +
-          '<span class="filter-option__label">' +
-          escapeHtml(label) +
-          "</span>" +
-          '<span class="filter-option__count">' +
-          count +
-          "</span>" +
-          "</label>"
-        );
-      })
-      .join("");
+  // An option with 0 matching products is hidden — unless it's the option
+  // currently selected, so a shopper can still see it (and untick it). If
+  // that leaves a group with fewer than 2 options, the whole group is
+  // hidden (no point showing a filter with just one, always-checked box).
+  function visibleFilterValues(group, values, allProductsOfType) {
+    return values.filter(function (value) {
+      var count = countFor(allProductsOfType, group, value);
+      var checked = catalogState[group].indexOf(value) !== -1;
+      return count > 0 || checked;
+    });
+  }
+
+  function filterOptionHtml(group, value, allProductsOfType) {
+    var count = countFor(allProductsOfType, group, value);
+    var checked = catalogState[group].indexOf(value) !== -1;
+    var label = window.BD_T((group === "ages" ? "age." : "category.") + value);
+    return (
+      '<label class="filter-option' +
+      (count === 0 ? " is-zero" : "") +
+      '">' +
+      '<input type="checkbox" data-group="' +
+      group +
+      '" data-value="' +
+      value +
+      '"' +
+      (checked ? " checked" : "") +
+      ">" +
+      '<span class="filter-option__label">' +
+      escapeHtml(label) +
+      "</span>" +
+      '<span class="filter-option__count">' +
+      count +
+      "</span>" +
+      "</label>"
+    );
+  }
+
+  function filterGroupHtml(titleKey, group, values, allProductsOfType) {
+    var visible = visibleFilterValues(group, values, allProductsOfType);
+    if (visible.length < 2) return "";
+    return (
+      '<div class="filter-group">' +
+      '<p class="filter-group__title">' +
+      escapeHtml(window.BD_T(titleKey)) +
+      "</p>" +
+      '<div class="filter-option-list" data-filter-group="' +
+      group +
+      '">' +
+      visible
+        .map(function (value) {
+          return filterOptionHtml(group, value, allProductsOfType);
+        })
+        .join("") +
+      "</div>" +
+      "</div>"
+    );
   }
 
   function filtersPanelInnerHtml(allProductsOfType) {
     return (
-      '<div class="filter-group">' +
-      '<p class="filter-group__title">' +
-      escapeHtml(window.BD_T("catalog.filtersAge")) +
-      "</p>" +
-      '<div class="filter-option-list" data-filter-group="ages">' +
-      filterOptionsHtml("ages", window.BD_AGES || [], allProductsOfType) +
-      "</div>" +
-      "</div>" +
-      '<div class="filter-group">' +
-      '<p class="filter-group__title">' +
-      escapeHtml(window.BD_T("catalog.filtersCategory")) +
-      "</p>" +
-      '<div class="filter-option-list" data-filter-group="categories">' +
-      filterOptionsHtml("categories", window.BD_CATEGORIES || [], allProductsOfType) +
-      "</div>" +
-      "</div>"
+      filterGroupHtml("catalog.filtersAge", "ages", window.BD_AGES || [], allProductsOfType) +
+      filterGroupHtml("catalog.filtersCategory", "categories", window.BD_CATEGORIES || [], allProductsOfType)
     );
   }
 
@@ -1179,8 +1194,14 @@
 
     setTitle(window.BD_T("type." + type));
     catalogState = readCatalogStateFromURL();
-    var showFilters = type === "velcro-books";
     var allOfType = getProductsByType(type);
+    // Options with 0 matches are hidden (see filterGroupHtml), and a group
+    // left with fewer than 2 options is hidden too — so with very few
+    // products, filtersHtml can end up empty. When it does, there is
+    // nothing to filter by, so skip the whole filters UI (sidebar toggle,
+    // panel and mobile overlay) instead of showing an empty box.
+    var filtersHtml = type === "velcro-books" ? filtersPanelInnerHtml(allOfType) : "";
+    var showFilters = filtersHtml !== "";
 
     var sortSelectHtml =
       '<label class="visually-hidden" for="bd-sort">' +
@@ -1199,7 +1220,7 @@
         escapeHtml(window.BD_T("catalog.filtersTitle")) +
         '">' +
         '<div class="filters__panel-inner" id="bd-desktop-filters">' +
-        filtersPanelInnerHtml(allOfType) +
+        filtersHtml +
         "</div>" +
         "</aside>"
       : "";
@@ -1253,7 +1274,7 @@
           '">&times;</button>' +
           "</div>" +
           '<div class="filters-mobile-panel__body" id="bd-mobile-filters-body">' +
-          filtersPanelInnerHtml(allOfType) +
+          filtersHtml +
           "</div>" +
           '<div class="filters-mobile-panel__foot">' +
           '<button type="button" class="btn btn--secondary" id="bd-mobile-filters-clear">' +
@@ -1371,6 +1392,13 @@
 
   function accordionHtml(product) {
     var ageLabel = productAgeLabel(product);
+    // "ageNote" is an optional, localized bit of extra text shown right
+    // after the age-filter label in the Details tab (e.g. a product tagged
+    // "3+" for filtering purposes but whose box actually recommends 4+).
+    // See js/products.js for an example.
+    if (ageLabel && product.ageNote) {
+      ageLabel += " (" + localizedText(product.ageNote) + ")";
+    }
     var categoryLabels = (product.categories || [])
       .map(function (c) {
         return window.BD_T("category." + c);

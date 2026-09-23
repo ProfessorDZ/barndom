@@ -10,7 +10,7 @@
  * A line looks like:
  * {
  *   lineId: "abc123",        // internal unique id
- *   productId: "vb-farm-animals",
+ *   productId: "vb-little-traveller",
  *   productLanguage: "uk",   // language of the printed product
  *   personalized: true,      // whether a name was added to the cover
  *   childName: "Олеся",      // only meaningful when personalized
