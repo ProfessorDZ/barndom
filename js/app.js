@@ -281,15 +281,15 @@
   }
 
   /**
-   * Moves focus to something sensible after a mini-cart line was added,
-   * changed or removed via re-render (renderMiniCart replaces the whole
-   * body/foot markup each time, so whatever control was clicked is a
-   * detached node afterwards — this picks a live replacement instead of
-   * letting focus silently fall back to <body>).
+   * Moves focus to something sensible after a mini-cart line was removed
+   * via re-render (renderMiniCart replaces the whole body/foot markup in
+   * that case, so whatever control was clicked is a detached node
+   * afterwards — this picks a live replacement instead of letting focus
+   * silently fall back to <body>). Quantity changes no longer re-render
+   * (see applyMiniCartQuantity), so the control the user clicked simply
+   * keeps its focus on its own — nothing to restore there.
    *
    * focusInfo (optional):
-   *   { lineId, selector }        — quantity was changed, refocus the same
-   *                                  control on the same line if it's still there
    *   { removed: true, index }    — a line was removed; focus the remove
    *                                  button of the line that is now at that
    *                                  index, or the "continue shopping"
@@ -300,14 +300,6 @@
     var body = document.getElementById("bd-minicart-body");
     var foot = document.getElementById("bd-minicart-foot");
     if (!body || !foot) return;
-
-    if (focusInfo.lineId && !focusInfo.removed) {
-      var sameControl = body.querySelector('.mini-cart-line[data-line-id="' + focusInfo.lineId + '"] ' + focusInfo.selector);
-      if (sameControl) {
-        sameControl.focus();
-        return;
-      }
-    }
 
     if (focusInfo.removed) {
       if (!cart.length) {
@@ -332,39 +324,86 @@
     if (closeBtn) closeBtn.focus();
   }
 
-  function wireMiniCartLine(lineEl) {
+  /*
+   * Two things make rapid repeated clicks on the same stepper button
+   * reliable, instead of silently losing clicks that land less than a
+   * frame apart:
+   *
+   * 1. The click/change listeners are delegated to the body/foot
+   *    containers (wired once in renderMiniCartShell, which never get
+   *    replaced), rather than attached to each line's buttons directly
+   *    and re-attached after every render.
+   * 2. A quantity change (+/−/typing a value) patches just that line's
+   *    quantity, price and the subtotal in place (applyMiniCartQuantity)
+   *    instead of rebuilding the body/foot markup. That means the button
+   *    the user is clicking is never removed from the document — so two
+   *    clicks fired back to back (even before the browser repaints
+   *    between them) both still land on a live, listened-to node.
+   *
+   * Full re-render (renderMiniCart) is reserved for when a line is added
+   * or removed, i.e. when the number of lines actually changes.
+   */
+  function patchMiniCartLine(lineEl, line) {
+    var qtyInput = lineEl.querySelector(".mini-cart-qty-input");
+    if (qtyInput) qtyInput.value = line.quantity;
+    var priceEl = lineEl.querySelector(".mini-cart-line__price");
+    if (priceEl) priceEl.textContent = formatPrice(line.unitPrice * line.quantity);
+  }
+
+  function patchMiniCartSubtotal(cart) {
+    var subtotalValueEl = document.querySelector("#bd-minicart-foot .mini-cart__subtotal span:last-child");
+    if (subtotalValueEl) subtotalValueEl.textContent = formatPrice(window.BD_CART.total(cart));
+  }
+
+  function applyMiniCartQuantity(lineEl, lineId, quantity) {
+    var cart = window.BD_CART.updateQuantity(lineId, quantity);
+    var line = null;
+    for (var i = 0; i < cart.length; i++) {
+      if (cart[i].lineId === lineId) {
+        line = cart[i];
+        break;
+      }
+    }
+    if (line) patchMiniCartLine(lineEl, line);
+    patchMiniCartSubtotal(cart);
+    updateCartCount();
+  }
+
+  function onMiniCartClick(evt) {
+    var closeBtn = evt.target.closest && evt.target.closest("[data-drawer-close]");
+    if (closeBtn) {
+      if (miniCartOverlay) miniCartOverlay.close();
+      return;
+    }
+
+    var lineEl = evt.target.closest && evt.target.closest(".mini-cart-line");
+    if (!lineEl) return;
     var lineId = lineEl.getAttribute("data-line-id");
     var qtyInput = lineEl.querySelector(".mini-cart-qty-input");
 
-    lineEl.querySelector(".mini-cart-qty-dec").addEventListener("click", function () {
-      var next = (parseInt(qtyInput.value, 10) || 1) - 1;
-      var index = Array.prototype.indexOf.call(lineEl.parentElement.children, lineEl);
-      window.BD_CART.updateQuantity(lineId, next);
-      updateCartCount();
-      if (next <= 0) {
-        renderMiniCart({ removed: true, index: index });
-      } else {
-        renderMiniCart({ lineId: lineId, selector: ".mini-cart-qty-dec" });
-      }
-    });
-    lineEl.querySelector(".mini-cart-qty-inc").addEventListener("click", function () {
-      var next = Math.min(99, (parseInt(qtyInput.value, 10) || 1) + 1);
-      window.BD_CART.updateQuantity(lineId, next);
-      updateCartCount();
-      renderMiniCart({ lineId: lineId, selector: ".mini-cart-qty-inc" });
-    });
-    qtyInput.addEventListener("change", function () {
-      var next = Math.max(1, Math.min(99, parseInt(qtyInput.value, 10) || 1));
-      window.BD_CART.updateQuantity(lineId, next);
-      updateCartCount();
-      renderMiniCart({ lineId: lineId, selector: ".mini-cart-qty-input" });
-    });
-    lineEl.querySelector(".mini-cart-line__remove").addEventListener("click", function () {
+    if (evt.target.closest(".mini-cart-qty-dec")) {
+      // "−" stops at 1; removing a line is only done via the × button.
+      var next = Math.max(1, (parseInt(qtyInput.value, 10) || 1) - 1);
+      applyMiniCartQuantity(lineEl, lineId, next);
+    } else if (evt.target.closest(".mini-cart-qty-inc")) {
+      var nextInc = Math.min(99, (parseInt(qtyInput.value, 10) || 1) + 1);
+      applyMiniCartQuantity(lineEl, lineId, nextInc);
+    } else if (evt.target.closest(".mini-cart-line__remove")) {
       var index = Array.prototype.indexOf.call(lineEl.parentElement.children, lineEl);
       window.BD_CART.removeLine(lineId);
       updateCartCount();
       renderMiniCart({ removed: true, index: index });
-    });
+    }
+  }
+
+  function onMiniCartChange(evt) {
+    var qtyInput = evt.target;
+    if (!qtyInput.classList || !qtyInput.classList.contains("mini-cart-qty-input")) return;
+    var lineEl = qtyInput.closest && qtyInput.closest(".mini-cart-line");
+    if (!lineEl) return;
+    var lineId = lineEl.getAttribute("data-line-id");
+    var next = Math.max(1, Math.min(99, parseInt(qtyInput.value, 10) || 1));
+    applyMiniCartQuantity(lineEl, lineId, next);
   }
 
   function renderMiniCart(focusInfo) {
@@ -411,17 +450,10 @@
         "</div>";
     }
 
-    Array.prototype.forEach.call(body.querySelectorAll("[data-drawer-close]"), function (btn) {
-      btn.addEventListener("click", function () {
-        if (miniCartOverlay) miniCartOverlay.close();
-      });
-    });
-    Array.prototype.forEach.call(foot.querySelectorAll("[data-drawer-close]"), function (btn) {
-      btn.addEventListener("click", function () {
-        if (miniCartOverlay) miniCartOverlay.close();
-      });
-    });
-    Array.prototype.forEach.call(body.querySelectorAll(".mini-cart-line"), wireMiniCartLine);
+    // Clicks/changes on the stepper, remove and close buttons are handled
+    // by delegated listeners on body/foot (wired once in
+    // renderMiniCartShell), so nothing needs to be re-attached here even
+    // though the markup above was just replaced.
 
     focusMiniCart(focusInfo, cart);
   }
@@ -458,6 +490,16 @@
     document.getElementById("bd-minicart-close").addEventListener("click", function () {
       miniCartOverlay.close();
     });
+
+    // Delegated listeners, wired once on the body/foot containers rather
+    // than on the individual line buttons: renderMiniCart replaces their
+    // innerHTML on every change, but never replaces body/foot themselves,
+    // so these listeners keep working no matter how fast the user clicks.
+    var body = document.getElementById("bd-minicart-body");
+    var foot = document.getElementById("bd-minicart-foot");
+    body.addEventListener("click", onMiniCartClick);
+    foot.addEventListener("click", onMiniCartClick);
+    body.addEventListener("change", onMiniCartChange);
   }
 
   // ---------- header / footer ----------
@@ -2051,33 +2093,83 @@
         "</span></div>";
     }
 
-    Array.prototype.forEach.call(listMount.querySelectorAll(".cart-line"), function (lineEl) {
-      var lineId = lineEl.getAttribute("data-line-id");
-      var qtyInput = lineEl.querySelector(".cart-qty-input");
-      lineEl.querySelector(".cart-qty-dec").addEventListener("click", function () {
-        var next = Math.max(1, (parseInt(qtyInput.value, 10) || 1) - 1);
-        window.BD_CART.updateQuantity(lineId, next);
-        renderCartLines();
-        updateCartCount();
-      });
-      lineEl.querySelector(".cart-qty-inc").addEventListener("click", function () {
-        var next = Math.min(99, (parseInt(qtyInput.value, 10) || 1) + 1);
-        window.BD_CART.updateQuantity(lineId, next);
-        renderCartLines();
-        updateCartCount();
-      });
-      qtyInput.addEventListener("change", function () {
-        var next = Math.max(1, Math.min(99, parseInt(qtyInput.value, 10) || 1));
-        window.BD_CART.updateQuantity(lineId, next);
-        renderCartLines();
-        updateCartCount();
-      });
-      lineEl.querySelector(".cart-line__remove").addEventListener("click", function () {
-        window.BD_CART.removeLine(lineId);
-        renderCartLines();
-        updateCartCount();
-      });
-    });
+    // Clicks/changes on the stepper and remove buttons are handled by a
+    // delegated listener on listMount (wired once in renderCart), so
+    // nothing needs to be re-attached here even though the <ul> above was
+    // just replaced. See onCartListClick/onCartListChange/applyCartQuantity
+    // below for why quantity changes patch the DOM in place rather than
+    // calling back into this function: without that, two rapid clicks on
+    // the same button could lose the second one, because the first
+    // click's handler would re-render the list and detach the very
+    // button still being clicked before the second click arrives.
+  }
+
+  function patchCartSummary(cart) {
+    var total = window.BD_CART.total(cart);
+    var summaryMount = document.getElementById("bd-cart-summary");
+    if (!summaryMount) return;
+    var subtotalValueEl = summaryMount.querySelector(".cart-summary__row span:last-child");
+    if (subtotalValueEl) subtotalValueEl.textContent = formatPrice(total);
+    var totalRow = summaryMount.querySelector(".cart-summary__row--total");
+    var totalValueEl = totalRow && totalRow.querySelector("span:last-child");
+    if (totalValueEl) totalValueEl.textContent = formatPrice(total);
+  }
+
+  /*
+   * Patches one line's quantity input and the summary totals in place,
+   * instead of calling renderCartLines() (which rebuilds the whole <ul>
+   * and would detach the very button the user just clicked). Combined
+   * with the delegated listener on listMount below, this is what makes
+   * rapid repeated clicks on the same stepper button reliable — the
+   * button is never removed from the document, so it's never left
+   * listening for events that will never arrive. Full re-render
+   * (renderCartLines) is reserved for when a line is actually removed.
+   */
+  function applyCartQuantity(lineEl, lineId, quantity) {
+    var cart = window.BD_CART.updateQuantity(lineId, quantity);
+    var qtyInput = lineEl.querySelector(".cart-qty-input");
+    if (qtyInput) {
+      var line = null;
+      for (var i = 0; i < cart.length; i++) {
+        if (cart[i].lineId === lineId) {
+          line = cart[i];
+          break;
+        }
+      }
+      if (line) qtyInput.value = line.quantity;
+    }
+    patchCartSummary(cart);
+    updateCartCount();
+  }
+
+  function onCartListClick(evt) {
+    var lineEl = evt.target.closest && evt.target.closest(".cart-line");
+    if (!lineEl) return;
+    var lineId = lineEl.getAttribute("data-line-id");
+    var qtyInput = lineEl.querySelector(".cart-qty-input");
+
+    if (evt.target.closest(".cart-qty-dec")) {
+      // "−" stops at 1; removing a line is only done via the remove button.
+      var next = Math.max(1, (parseInt(qtyInput.value, 10) || 1) - 1);
+      applyCartQuantity(lineEl, lineId, next);
+    } else if (evt.target.closest(".cart-qty-inc")) {
+      var nextInc = Math.min(99, (parseInt(qtyInput.value, 10) || 1) + 1);
+      applyCartQuantity(lineEl, lineId, nextInc);
+    } else if (evt.target.closest(".cart-line__remove")) {
+      window.BD_CART.removeLine(lineId);
+      renderCartLines();
+      updateCartCount();
+    }
+  }
+
+  function onCartListChange(evt) {
+    var qtyInput = evt.target;
+    if (!qtyInput.classList || !qtyInput.classList.contains("cart-qty-input")) return;
+    var lineEl = qtyInput.closest && qtyInput.closest(".cart-line");
+    if (!lineEl) return;
+    var lineId = lineEl.getAttribute("data-line-id");
+    var next = Math.max(1, Math.min(99, parseInt(qtyInput.value, 10) || 1));
+    applyCartQuantity(lineEl, lineId, next);
   }
 
   function validateOrderForm(fields) {
@@ -2213,6 +2305,13 @@
       "</div>" +
       "</div>" +
       "</section>";
+
+    // Wired once on the container itself (created fresh above), rather
+    // than on the individual line buttons: renderCartLines() replaces its
+    // innerHTML on every quantity/remove change, but never replaces this
+    // container, so the listener survives every re-render.
+    document.getElementById("bd-cart-list").addEventListener("click", onCartListClick);
+    document.getElementById("bd-cart-list").addEventListener("change", onCartListChange);
 
     renderCartLines();
 
