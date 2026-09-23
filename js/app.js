@@ -241,29 +241,133 @@
     if (line.productLanguage) metaBits.push(window.BD_T("langName." + line.productLanguage));
     if (line.personalized) metaBits.push(window.BD_T("cart.tableChildName") + ": " + line.childName);
     return (
-      '<div class="mini-cart-line">' +
+      '<div class="mini-cart-line" data-line-id="' +
+      line.lineId +
+      '">' +
       '<img class="mini-cart-line__image" src="' +
       (product.thumb || product.image) +
       '" alt="" width="56" height="56" loading="lazy" decoding="async">' +
-      '<div>' +
+      '<div class="mini-cart-line__body">' +
+      '<div class="mini-cart-line__row">' +
       '<p class="mini-cart-line__name">' +
       escapeHtml(localizedText(product.name)) +
       "</p>" +
+      '<button type="button" class="mini-cart-line__remove" aria-label="' +
+      escapeHtml(window.BD_T("cart.removeAria")) +
+      '">&times;</button>' +
+      "</div>" +
       (metaBits.length ? '<p class="mini-cart-line__meta">' + escapeHtml(metaBits.join(" · ")) + "</p>" : "") +
-      '<p class="mini-cart-line__meta">' +
-      escapeHtml(window.BD_T("cart.tableQuantity")) +
-      ": " +
+      '<div class="mini-cart-line__foot">' +
+      '<div class="quantity-stepper mini-cart-line__qty">' +
+      '<button type="button" class="mini-cart-qty-dec" aria-label="' +
+      escapeHtml(window.BD_T("cart.decreaseAria")) +
+      '">&minus;</button>' +
+      '<input type="number" class="mini-cart-qty-input" value="' +
       line.quantity +
-      "</p>" +
+      '" min="1" max="99" inputmode="numeric" aria-label="' +
+      escapeHtml(window.BD_T("cart.tableQuantity")) +
+      '">' +
+      '<button type="button" class="mini-cart-qty-inc" aria-label="' +
+      escapeHtml(window.BD_T("cart.increaseAria")) +
+      '">+</button>' +
+      "</div>" +
       '<p class="mini-cart-line__price">' +
       formatPrice(line.unitPrice * line.quantity) +
       "</p>" +
+      "</div>" +
       "</div>" +
       "</div>"
     );
   }
 
-  function renderMiniCart() {
+  /**
+   * Moves focus to something sensible after a mini-cart line was added,
+   * changed or removed via re-render (renderMiniCart replaces the whole
+   * body/foot markup each time, so whatever control was clicked is a
+   * detached node afterwards — this picks a live replacement instead of
+   * letting focus silently fall back to <body>).
+   *
+   * focusInfo (optional):
+   *   { lineId, selector }        — quantity was changed, refocus the same
+   *                                  control on the same line if it's still there
+   *   { removed: true, index }    — a line was removed; focus the remove
+   *                                  button of the line that is now at that
+   *                                  index, or the "continue shopping"
+   *                                  button when the cart is now empty
+   */
+  function focusMiniCart(focusInfo, cart) {
+    if (!focusInfo) return;
+    var body = document.getElementById("bd-minicart-body");
+    var foot = document.getElementById("bd-minicart-foot");
+    if (!body || !foot) return;
+
+    if (focusInfo.lineId && !focusInfo.removed) {
+      var sameControl = body.querySelector('.mini-cart-line[data-line-id="' + focusInfo.lineId + '"] ' + focusInfo.selector);
+      if (sameControl) {
+        sameControl.focus();
+        return;
+      }
+    }
+
+    if (focusInfo.removed) {
+      if (!cart.length) {
+        var continueBtn = foot.querySelector("[data-drawer-close]");
+        if (continueBtn) {
+          continueBtn.focus();
+          return;
+        }
+      } else {
+        var lines = body.querySelectorAll(".mini-cart-line");
+        var idx = Math.min(typeof focusInfo.index === "number" ? focusInfo.index : 0, lines.length - 1);
+        var target = lines[idx] && lines[idx].querySelector(".mini-cart-line__remove");
+        if (target) {
+          target.focus();
+          return;
+        }
+      }
+    }
+
+    // Fallback: keep focus inside the dialog rather than losing it.
+    var closeBtn = document.getElementById("bd-minicart-close");
+    if (closeBtn) closeBtn.focus();
+  }
+
+  function wireMiniCartLine(lineEl) {
+    var lineId = lineEl.getAttribute("data-line-id");
+    var qtyInput = lineEl.querySelector(".mini-cart-qty-input");
+
+    lineEl.querySelector(".mini-cart-qty-dec").addEventListener("click", function () {
+      var next = (parseInt(qtyInput.value, 10) || 1) - 1;
+      var index = Array.prototype.indexOf.call(lineEl.parentElement.children, lineEl);
+      window.BD_CART.updateQuantity(lineId, next);
+      updateCartCount();
+      if (next <= 0) {
+        renderMiniCart({ removed: true, index: index });
+      } else {
+        renderMiniCart({ lineId: lineId, selector: ".mini-cart-qty-dec" });
+      }
+    });
+    lineEl.querySelector(".mini-cart-qty-inc").addEventListener("click", function () {
+      var next = Math.min(99, (parseInt(qtyInput.value, 10) || 1) + 1);
+      window.BD_CART.updateQuantity(lineId, next);
+      updateCartCount();
+      renderMiniCart({ lineId: lineId, selector: ".mini-cart-qty-inc" });
+    });
+    qtyInput.addEventListener("change", function () {
+      var next = Math.max(1, Math.min(99, parseInt(qtyInput.value, 10) || 1));
+      window.BD_CART.updateQuantity(lineId, next);
+      updateCartCount();
+      renderMiniCart({ lineId: lineId, selector: ".mini-cart-qty-input" });
+    });
+    lineEl.querySelector(".mini-cart-line__remove").addEventListener("click", function () {
+      var index = Array.prototype.indexOf.call(lineEl.parentElement.children, lineEl);
+      window.BD_CART.removeLine(lineId);
+      updateCartCount();
+      renderMiniCart({ removed: true, index: index });
+    });
+  }
+
+  function renderMiniCart(focusInfo) {
     var body = document.getElementById("bd-minicart-body");
     var foot = document.getElementById("bd-minicart-foot");
     if (!body || !foot) return;
@@ -317,6 +421,9 @@
         if (miniCartOverlay) miniCartOverlay.close();
       });
     });
+    Array.prototype.forEach.call(body.querySelectorAll(".mini-cart-line"), wireMiniCartLine);
+
+    focusMiniCart(focusInfo, cart);
   }
 
   function openMiniCart() {
