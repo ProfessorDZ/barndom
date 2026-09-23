@@ -1,12 +1,14 @@
 # Barndom — shop website
 
 This is the website for **Barndom**, a small shop selling handmade
-educational products for kids (books on velcro, coloring books, games,
-playdough activities, wipe-clean workbooks and themed notebooks). The
-site looks and works like a real online shop: a header with search and
-a shopping cart, a home page where visitors pick what they're looking
-for, a filterable catalog, product pages with a mini-cart, and a full
-cart/checkout page.
+educational products for kids. Right now it actually sells two kinds of
+products — books on velcro, and coloring books — with four more kinds
+(games, playdough activities, wipe-clean workbooks and themed
+notebooks) planned but not for sale yet (see "The 'coming soon'
+sections" below). The site looks and works like a real online shop: a
+header with search and a shopping cart, a home page where visitors
+pick what they're looking for, a filterable catalog, product pages
+with a mini-cart, and a full cart/checkout page.
 
 It is a plain website — just HTML, CSS and JavaScript files. There is
 nothing to install and nothing to "build". You can open it directly on
@@ -34,9 +36,10 @@ and then open `http://localhost:8000` in your browser.
 - `index.html` — the home page: a short warm welcome next to a small
   illustration, then the 6 big tiles ("What are you looking for?").
   Those tiles ARE the site's navigation — there is no other menu of
-  categories on the home page. One tile ("Themed notebooks / unit
-  study") is greyed out with a "Coming soon" badge because that section
-  isn't ready yet — see "The 'coming soon' section" below.
+  categories on the home page. Two tiles ("Velcro games" and "Coloring
+  books") are the sections that actually sell something today; the
+  other four are greyed out with a "Coming soon" badge because those
+  sections aren't ready yet — see "The 'coming soon' sections" below.
 - `catalog.html` — the list of products for one category, or for a
   search (opened by typing in the search box). Sorting is available
   everywhere; for the velcro-book category there are also filters by
@@ -125,25 +128,48 @@ Extra things you can add to any product:
   from `ages` as usual. The same text works for all 4 languages, no
   translation needed.
 
-## The "coming soon" section
+## The "coming soon" sections
 
-The "Themed notebooks (unit study)" section is not ready to sell yet.
-It is controlled by a single switch: open `js/products.js`, find its
-entry inside `window.BD_PRODUCT_TYPES`, and look for `comingSoon: true`
-on the `unit-study` line. While that's there:
+Four sections are not ready to sell yet: **Spot It! games**,
+**playdough mats**, **wipe-clean workbooks** and **themed notebooks
+(unit study)**. None of them have real products — there is nothing in
+`js/products.js` for them, only the switch described below. Only
+**velcro games** and **coloring books** are real, sellable sections
+today.
+
+Each of the four not-ready sections is controlled by a single switch:
+open `js/products.js`, find its entry inside `window.BD_PRODUCT_TYPES`
+(near the top of the file), and look for `comingSoon: true` on that
+section's line — for example:
+```
+{ id: "spot-it", image: "assets/types/spot-it.svg", pastel: "sun", comingSoon: true },
+```
+While that's there for a section:
 - it disappears from the header menu and the footer's list of sections
   (the footer still names it, but as plain text with a small "Coming
   soon" badge, not a link);
 - its home-page tile is shown greyed out, with the same "Coming soon"
   badge, and isn't clickable;
-- if someone opens its catalog link directly anyway, they see a
-  friendly "coming soon" message instead of an empty product list;
-- its sample products (already in this file, further down) never show
-  up in search results, in "Bestsellers", or in "You may also like".
+- if someone opens its catalog link directly anyway (for example
+  `catalog.html?type=spot-it`), they see a friendly "coming soon"
+  message instead of an empty product list;
+- nothing of that type can ever show up in search results, in
+  "Bestsellers", or in "You may also like", because there are no
+  products of that type yet.
 
-When that section is ready to launch, just delete the `comingSoon:
-true` line (or change it to `comingSoon: false`) — everything above
-switches back on by itself, nothing else needs to change.
+**To turn a section back on once it has real products to sell:**
+1. Add the real products to `window.BD_PRODUCTS` in `js/products.js`
+   (see "How to add or edit products and prices" above for the
+   step-by-step — copy an existing product block, give it a unique
+   `id`, set its `type` to the section you're launching, fill in the
+   price and picture, and write the name/description in all 4
+   languages).
+2. In that section's entry inside `window.BD_PRODUCT_TYPES`, delete
+   the `comingSoon: true` part (or change it to `comingSoon: false`).
+That's it — the tile turns colorful and clickable, the section
+reappears in the header/footer menus, and its products start showing
+up in search, "Bestsellers" and "You may also like" by themselves,
+nothing else needs to change.
 
 ## How to change the currency
 

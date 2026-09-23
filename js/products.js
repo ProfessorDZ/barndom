@@ -68,20 +68,25 @@
 (function () {
   // The 6 product types shown on the home page (as big tiles) and in the
   // header/footer menus. "pastel" picks one of the soft accent colors
-  // (defined in css/styles.css) for that type's home-page tile.
+  // (defined in css/styles.css) for that type's home-page tile — it only
+  // has any effect while the type is NOT "comingSoon" (see below), since a
+  // comingSoon tile always renders grey no matter what "pastel" says.
+  //
+  // "comingSoon: true" is the ONE switch for a whole section: while it's
+  // true, the site hides it from navigation (header menu, footer links)
+  // and from bestsellers/search/"you may also like", and shows a friendly
+  // "coming soon" page instead of a product grid if someone opens its
+  // catalog link directly. Right now only velcro-books and coloring have
+  // real products, so every other section below is marked comingSoon —
+  // set a section's flag back to false (or remove the line) once it has
+  // real products in window.BD_PRODUCTS, see README.md for the full
+  // step-by-step.
   window.BD_PRODUCT_TYPES = [
     { id: "velcro-books", image: "assets/types/velcro-books.svg", pastel: "peach" },
     { id: "coloring", image: "assets/types/coloring.svg", pastel: "mint" },
-    { id: "playdough", image: "assets/types/playdough.svg", pastel: "sky" },
-    { id: "spot-it", image: "assets/types/spot-it.svg", pastel: "sun" },
-    { id: "wipe-clean", image: "assets/types/wipe-clean.svg", pastel: "lilac" },
-    // "comingSoon: true" is the ONE switch for this whole section: while
-    // it's true, the site hides it from navigation (header menu, footer
-    // links) and from bestsellers/search/"you may also like", and shows a
-    // friendly "coming soon" page instead of a product grid if someone
-    // opens its catalog link directly. Its sample products stay in the
-    // list below so everything is ready — set this back to false (or
-    // remove the line) the day the section is ready to launch.
+    { id: "playdough", image: "assets/types/playdough.svg", pastel: "sky", comingSoon: true },
+    { id: "spot-it", image: "assets/types/spot-it.svg", pastel: "sun", comingSoon: true },
+    { id: "wipe-clean", image: "assets/types/wipe-clean.svg", pastel: "lilac", comingSoon: true },
     { id: "unit-study", image: "assets/types/unit-study.svg", comingSoon: true },
   ];
 
@@ -1282,257 +1287,6 @@
         pl: "Na stronach dwoje dzieci pielęgnuje ogród z konewką i łopatką, podczas gdy motyle krążą nad słonecznikiem i tulipanami, a biedronka pełznie po liściu. W zestawie kolorowanka, kredki i naklejki na słoneczny dzień wśród kwiatów.",
         en: "On these pages, two children tend the garden with a watering can and a trowel, while butterflies flutter over a sunflower and tulips, and a ladybird crawls along a leaf. The set includes the coloring book, pencils and stickers for a sunny day among the flowers.",
         sv: "På sidorna sköter två barn trädgården med vattenkanna och planteringsspade, medan fjärilar fladdrar över en solros och tulpaner och en nyckelpiga kryper längs ett blad. I setet ingår målarboken, färgpennor och klistermärken för en solig dag bland blommorna.",
-      },
-    },
-
-    // ---------- spot-it ----------
-    {
-      id: "spot-it-animals",
-      type: "spot-it",
-      price: { PLN: 49, EUR: 11.5, SEK: 125 },
-      image: "assets/types/spot-it.svg",
-      ages: ["5", "10"],
-      categories: [],
-      availableLanguages: ["uk", "pl", "en", "sv"],
-      name: {
-        uk: "Гра Spot It! «Тваринки»",
-        pl: "Gra Spot It! „Zwierzątka”",
-        en: "Spot It! Game: Animals",
-        sv: "Spot It!-spel: Djur",
-      },
-      shortDescription: {
-        uk: "Знайди однакову тваринку швидше за суперника!",
-        pl: "Znajdź to samo zwierzątko szybciej niż przeciwnik!",
-        en: "Spot the matching animal faster than your opponent!",
-        sv: "Hitta samma djur snabbare än din motståndare!",
-      },
-      description: {
-        uk: "Кожна картка містить кілька тваринок, і на будь-яких двох картках завжди є рівно один спільний символ. Гра розвиває швидкість реакції та увагу, підходить для родинних вечорів.",
-        pl: "Każda karta zawiera kilka zwierzątek, a na dowolnych dwóch kartach zawsze jest dokładnie jeden wspólny symbol. Gra rozwija refleks i uwagę, świetna na rodzinne wieczory.",
-        en: "Every card shows several animals, and any two cards always share exactly one matching symbol. This game builds quick reflexes and focus — great for family game nights.",
-        sv: "Varje kort visar flera djur, och två kort delar alltid exakt en gemensam symbol. Spelet tränar snabba reflexer och fokus — perfekt för familjekvällar.",
-      },
-    },
-    {
-      id: "spot-it-numbers",
-      type: "spot-it",
-      price: { PLN: 49, EUR: 11.5, SEK: 125 },
-      image: "assets/types/spot-it.svg",
-      ages: ["5", "10"],
-      categories: [],
-      availableLanguages: ["uk", "pl", "en"],
-      name: {
-        uk: "Гра Spot It! «Цифри»",
-        pl: "Gra Spot It! „Liczby”",
-        en: "Spot It! Game: Numbers",
-        sv: "Spot It!-spel: Siffror",
-      },
-      shortDescription: {
-        uk: "Весела гра на уважність із цифрами та фігурками.",
-        pl: "Wesoła gra na spostrzegawczość z liczbami i figurkami.",
-        en: "A fun attention game with numbers and little figures.",
-        sv: "Ett roligt uppmärksamhetsspel med siffror och figurer.",
-      },
-      description: {
-        uk: "Варіант улюбленої гри з цифрами замість малюнків — чудово підходить для тренування рахунку в ігровій формі разом із класичною механікою пошуку пари.",
-        pl: "Wariant ulubionej gry z liczbami zamiast obrazków — świetny do ćwiczenia liczenia w formie zabawy, z klasyczną mechaniką szukania pary.",
-        en: "A number-based twist on the classic matching game — a fun way to practice counting alongside the familiar spot-the-match mechanic.",
-        sv: "En sifferversion av det klassiska matchningsspelet — ett roligt sätt att öva räkning tillsammans med den bekanta hitta-paret-mekaniken.",
-      },
-    },
-
-    // ---------- playdough ----------
-    {
-      id: "playdough-shapes-mats",
-      type: "playdough",
-      price: { PLN: 28, EUR: 6.5, SEK: 75 },
-      image: "assets/types/playdough.svg",
-      ages: ["1", "3"],
-      categories: [],
-      availableLanguages: ["uk", "pl", "en", "sv"],
-      name: {
-        uk: "Килимки для пластиліну «Фігури»",
-        pl: "Maty do plasteliny „Kształty”",
-        en: "Playdough Mats: Shapes",
-        sv: "Lekdegsmattor: Former",
-      },
-      shortDescription: {
-        uk: "Ліпимо фігури й тренуємо дрібну моторику.",
-        pl: "Lepimy kształty i ćwiczymy małą motorykę.",
-        en: "Sculpt shapes and build fine motor skills.",
-        sv: "Forma former och träna finmotorik.",
-      },
-      description: {
-        uk: "Заламіновані килимки з контурами геометричних фігур для ліплення з пластиліну. Розвивають дрібну моторику, творчість і знання форм.",
-        pl: "Zalaminowane maty z konturami figur geometrycznych do lepienia z plasteliny. Rozwijają małą motorykę, kreatywność i znajomość kształtów.",
-        en: "Laminated mats with geometric shape outlines for playdough sculpting. Builds fine motor skills, creativity and shape recognition.",
-        sv: "Laminerade mattor med geometriska formkonturer för lekdegsmodellering. Tränar finmotorik, kreativitet och formigenkänning.",
-      },
-    },
-    {
-      id: "playdough-alphabet-mats",
-      type: "playdough",
-      price: { PLN: 28, EUR: 6.5, SEK: 75 },
-      image: "assets/types/playdough.svg",
-      ages: ["3", "5"],
-      categories: [],
-      availableLanguages: ["uk", "pl", "en"],
-      name: {
-        uk: "Килимки для пластиліну «Літери»",
-        pl: "Maty do plasteliny „Litery”",
-        en: "Playdough Mats: Alphabet",
-        sv: "Lekdegsmattor: Alfabetet",
-      },
-      shortDescription: {
-        uk: "Ліпимо літери та вчимо алфавіт весело.",
-        pl: "Lepimy litery i uczymy się alfabetu w zabawny sposób.",
-        en: "Sculpt letters and learn the alphabet the fun way.",
-        sv: "Forma bokstäver och lär dig alfabetet på ett roligt sätt.",
-      },
-      description: {
-        uk: "Килимки з контурами літер допомагають дитині запам'ятати алфавіт через дотик і ліплення з пластиліну. Чудова підготовка до письма.",
-        pl: "Maty z konturami liter pomagają dziecku zapamiętać alfabet poprzez dotyk i lepienie z plasteliny. Świetne przygotowanie do pisania.",
-        en: "Mats with letter outlines help children memorize the alphabet through touch and playdough sculpting. Great preparation for writing.",
-        sv: "Mattor med bokstavskonturer hjälper barn att minnas alfabetet genom beröring och lekdegsmodellering. Ett bra sätt att förbereda för skrivning.",
-      },
-    },
-
-    // ---------- wipe-clean ----------
-    {
-      id: "wipe-clean-numbers",
-      type: "wipe-clean",
-      price: { PLN: 32, EUR: 7.5, SEK: 85 },
-      image: "assets/types/wipe-clean.svg",
-      ages: ["3", "5"],
-      categories: [],
-      availableLanguages: ["uk", "pl", "en", "sv"],
-      name: {
-        uk: "Пиши-стирай «Цифри та рахунок»",
-        pl: "Pisz i wycieraj „Liczby i liczenie”",
-        en: "Wipe-Clean Workbook: Numbers and Counting",
-        sv: "Skriv-och-sudda: Siffror och räkning",
-      },
-      shortDescription: {
-        uk: "Тренуємось писати цифри й рахувати знову й знову.",
-        pl: "Ćwiczymy pisanie liczb i liczenie w kółko.",
-        en: "Practice writing numbers and counting again and again.",
-        sv: "Öva att skriva siffror och räkna om och om igen.",
-      },
-      description: {
-        uk: "Зошит із ламінованими сторінками для тренування написання цифр і рахунку маркером, який легко стирається. Можна використовувати безліч разів.",
-        pl: "Zeszyt z laminowanymi stronami do ćwiczenia pisania liczb i liczenia pisakiem, który łatwo się ściera. Można używać wielokrotnie.",
-        en: "A workbook with laminated pages for practicing number writing and counting with an easy-wipe marker. Reusable again and again.",
-        sv: "En arbetsbok med laminerade sidor för att öva sifferskrivning och räkning med en penna som lätt suddas bort. Återanvändbar om och om igen.",
-      },
-    },
-    {
-      id: "wipe-clean-letters",
-      type: "wipe-clean",
-      price: { PLN: 32, EUR: 7.5, SEK: 85 },
-      image: "assets/types/wipe-clean.svg",
-      ages: ["5", "10"],
-      categories: [],
-      availableLanguages: ["uk", "pl", "en"],
-      name: {
-        uk: "Пиши-стирай «Літери та слова»",
-        pl: "Pisz i wycieraj „Litery i słowa”",
-        en: "Wipe-Clean Workbook: Letters and Words",
-        sv: "Skriv-och-sudda: Bokstäver och ord",
-      },
-      shortDescription: {
-        uk: "Пишемо літери і перші слова маркером для пиши-стирай.",
-        pl: "Piszemy litery i pierwsze słowa pisakiem do wycierania.",
-        en: "Practice letters and first words with a wipe-clean marker.",
-        sv: "Öva bokstäver och första ord med en skriv-och-sudda-penna.",
-      },
-      description: {
-        uk: "Ламінований зошит для тренування написання літер і перших слів. Ідеальний інструмент для підготовки руки дитини до письма.",
-        pl: "Laminowany zeszyt do ćwiczenia pisania liter i pierwszych słów. Idealne narzędzie do przygotowania ręki dziecka do pisania.",
-        en: "A laminated workbook for practicing letters and first words. The perfect tool to prepare a child's hand for writing.",
-        sv: "En laminerad arbetsbok för att öva bokstäver och första ord. Det perfekta verktyget för att förbereda barnets hand för skrivning.",
-      },
-    },
-
-    // ---------- unit-study ----------
-    {
-      id: "unit-space",
-      type: "unit-study",
-      price: { PLN: 48, EUR: 11, SEK: 125 },
-      image: "assets/types/unit-study.svg",
-      ages: ["5", "10"],
-      categories: [],
-      availableLanguages: ["uk", "pl", "en"],
-      name: {
-        uk: "Тематичний зошит «Космос»",
-        pl: "Zeszyt tematyczny „Kosmos”",
-        en: "Unit Study Notebook: Space",
-        sv: "Temabok: Rymden",
-      },
-      shortDescription: {
-        uk: "Занурення в тему космосу через завдання й факти.",
-        pl: "Zanurzenie w temat kosmosu poprzez zadania i ciekawostki.",
-        en: "A deep dive into space through activities and facts.",
-        sv: "En djupdykning i rymden genom aktiviteter och fakta.",
-      },
-      description: {
-        uk: "Тематичний зошит зібрав завдання, розмальовки й цікаві факти про космос в одному місці. Підходить для домашнього навчання та занять у групі.",
-        pl: "Zeszyt tematyczny zebrał zadania, kolorowanki i ciekawostki o kosmosie w jednym miejscu. Idealny do edukacji domowej i zajęć grupowych.",
-        en: "This unit study notebook brings together activities, coloring pages and fun facts about space in one place. Great for homeschooling and group lessons.",
-        sv: "Denna temabok samlar aktiviteter, målarsidor och roliga fakta om rymden på ett ställe. Perfekt för hemundervisning och grupplektioner.",
-      },
-    },
-    {
-      id: "unit-dinosaurs",
-      type: "unit-study",
-      price: { PLN: 48, EUR: 11, SEK: 125 },
-      image: "assets/types/unit-study.svg",
-      ages: ["5", "10"],
-      categories: [],
-      availableLanguages: ["uk", "pl", "en", "sv"],
-      name: {
-        uk: "Тематичний зошит «Динозаври»",
-        pl: "Zeszyt tematyczny „Dinozaury”",
-        en: "Unit Study Notebook: Dinosaurs",
-        sv: "Temabok: Dinosaurier",
-      },
-      shortDescription: {
-        uk: "Все про динозаврів в одному тематичному зошиті.",
-        pl: "Wszystko o dinozaurach w jednym zeszycie tematycznym.",
-        en: "Everything about dinosaurs in one unit study notebook.",
-        sv: "Allt om dinosaurier i en temabok.",
-      },
-      description: {
-        uk: "Зошит із завданнями, фактами та розмальовками про різні види динозаврів. Розвиває допитливість та любов до природничих наук.",
-        pl: "Zeszyt z zadaniami, ciekawostkami i kolorowankami o różnych gatunkach dinozaurów. Rozwija ciekawość i miłość do nauk przyrodniczych.",
-        en: "A notebook full of activities, facts and coloring pages about different dinosaur species. Builds curiosity and a love of natural science.",
-        sv: "En bok full av aktiviteter, fakta och målarsidor om olika dinosauriearter. Väcker nyfikenhet och kärlek till naturvetenskap.",
-      },
-    },
-    {
-      id: "unit-seasons",
-      type: "unit-study",
-      price: { PLN: 45, EUR: 10.5, SEK: 115 },
-      image: "assets/types/unit-study.svg",
-      ages: ["3", "5"],
-      categories: [],
-      availableLanguages: ["uk", "pl", "en"],
-      name: {
-        uk: "Тематичний зошит «Пори року»",
-        pl: "Zeszyt tematyczny „Pory roku”",
-        en: "Unit Study Notebook: Seasons",
-        sv: "Temabok: Årstiderna",
-      },
-      shortDescription: {
-        uk: "Спостерігаємо за природою протягом усього року.",
-        pl: "Obserwujemy przyrodę przez cały rok.",
-        en: "Observing nature through all four seasons.",
-        sv: "Observera naturen genom alla fyra årstiderna.",
-      },
-      description: {
-        uk: "Зошит про весну, літо, осінь і зиму із завданнями на спостережливість і творчі вправи. Допомагає дитині зрозуміти природні цикли.",
-        pl: "Zeszyt o wiośnie, lecie, jesieni i zimie z zadaniami na spostrzegawczość i ćwiczeniami twórczymi. Pomaga dziecku zrozumieć cykle przyrody.",
-        en: "A notebook covering spring, summer, autumn and winter with observation tasks and creative exercises. Helps children understand nature's cycles.",
-        sv: "En bok som täcker vår, sommar, höst och vinter med observationsuppgifter och kreativa övningar. Hjälper barn förstå naturens kretslopp.",
       },
     },
   ];
