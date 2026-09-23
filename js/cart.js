@@ -1,5 +1,5 @@
 /*
- * Barn Dom — shopping cart logic
+ * Barndom — shopping cart logic
  * --------------------------------
  * The cart is a plain array of "line" objects stored in the browser's
  * localStorage (key "bd_cart"). Every read/write is wrapped in

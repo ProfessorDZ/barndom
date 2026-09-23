@@ -1,5 +1,5 @@
 /*
- * Barn Dom — translations (UI text)
+ * Barndom — translations (UI text)
  * --------------------------------
  * All interface text lives here in 4 languages: Ukrainian (uk, default),
  * Polish (pl), English (en) and Swedish (sv).
@@ -40,7 +40,7 @@
         closeMenu: "Закрити меню",
       },
       type: {
-        "velcro-books": "Заламіновані книжечки на липучках",
+        "velcro-books": "Ігри на липучках",
         coloring: "Розмальовки",
         "spot-it": "Гра Spot It!",
         playdough: "Ігри з пластиліном",
@@ -66,9 +66,9 @@
         deliveryText: "Відправляємо замовлення протягом кількох днів",
       },
       home: {
-        heroTitle: "Розвиваючі іграшки та зошити, зроблені з любов'ю",
+        heroTitle: "Barndom — дитинство, зроблене руками",
         heroSubtitle:
-          "Barn Dom — маленька майстерня хендмейд-продуктів для навчання й гри. Ми створюємо іграшки, якими хочеться користуватись знову і знову.",
+          "Ми створюємо теплі хендмейд-іграшки та зошити для гри й навчання — щоб маленькі руки досліджували світ у своєму темпі.",
         heroCta: "Обрати категорію",
         sectionTitle: "Що ви шукаєте?",
         chooserSubtitle: "Оберіть категорію — і перегляньте всі товари в ній",
@@ -83,7 +83,7 @@
         trustPoint3: "Персоналізуємо обкладинку іменем дитини",
         trustPoint4: "Відповідаємо на запитання та допомагаємо з вибором",
       },
-      badge: { bestseller: "Хіт продажів", new: "Новинка" },
+      badge: { bestseller: "Хіт продажів", new: "Новинка", comingSoon: "Скоро" },
       catalog: {
         allTitle: "Каталог",
         breadcrumbHome: "Головна",
@@ -106,6 +106,9 @@
         searchTitle: "Результати пошуку",
         searchFor: "Результати пошуку за запитом «{{query}}»",
         removeFilterAria: "Прибрати фільтр {{label}}",
+        comingSoonTitle: "Скоро тут з'явиться цей розділ",
+        comingSoonText: "Ми ще працюємо над цим розділом. Загляньте трохи пізніше!",
+        comingSoonCta: "На головну",
       },
       age: { "6m": "6 міс+", "1": "1+", "3": "3+", "5": "5+", "10": "10+" },
       category: {
@@ -225,7 +228,7 @@
         contactLabel: "Напишіть нам:",
         tagline: "Розвиваючі хендмейд-товари для дітей, зроблені з турботою.",
         socialAria: "Ми в соцмережах",
-        rights: "© {{year}} Barn Dom. Усі права захищені.",
+        rights: "© {{year}} Barndom. Усі права захищені.",
       },
       langName: { uk: "Українська", pl: "Польська", en: "Англійська", sv: "Шведська" },
     },
@@ -245,7 +248,7 @@
         closeMenu: "Zamknij menu",
       },
       type: {
-        "velcro-books": "Zalaminowane książeczki na rzepy",
+        "velcro-books": "Gry na rzepy",
         coloring: "Kolorowanki",
         "spot-it": "Gra Spot It!",
         playdough: "Zabawy z plasteliną",
@@ -271,9 +274,9 @@
         deliveryText: "Wysyłamy zamówienia w ciągu kilku dni",
       },
       home: {
-        heroTitle: "Edukacyjne zabawki i zeszyty zrobione z miłością",
+        heroTitle: "Barndom — dzieciństwo zrobione ręcznie",
         heroSubtitle:
-          "Barn Dom to mała pracownia produktów handmade do nauki i zabawy. Tworzymy zabawki, po które chce się sięgać wciąż na nowo.",
+          "Tworzymy ciepłe, ręcznie robione zabawki i zeszyty do nauki i zabawy — aby małe rączki mogły poznawać świat we własnym tempie.",
         heroCta: "Wybierz kategorię",
         sectionTitle: "Czego szukasz?",
         chooserSubtitle: "Wybierz kategorię i zobacz wszystkie produkty w niej",
@@ -288,7 +291,7 @@
         trustPoint3: "Personalizujemy okładkę imieniem dziecka",
         trustPoint4: "Odpowiadamy na pytania i pomagamy w wyborze",
       },
-      badge: { bestseller: "Bestseller", new: "Nowość" },
+      badge: { bestseller: "Bestseller", new: "Nowość", comingSoon: "Wkrótce" },
       catalog: {
         allTitle: "Katalog",
         breadcrumbHome: "Strona główna",
@@ -311,6 +314,9 @@
         searchTitle: "Wyniki wyszukiwania",
         searchFor: "Wyniki wyszukiwania dla „{{query}}”",
         removeFilterAria: "Usuń filtr {{label}}",
+        comingSoonTitle: "Wkrótce dostępne",
+        comingSoonText: "Pracujemy nad tą sekcją. Zajrzyj do nas ponownie wkrótce!",
+        comingSoonCta: "Wróć na stronę główną",
       },
       age: { "6m": "6 mies.+", "1": "1+", "3": "3+", "5": "5+", "10": "10+" },
       category: {
@@ -430,7 +436,7 @@
         contactLabel: "Napisz do nas:",
         tagline: "Edukacyjne produkty handmade dla dzieci, robione z troską.",
         socialAria: "Jesteśmy w mediach społecznościowych",
-        rights: "© {{year}} Barn Dom. Wszelkie prawa zastrzeżone.",
+        rights: "© {{year}} Barndom. Wszelkie prawa zastrzeżone.",
       },
       langName: { uk: "Ukraiński", pl: "Polski", en: "Angielski", sv: "Szwedzki" },
     },
@@ -450,7 +456,7 @@
         closeMenu: "Close menu",
       },
       type: {
-        "velcro-books": "Laminated Velcro Books",
+        "velcro-books": "Velcro games",
         coloring: "Coloring Books",
         "spot-it": "Spot It! Game",
         playdough: "Playdough Activities",
@@ -476,9 +482,9 @@
         deliveryText: "Orders ship within a few days",
       },
       home: {
-        heroTitle: "Educational toys and workbooks, made with love",
+        heroTitle: "Barndom — childhood, made by hand",
         heroSubtitle:
-          "Barn Dom is a small handmade workshop for learning and play. We create toys kids want to reach for again and again.",
+          "We make warm, handmade toys and workbooks for play and learning — so little hands can explore the world at their own pace.",
         heroCta: "Choose a category",
         sectionTitle: "What are you looking for?",
         chooserSubtitle: "Pick a category to see everything in it",
@@ -493,7 +499,7 @@
         trustPoint3: "We personalize the cover with your child's name",
         trustPoint4: "We answer questions and help you choose",
       },
-      badge: { bestseller: "Bestseller", new: "New" },
+      badge: { bestseller: "Bestseller", new: "New", comingSoon: "Coming soon" },
       catalog: {
         allTitle: "Catalog",
         breadcrumbHome: "Home",
@@ -516,6 +522,9 @@
         searchTitle: "Search results",
         searchFor: "Search results for “{{query}}”",
         removeFilterAria: "Remove filter {{label}}",
+        comingSoonTitle: "Coming soon",
+        comingSoonText: "We are still working on this section. Please check back soon!",
+        comingSoonCta: "Back to home",
       },
       age: { "6m": "6 mo+", "1": "1+", "3": "3+", "5": "5+", "10": "10+" },
       category: {
@@ -635,7 +644,7 @@
         contactLabel: "Write to us:",
         tagline: "Handmade educational products for kids, made with care.",
         socialAria: "Follow us on social media",
-        rights: "© {{year}} Barn Dom. All rights reserved.",
+        rights: "© {{year}} Barndom. All rights reserved.",
       },
       langName: { uk: "Ukrainian", pl: "Polish", en: "English", sv: "Swedish" },
     },
@@ -655,7 +664,7 @@
         closeMenu: "Stäng menyn",
       },
       type: {
-        "velcro-books": "Laminerade kardborreböcker",
+        "velcro-books": "Kardborrelekar",
         coloring: "Målarböcker",
         "spot-it": "Spot It!-spel",
         playdough: "Lekdeg-aktiviteter",
@@ -681,9 +690,9 @@
         deliveryText: "Beställningar skickas inom några dagar",
       },
       home: {
-        heroTitle: "Pedagogiska leksaker och arbetsböcker, gjorda med kärlek",
+        heroTitle: "Barndom — barndom gjord för hand",
         heroSubtitle:
-          "Barn Dom är en liten handgjord verkstad för lek och lärande. Vi skapar leksaker som barn vill återvända till om och om igen.",
+          "Vi skapar varma, handgjorda leksaker och arbetsböcker för lek och lärande — så att små händer kan utforska världen i sin egen takt.",
         heroCta: "Välj en kategori",
         sectionTitle: "Vad letar du efter?",
         chooserSubtitle: "Välj en kategori och se allt som finns i den",
@@ -698,7 +707,7 @@
         trustPoint3: "Vi personifierar omslaget med barnets namn",
         trustPoint4: "Vi svarar på frågor och hjälper dig att välja",
       },
-      badge: { bestseller: "Bästsäljare", new: "Nyhet" },
+      badge: { bestseller: "Bästsäljare", new: "Nyhet", comingSoon: "Kommer snart" },
       catalog: {
         allTitle: "Katalog",
         breadcrumbHome: "Hem",
@@ -721,6 +730,9 @@
         searchTitle: "Sökresultat",
         searchFor: "Sökresultat för ”{{query}}”",
         removeFilterAria: "Ta bort filtret {{label}}",
+        comingSoonTitle: "Skoro tillgänglig",
+        comingSoonText: "Vi arbetar med den här avdelningen. Kom tillbaka snart!",
+        comingSoonCta: "Till startsidan",
       },
       age: { "6m": "6 mån+", "1": "1+", "3": "3+", "5": "5+", "10": "10+" },
       category: {
@@ -840,7 +852,7 @@
         contactLabel: "Skriv till oss:",
         tagline: "Handgjorda pedagogiska produkter för barn, gjorda med omsorg.",
         socialAria: "Följ oss på sociala medier",
-        rights: "© {{year}} Barn Dom. Alla rättigheter förbehållna.",
+        rights: "© {{year}} Barndom. Alla rättigheter förbehållna.",
       },
       langName: { uk: "Ukrainska", pl: "Polska", en: "Engelska", sv: "Svenska" },
     },

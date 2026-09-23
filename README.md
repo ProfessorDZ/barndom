@@ -1,6 +1,6 @@
-# Barn Dom — shop website
+# Barndom — shop website
 
-This is the website for **Barn Dom**, a small shop selling handmade
+This is the website for **Barndom**, a small shop selling handmade
 educational products for kids (books on velcro, coloring books, games,
 playdough activities, wipe-clean workbooks and themed notebooks). The
 site looks and works like a real online shop: a header with search and
@@ -31,10 +31,12 @@ and then open `http://localhost:8000` in your browser.
 
 ## What's on each page
 
-- `index.html` — the home page: a welcome banner, four short "why buy
-  from us" points, the 6 big category cards ("What are you looking
-  for?"), a row of bestselling products, and a short "why parents
-  choose us" section.
+- `index.html` — the home page: a short warm welcome next to a small
+  illustration, then the 6 big tiles ("What are you looking for?").
+  Those tiles ARE the site's navigation — there is no other menu of
+  categories on the home page. One tile ("Themed notebooks / unit
+  study") is greyed out with a "Coming soon" badge because that section
+  isn't ready yet — see "The 'coming soon' section" below.
 - `catalog.html` — the list of products for one category, or for a
   search (opened by typing in the search box). Sorting is available
   everywhere; for the velcro-book category there are also filters by
@@ -72,6 +74,26 @@ Two extra things you can add to any product:
   thumbnails. If you leave this out, the single `image` picture is used
   everywhere instead — nothing else needs to change.
 
+## The "coming soon" section
+
+The "Themed notebooks (unit study)" section is not ready to sell yet.
+It is controlled by a single switch: open `js/products.js`, find its
+entry inside `window.BD_PRODUCT_TYPES`, and look for `comingSoon: true`
+on the `unit-study` line. While that's there:
+- it disappears from the header menu and the footer's list of sections
+  (the footer still names it, but as plain text with a small "Coming
+  soon" badge, not a link);
+- its home-page tile is shown greyed out, with the same "Coming soon"
+  badge, and isn't clickable;
+- if someone opens its catalog link directly anyway, they see a
+  friendly "coming soon" message instead of an empty product list;
+- its sample products (already in this file, further down) never show
+  up in search results, in "Bestsellers", or in "You may also like".
+
+When that section is ready to launch, just delete the `comingSoon:
+true` line (or change it to `comingSoon: false`) — everything above
+switches back on by itself, nothing else needs to change.
+
 ## How to change the currency
 
 Open `js/config.js` and change the `currency:` value (for example from
@@ -102,10 +124,16 @@ edit it — no other file needs to change.
 ## Images
 
 Illustrations live in the `assets/` folder:
-- `assets/brand/` — logo, favicon, and the homepage astronaut picture.
-- `assets/types/` — one picture per product category, also used as a
-  placeholder photo for every product until real product photos are
-  ready.
+- `assets/brand/` — the logo (in a few layouts), favicon, and the
+  astronaut/rocket character pictures used on the home page and on
+  empty-cart/"coming soon" states. The `-tight.webp` files are just
+  closely-cropped versions of the originals (so they don't look tiny
+  inside a small header or icon) — if you replace an original file,
+  make a matching cropped version the same way, or just point the code
+  in `js/app.js` back at the original.
+- `assets/types/` — one picture per product category, shown on the
+  home page's 6 tiles, also used as a placeholder photo for every
+  product until real product photos are ready.
 
 To use a real photo for a specific product, put the image file
 somewhere in `assets/` and change that product's `image:` path in

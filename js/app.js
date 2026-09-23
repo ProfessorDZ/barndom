@@ -1,5 +1,5 @@
 /*
- * Barn Dom — shared app logic
+ * Barndom — shared app logic
  * --------------------------------
  * Renders the header/footer/mini-cart on every page, wires up the
  * language switcher, mobile menu and search, and renders whichever page
@@ -54,7 +54,7 @@
   }
 
   function shopName() {
-    return (window.BD_CONFIG && window.BD_CONFIG.shopName) || "Barn Dom";
+    return (window.BD_CONFIG && window.BD_CONFIG.shopName) || "Barndom";
   }
 
   function setTitle(pageTitle) {
@@ -77,7 +77,7 @@
 
   function getBestsellers(limit) {
     var list = (window.BD_PRODUCTS || []).filter(function (p) {
-      return p.bestseller;
+      return p.bestseller && !isComingSoonType(p.type);
     });
     return typeof limit === "number" ? list.slice(0, limit) : list;
   }
@@ -86,6 +86,19 @@
     return (window.BD_PRODUCT_TYPES || []).some(function (t) {
       return t.id === type;
     });
+  }
+
+  // The unit-study section is still in development. Its single
+  // "comingSoon: true" flag (set on its entry in window.BD_PRODUCT_TYPES,
+  // in js/products.js) drives all of this: it disappears from navigation
+  // and from bestsellers/search/related, and its catalog page shows a
+  // friendly "coming soon" message instead of a product grid. Flip that
+  // one flag back to false/remove it once the section is ready.
+  function isComingSoonType(typeId) {
+    var type = (window.BD_PRODUCT_TYPES || []).filter(function (t) {
+      return t.id === typeId;
+    })[0];
+    return !!(type && type.comingSoon);
   }
 
   function localizedText(field) {
@@ -260,7 +273,7 @@
     if (!cart.length) {
       body.innerHTML =
         '<div class="mini-cart__empty">' +
-        '<img src="assets/brand/astronaut-rocket.svg" alt="" width="140" height="117">' +
+        '<img src="assets/brand/astronaut-star-tight.webp" alt="" width="88" height="119" style="object-fit: contain;">' +
         "<p>" +
         escapeHtml(window.BD_T("miniCart.empty")) +
         "</p>" +
@@ -343,8 +356,17 @@
 
   // ---------- header / footer ----------
 
+  // The unit-study section (comingSoon: true) is left out of every nav
+  // menu — it isn't ready yet, so there's nothing useful to click through
+  // to. It still gets its own row (as plain text) in the footer.
+  function navTypes() {
+    return orderedTypes().filter(function (type) {
+      return !isComingSoonType(type.id);
+    });
+  }
+
   function typesForDropdown() {
-    return orderedTypes()
+    return navTypes()
       .map(function (type) {
         return (
           '<a class="categories-dropdown__link" href="catalog.html?type=' +
@@ -360,6 +382,7 @@
   function renderAnnouncementBar() {
     var mount = document.getElementById("bd-announcement");
     if (!mount) return;
+    mount.className = "announcement-bar";
     var key = (window.BD_CONFIG && window.BD_CONFIG.announcementKey) || "announcement.text";
     mount.innerHTML = '<div class="container"><p class="announcement-bar__inner">' + escapeHtml(window.BD_T(key)) + "</p></div>";
   }
@@ -426,19 +449,43 @@
       })
       .join("");
 
-    var mobileTypeLinks = orderedTypes()
+    var mobileTypeLinks = navTypes()
       .map(function (type) {
         return '<a href="catalog.html?type=' + encodeURIComponent(type.id) + '">' + escapeHtml(window.BD_T("type." + type.id)) + "</a>";
       })
       .join("");
 
+    // The home page IS the 6 big tiles, so it skips the second "small
+    // category menu" row entirely — other pages keep a simple one, as
+    // requested. The search box is always small in the header; on phones
+    // it moves into the slide-in menu instead of a second header row.
+    var isHome = document.body.getAttribute("data-page") === "home";
+    var subnavHtml = isHome
+      ? ""
+      : '<nav class="subnav container" aria-label="' +
+        escapeHtml(window.BD_T("nav.menu")) +
+        '">' +
+        '<div class="categories-dropdown" id="bd-categories-dropdown">' +
+        '<button type="button" class="categories-dropdown__toggle" id="bd-categories-toggle" aria-haspopup="true" aria-expanded="false">' +
+        ICONS.grid +
+        escapeHtml(window.BD_T("header.categories")) +
+        ICONS.chevronDown +
+        "</button>" +
+        '<div class="categories-dropdown__panel" role="menu">' +
+        typesForDropdown() +
+        "</div>" +
+        "</div>" +
+        '<a class="subnav__link" href="cart.html">' +
+        escapeHtml(window.BD_T("nav.cart")) +
+        "</a>" +
+        "</nav>";
+
     mount.innerHTML =
       '<div class="container header-row">' +
       '<a class="brand" href="index.html">' +
-      '<img src="assets/brand/logo.svg" alt="" width="40" height="40">' +
-      '<span class="brand__name">' +
+      '<img class="brand__logo" src="assets/brand/logo-horizontal-tight.webp" alt="' +
       escapeHtml(shopName()) +
-      "</span>" +
+      '" width="135" height="40">' +
       "</a>" +
       '<div class="header-search header-search--desktop">' +
       searchFormHtml("desktop") +
@@ -470,30 +517,7 @@
       "</button>" +
       "</div>" +
       "</div>" +
-      '<div class="container header-search-mobile-wrap">' +
-      searchFormHtml("mobile") +
-      "</div>" +
-      '<nav class="subnav container" aria-label="' +
-      escapeHtml(window.BD_T("nav.menu")) +
-      '">' +
-      '<div class="categories-dropdown" id="bd-categories-dropdown">' +
-      '<button type="button" class="categories-dropdown__toggle" id="bd-categories-toggle" aria-haspopup="true" aria-expanded="false">' +
-      ICONS.grid +
-      escapeHtml(window.BD_T("header.categories")) +
-      ICONS.chevronDown +
-      "</button>" +
-      '<div class="categories-dropdown__panel" role="menu">' +
-      typesForDropdown() +
-      "</div>" +
-      "</div>" +
-      '<a class="subnav__link" href="index.html#bd-bestsellers">' +
-      escapeHtml(window.BD_T("header.bestsellers")) +
-      "</a>" +
-      '<a class="subnav__link" href="cart.html">' +
-      escapeHtml(window.BD_T("nav.cart")) +
-      "</a>" +
-      "</nav>" +
-      "</div>" +
+      subnavHtml +
       '<div class="mobile-menu-overlay" id="bd-mobile-menu-overlay">' +
       '<div class="mobile-menu" role="dialog" aria-modal="true" aria-label="' +
       escapeHtml(window.BD_T("nav.menu")) +
@@ -503,15 +527,15 @@
       escapeHtml(window.BD_T("header.closeMenu")) +
       '">&times;</button>' +
       "</div>" +
+      '<div class="mobile-menu__search">' +
+      searchFormHtml("mobile") +
+      "</div>" +
       '<div>' +
       '<p class="mobile-menu__group-title">' +
       escapeHtml(window.BD_T("header.categories")) +
       "</p>" +
       '<nav class="mobile-menu__links">' +
       mobileTypeLinks +
-      '<a href="index.html#bd-bestsellers">' +
-      escapeHtml(window.BD_T("header.bestsellers")) +
-      "</a>" +
       '<a href="cart.html">' +
       escapeHtml(window.BD_T("nav.cart")) +
       "</a>" +
@@ -556,9 +580,12 @@
       closeCategoriesDropdown();
     });
 
+    // The home page has no subnav (its 6 tiles ARE the navigation), so
+    // these elements only exist on other pages — guard every use.
     var categoriesDropdown = document.getElementById("bd-categories-dropdown");
     var categoriesToggle = document.getElementById("bd-categories-toggle");
     function closeCategoriesDropdown() {
+      if (!categoriesDropdown || !categoriesToggle) return;
       categoriesDropdown.classList.remove("is-open");
       categoriesToggle.setAttribute("aria-expanded", "false");
     }
@@ -566,12 +593,14 @@
       langDropdown.classList.remove("is-open");
       langToggle.setAttribute("aria-expanded", "false");
     }
-    categoriesToggle.addEventListener("click", function (evt) {
-      evt.stopPropagation();
-      var open = categoriesDropdown.classList.toggle("is-open");
-      categoriesToggle.setAttribute("aria-expanded", open ? "true" : "false");
-      closeLangDropdown();
-    });
+    if (categoriesToggle) {
+      categoriesToggle.addEventListener("click", function (evt) {
+        evt.stopPropagation();
+        var open = categoriesDropdown.classList.toggle("is-open");
+        categoriesToggle.setAttribute("aria-expanded", open ? "true" : "false");
+        closeLangDropdown();
+      });
+    }
     document.addEventListener("click", function () {
       closeCategoriesDropdown();
       closeLangDropdown();
@@ -618,8 +647,20 @@
     var email = (window.BD_CONFIG && window.BD_CONFIG.contactEmail) || "";
     var phone = (window.BD_CONFIG && window.BD_CONFIG.contactPhone) || "";
 
+    // Every section is listed, but a "comingSoon" one (see js/products.js)
+    // is plain text with a small badge instead of a link — there is
+    // nothing to click through to yet.
     var shopLinks = orderedTypes()
       .map(function (type) {
+        if (isComingSoonType(type.id)) {
+          return (
+            '<li class="footer-comingsoon">' +
+            escapeHtml(window.BD_T("type." + type.id)) +
+            '<span class="footer-comingsoon__badge">' +
+            escapeHtml(window.BD_T("badge.comingSoon")) +
+            "</span></li>"
+          );
+        }
         return (
           '<li><a href="catalog.html?type=' +
           encodeURIComponent(type.id) +
@@ -635,8 +676,9 @@
       '<div class="footer-grid">' +
       '<div class="footer-col">' +
       '<p class="footer-brand__name">' +
-      '<img src="assets/brand/logo.svg" alt="" width="32" height="32">' +
+      '<img class="footer-brand__logo" src="assets/brand/logo-horizontal-tight.webp" alt="' +
       escapeHtml(shopName()) +
+      '" width="122" height="36">' +
       "</p>" +
       '<p class="footer-brand__tagline">' +
       escapeHtml(window.BD_T("footer.tagline")) +
@@ -661,25 +703,6 @@
       "</p>" +
       '<ul class="footer-col__links">' +
       shopLinks +
-      "</ul>" +
-      "</div>" +
-      '<div class="footer-col">' +
-      '<p class="footer-col__title">' +
-      escapeHtml(window.BD_T("footer.infoTitle")) +
-      "</p>" +
-      '<ul class="footer-col__links">' +
-      '<li><a href="#">' +
-      escapeHtml(window.BD_T("footer.infoDelivery")) +
-      "</a></li>" +
-      '<li><a href="#">' +
-      escapeHtml(window.BD_T("footer.infoReturns")) +
-      "</a></li>" +
-      '<li><a href="#">' +
-      escapeHtml(window.BD_T("footer.infoTerms")) +
-      "</a></li>" +
-      '<li><a href="#">' +
-      escapeHtml(window.BD_T("footer.infoPrivacy")) +
-      "</a></li>" +
       "</ul>" +
       "</div>" +
       '<div class="footer-col">' +
@@ -765,70 +788,50 @@
     );
   }
 
-  function typeCardHtml(type) {
+  // One big, equal-size tile per product type — this IS the site's main
+  // navigation (home page, and the "pick a category" fallback on
+  // catalog.html). Five types are plain clickable links, each with its
+  // own soft pastel background (from "pastel" in js/products.js); the
+  // comingSoon one (unit-study) renders as a disabled, greyed-out tile
+  // with a small badge instead, per its "comingSoon" flag.
+  function typeTileHtml(type) {
+    if (type.comingSoon) {
+      return (
+        '<div class="type-tile type-tile--disabled" aria-disabled="true">' +
+        '<span class="type-tile__image">' +
+        '<img src="' +
+        type.image +
+        '" alt="" width="96" height="96" loading="lazy">' +
+        "</span>" +
+        '<span class="type-tile__name">' +
+        escapeHtml(window.BD_T("type." + type.id)) +
+        "</span>" +
+        '<span class="type-tile__soon">' +
+        escapeHtml(window.BD_T("badge.comingSoon")) +
+        "</span>" +
+        "</div>"
+      );
+    }
     return (
-      '<a class="type-card" href="catalog.html?type=' +
+      '<a class="type-tile type-tile--' +
+      (type.pastel || "lilac") +
+      '" href="catalog.html?type=' +
       encodeURIComponent(type.id) +
       '">' +
-      '<span class="type-card__image">' +
+      '<span class="type-tile__image">' +
       '<img src="' +
       type.image +
-      '" alt="" width="160" height="160" loading="lazy">' +
+      '" alt="" width="96" height="96" loading="lazy">' +
       "</span>" +
-      '<span class="type-card__name">' +
+      '<span class="type-tile__name">' +
       escapeHtml(window.BD_T("type." + type.id)) +
-      "</span>" +
-      '<span class="type-card__tagline">' +
-      escapeHtml(window.BD_T("typeTagline." + type.id)) +
-      "</span>" +
-      '<span class="type-card__cta">' +
-      escapeHtml(window.BD_T("home.cardView")) +
-      " &rarr;</span>" +
-      "</a>"
-    );
-  }
-
-  // The flagship type (velcro-books) gets a wide horizontal banner of its
-  // own instead of a grid cell, so the remaining types divide evenly into
-  // the tile grid with no leftover/orphan tile.
-  function typeBannerHtml(type) {
-    return (
-      '<a class="type-banner" href="catalog.html?type=' +
-      encodeURIComponent(type.id) +
-      '">' +
-      '<span class="type-banner__image">' +
-      '<span class="type-card__featured-flag">' +
-      escapeHtml(window.BD_T("home.featuredBadge")) +
-      "</span>" +
-      '<img src="' +
-      type.image +
-      '" alt="" width="220" height="220" loading="lazy">' +
-      "</span>" +
-      '<span class="type-banner__body">' +
-      '<span class="type-banner__name">' +
-      escapeHtml(window.BD_T("type." + type.id)) +
-      "</span>" +
-      '<span class="type-banner__tagline">' +
-      escapeHtml(window.BD_T("typeTagline." + type.id)) +
-      "</span>" +
-      '<span class="btn btn--primary type-banner__cta">' +
-      escapeHtml(window.BD_T("home.cardView")) +
-      "</span>" +
       "</span>" +
       "</a>"
     );
   }
 
-  function typeChooserHtml() {
-    var types = orderedTypes();
-    var featured = types[0];
-    var rest = types.slice(1);
-    return (
-      typeBannerHtml(featured) +
-      '<div class="type-grid" style="margin-top: 20px;">' +
-      rest.map(typeCardHtml).join("") +
-      "</div>"
-    );
+  function tileGridHtml() {
+    return '<div class="tile-grid" id="bd-tiles">' + orderedTypes().map(typeTileHtml).join("") + "</div>";
   }
 
   function breadcrumbsHtml(items) {
@@ -843,119 +846,40 @@
 
   // ---------- home page ----------
 
+  // The home page is deliberately short and calm: a one-line warm greeting
+  // next to a small friendly illustration, then the 6 big tiles — which
+  // ARE the site's navigation. No hero banner, no benefit strip, no
+  // bestsellers grid, no trust block.
   function renderHome() {
     var mount = document.getElementById("bd-page");
     if (!mount) return;
     setTitle(window.BD_T("home.sectionTitle"));
 
-    var bestsellers = getBestsellers(8);
-
     mount.innerHTML =
-      '<section class="hero">' +
-      '<span class="hero__stars"></span>' +
-      '<div class="container hero__inner">' +
-      '<div class="hero__text">' +
+      '<section class="home-greeting container">' +
+      '<div class="home-greeting__inner">' +
+      '<div class="home-greeting__text">' +
       "<h1>" +
       escapeHtml(window.BD_T("home.heroTitle")) +
       "</h1>" +
       "<p>" +
       escapeHtml(window.BD_T("home.heroSubtitle")) +
       "</p>" +
-      '<a class="btn btn--primary btn--large" href="#bd-chooser">' +
-      escapeHtml(window.BD_T("home.heroCta")) +
-      "</a>" +
       "</div>" +
-      '<div class="hero__image">' +
-      '<img src="assets/brand/astronaut-rocket.svg" alt="" width="400" height="333">' +
+      '<div class="home-greeting__image">' +
+      '<img src="assets/brand/astronaut-hello-tight.webp" alt="" width="180" height="268" loading="lazy">' +
       "</div>" +
       "</div>" +
       "</section>" +
-      '<section class="benefits">' +
-      '<div class="container benefits__grid">' +
-      '<div class="benefit"><span class="benefit__icon">' +
-      ICONS.handmade +
-      '</span><p class="benefit__title">' +
-      escapeHtml(window.BD_T("benefits.handmadeTitle")) +
-      '</p><p class="benefit__text">' +
-      escapeHtml(window.BD_T("benefits.handmadeText")) +
-      "</p></div>" +
-      '<div class="benefit"><span class="benefit__icon">' +
-      ICONS.shield +
-      '</span><p class="benefit__title">' +
-      escapeHtml(window.BD_T("benefits.durableTitle")) +
-      '</p><p class="benefit__text">' +
-      escapeHtml(window.BD_T("benefits.durableText")) +
-      "</p></div>" +
-      '<div class="benefit"><span class="benefit__icon">' +
-      ICONS.tag +
-      '</span><p class="benefit__title">' +
-      escapeHtml(window.BD_T("benefits.personalizedTitle")) +
-      '</p><p class="benefit__text">' +
-      escapeHtml(window.BD_T("benefits.personalizedText")) +
-      "</p></div>" +
-      '<div class="benefit"><span class="benefit__icon">' +
-      ICONS.truck +
-      '</span><p class="benefit__title">' +
-      escapeHtml(window.BD_T("benefits.deliveryTitle")) +
-      '</p><p class="benefit__text">' +
-      escapeHtml(window.BD_T("benefits.deliveryText")) +
-      "</p></div>" +
-      "</div>" +
-      "</section>" +
-      '<section class="section container" id="bd-chooser">' +
+      '<section class="section container">' +
       '<h2 class="section-title section-title--center">' +
       escapeHtml(window.BD_T("home.sectionTitle")) +
       "</h2>" +
       '<p class="section-lede section-lede--center">' +
       escapeHtml(window.BD_T("home.chooserSubtitle")) +
       "</p>" +
-      '<div style="margin-top: 28px;">' +
-      typeChooserHtml() +
-      "</div>" +
-      "</section>" +
-      (bestsellers.length
-        ? '<section class="section container" id="bd-bestsellers">' +
-          '<h2 class="section-title section-title--center">' +
-          escapeHtml(window.BD_T("home.bestsellersTitle")) +
-          "</h2>" +
-          '<div class="product-grid" style="margin-top: 28px;">' +
-          bestsellers.map(productCardHtml).join("") +
-          "</div>" +
-          "</section>"
-        : "") +
-      '<section class="trust section">' +
-      '<div class="container trust__grid">' +
-      '<div class="trust__image"><img src="assets/brand/astronaut-rocket.svg" alt="" width="260" height="217"></div>' +
-      "<div>" +
-      '<h2 class="section-title">' +
-      escapeHtml(window.BD_T("home.trustTitle")) +
-      "</h2>" +
-      "<p>" +
-      escapeHtml(window.BD_T("home.trustText")) +
-      "</p>" +
-      '<div class="trust__points">' +
-      '<div class="trust__point">' +
-      ICONS.check +
-      "<p>" +
-      escapeHtml(window.BD_T("home.trustPoint1")) +
-      "</p></div>" +
-      '<div class="trust__point">' +
-      ICONS.check +
-      "<p>" +
-      escapeHtml(window.BD_T("home.trustPoint2")) +
-      "</p></div>" +
-      '<div class="trust__point">' +
-      ICONS.check +
-      "<p>" +
-      escapeHtml(window.BD_T("home.trustPoint3")) +
-      "</p></div>" +
-      '<div class="trust__point">' +
-      ICONS.check +
-      "<p>" +
-      escapeHtml(window.BD_T("home.trustPoint4")) +
-      "</p></div>" +
-      "</div>" +
-      "</div>" +
+      '<div style="margin-top: 24px;">' +
+      tileGridHtml() +
       "</div>" +
       "</section>";
   }
@@ -1214,8 +1138,30 @@
         escapeHtml(window.BD_T("home.sectionTitle")) +
         "</h1>" +
         '<div>' +
-        typeChooserHtml() +
+        tileGridHtml() +
         "</div>" +
+        "</section>";
+      return;
+    }
+
+    // The type exists but isn't launched yet (see "comingSoon" on it in
+    // js/products.js) — show a friendly message instead of an empty/odd
+    // product grid, whether someone got here from a link or typed the URL.
+    if (isComingSoonType(type)) {
+      setTitle(window.BD_T("catalog.comingSoonTitle"));
+      mount.innerHTML =
+        breadcrumbsHtml([{ label: window.BD_T("catalog.breadcrumbHome"), href: "index.html" }, { label: window.BD_T("catalog.comingSoonTitle") }]) +
+        '<section class="coming-soon container">' +
+        '<img src="assets/brand/rocket-tight.webp" alt="" width="94" height="150" loading="lazy">' +
+        "<h1>" +
+        escapeHtml(window.BD_T("catalog.comingSoonTitle")) +
+        "</h1>" +
+        "<p>" +
+        escapeHtml(window.BD_T("catalog.comingSoonText")) +
+        "</p>" +
+        '<a class="btn btn--primary" href="index.html">' +
+        escapeHtml(window.BD_T("catalog.comingSoonCta")) +
+        "</a>" +
         "</section>";
       return;
     }
@@ -1370,6 +1316,7 @@
     var lang = window.BD_getLang();
     var needle = query.toLowerCase();
     var matches = (window.BD_PRODUCTS || []).filter(function (p) {
+      if (isComingSoonType(p.type)) return false;
       var name = (p.name[lang] || p.name.uk || "").toLowerCase();
       var desc = (p.shortDescription[lang] || p.shortDescription.uk || "").toLowerCase();
       return name.indexOf(needle) !== -1 || desc.indexOf(needle) !== -1;
@@ -1489,6 +1436,7 @@
   }
 
   function relatedProductsHtml(product) {
+    if (isComingSoonType(product.type)) return "";
     var related = getProductsByType(product.type)
       .filter(function (p) {
         return p.id !== product.id;
@@ -1547,7 +1495,7 @@
       setTitle(window.BD_T("product.notFoundTitle"));
       mount.innerHTML =
         '<section class="container not-found">' +
-        '<img src="assets/brand/astronaut-rocket.svg" alt="" width="200" height="167">' +
+        '<img src="assets/brand/astronaut-star-tight.webp" alt="" width="103" height="139" style="object-fit: contain;">' +
         "<h1>" +
         escapeHtml(window.BD_T("product.notFoundTitle")) +
         "</h1>" +
@@ -1821,7 +1769,7 @@
       if (emptyMount) {
         emptyMount.hidden = false;
         emptyMount.innerHTML =
-          '<img src="assets/brand/astronaut-rocket.svg" alt="" width="200" height="167">' +
+          '<img src="assets/brand/astronaut-star-tight.webp" alt="" width="103" height="139" style="object-fit: contain;">' +
           "<p>" +
           escapeHtml(window.BD_T("cart.emptyMessage")) +
           "</p>" +

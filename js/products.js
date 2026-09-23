@@ -1,5 +1,5 @@
 /*
- * Barn Dom — product catalog (sample data)
+ * Barndom — product catalog (sample data)
  * --------------------------------
  * HOW TO ADD OR EDIT A PRODUCT
  * 1. Copy one of the objects inside window.BD_PRODUCTS below.
@@ -29,14 +29,23 @@
  * catalog page and can be linked to directly.
  */
 (function () {
-  // The 6 product types shown on the home page and in the header menu.
+  // The 6 product types shown on the home page (as big tiles) and in the
+  // header/footer menus. "pastel" picks one of the soft accent colors
+  // (defined in css/styles.css) for that type's home-page tile.
   window.BD_PRODUCT_TYPES = [
-    { id: "velcro-books", image: "assets/types/velcro-books.svg" },
-    { id: "coloring", image: "assets/types/coloring.svg" },
-    { id: "spot-it", image: "assets/types/spot-it.svg" },
-    { id: "playdough", image: "assets/types/playdough.svg" },
-    { id: "wipe-clean", image: "assets/types/wipe-clean.svg" },
-    { id: "unit-study", image: "assets/types/unit-study.svg" },
+    { id: "velcro-books", image: "assets/types/velcro-books.svg", pastel: "peach" },
+    { id: "coloring", image: "assets/types/coloring.svg", pastel: "mint" },
+    { id: "playdough", image: "assets/types/playdough.svg", pastel: "sky" },
+    { id: "spot-it", image: "assets/types/spot-it.svg", pastel: "sun" },
+    { id: "wipe-clean", image: "assets/types/wipe-clean.svg", pastel: "lilac" },
+    // "comingSoon: true" is the ONE switch for this whole section: while
+    // it's true, the site hides it from navigation (header menu, footer
+    // links) and from bestsellers/search/"you may also like", and shows a
+    // friendly "coming soon" page instead of a product grid if someone
+    // opens its catalog link directly. Its sample products stay in the
+    // list below so everything is ready — set this back to false (or
+    // remove the line) the day the section is ready to launch.
+    { id: "unit-study", image: "assets/types/unit-study.svg", comingSoon: true },
   ];
 
   // Age filter options (velcro-books catalog only).

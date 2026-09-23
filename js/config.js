@@ -1,5 +1,5 @@
 /*
- * Barn Dom — shop configuration
+ * Barndom — shop configuration
  * --------------------------------
  * Change shop-wide settings here. This file only sets a global object
  * (window.BD_CONFIG) — it does not use import/export so it works both
@@ -7,7 +7,7 @@
  */
 window.BD_CONFIG = {
   // Shown in the header, footer and browser tab title.
-  shopName: "Barn Dom",
+  shopName: "Barndom",
 
   // ISO currency code used everywhere prices are shown.
   // Change this ONE value to switch the whole shop to another currency
