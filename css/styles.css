@@ -27,11 +27,10 @@
     lines) — never a big block; same tone as ink, just kept as its own
     variable for the few spots that used to be near-black */
 
-  /* pastel accents, tuned to the logo artwork — one per active home-page
-     tile, used sparingly elsewhere */
-  --color-peach: #f8cdb8; /* astronaut's skin tone */
-  --color-mint: #bde8d7; /* rocket's teal/mint */
-  --color-sky: #d9f0fa; /* astronaut suit's baby blue */
+  /* pastel accents, tuned to the logo artwork — the home-page tiles now
+     alternate between just --color-sun and --color-lilac (checkerboard,
+     driven by tile position — see the tile grid rules below); --color-sun
+     and --color-blush also still cover badges elsewhere */
   --color-sun: #fbe1a0; /* the star's warm yellow */
   --color-blush: #f6cbd8;
   --color-lilac: #dccff3;
@@ -934,28 +933,41 @@ button {
   box-shadow: var(--shadow-lift);
 }
 
-.type-tile--peach {
-  background: var(--color-peach);
-}
-
-.type-tile--mint {
-  background: var(--color-mint);
-}
-
-.type-tile--sky {
-  background: var(--color-sky);
-}
-
-.type-tile--sun {
+/* Two-colour checkerboard, driven by DOM position (not by the tile's
+   type/pastel modifier class) so it keeps alternating no matter how many
+   columns the grid currently has. At 1 and 3 columns a plain odd/even
+   split already checkerboards; at 2 columns (the 480–899px breakpoint)
+   odd/even would stripe the columns instead, so that width gets its own
+   period-4 pattern. The disabled (coming-soon) tile is excluded so it
+   always stays grey regardless of its position. */
+.tile-grid > .type-tile:not(.type-tile--disabled):nth-child(odd) {
   background: var(--color-sun);
 }
 
-.type-tile--blush {
-  background: var(--color-blush);
+.tile-grid > .type-tile:not(.type-tile--disabled):nth-child(even) {
+  background: var(--color-lilac);
 }
 
-.type-tile--lilac {
-  background: var(--color-lilac);
+@media (min-width: 480px) {
+  .tile-grid > .type-tile:not(.type-tile--disabled):nth-child(4n + 1),
+  .tile-grid > .type-tile:not(.type-tile--disabled):nth-child(4n + 4) {
+    background: var(--color-sun);
+  }
+
+  .tile-grid > .type-tile:not(.type-tile--disabled):nth-child(4n + 2),
+  .tile-grid > .type-tile:not(.type-tile--disabled):nth-child(4n + 3) {
+    background: var(--color-lilac);
+  }
+}
+
+@media (min-width: 900px) {
+  .tile-grid > .type-tile:not(.type-tile--disabled):nth-child(odd) {
+    background: var(--color-sun);
+  }
+
+  .tile-grid > .type-tile:not(.type-tile--disabled):nth-child(even) {
+    background: var(--color-lilac);
+  }
 }
 
 .type-tile__image {
