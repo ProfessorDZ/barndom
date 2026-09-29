@@ -251,6 +251,39 @@
       },
     },
 
+    {
+      id: "vb-colorful-shapes",
+      type: "velcro-books",
+      price: { PLN: 65, EUR: 15, SEK: 170 },
+      image: "assets/products/velcro/colorful-shapes-cover.webp",
+      images: [
+        "assets/products/velcro/colorful-shapes-cover.webp",
+        "assets/products/velcro/colorful-shapes-cards.webp",
+      ],
+      thumb: "assets/products/velcro/thumbs/colorful-shapes-cover.jpg",
+      ages: ["6m"],
+      categories: ["colors-shapes"],
+      availableLanguages: ["uk", "pl", "en", "sv"],
+      name: {
+        uk: "Кольорові фігури — міні-альбом на кільці",
+        pl: "Kolorowe figury — mini-album na kółku",
+        en: "Colourful Shapes — mini ring-bound flashcards",
+        sv: "Färgglada former — minialbum på ring",
+      },
+      shortDescription: {
+        uk: "Компактний міні-альбом із 13 карток на кільці — перше знайомство малюка з кольорами.",
+        pl: "Kompaktowy mini-album z 13 kartonikami na kółku — pierwsze spotkanie malucha z kolorami.",
+        en: "A compact mini flashcard album with 13 cards on a ring — your baby's first introduction to colours.",
+        sv: "Ett kompakt minialbum med 13 kort på en ring — bebisens första möte med färger.",
+      },
+      description: {
+        uk: "«Кольорові фігури» — міні-альбом на кільці з 13 щільними картками у формі будиночків, кожна свого кольору: червоний, малиновий, рожевий, фіолетовий, коричневий, помаранчевий, жовтий, зелений, синій, блакитний, чорний, сірий і білий. На кожній картці — назва кольору та знайомі малюку тваринки й предмети цього ж кольору. Компактний розмір і міцне кільце дозволяють брати альбом у дорогу та легко гортати картки маленькими пальчиками. Рекомендований вік: від 6 місяців.",
+        pl: "„Kolorowe figury” to mini-album na kółku z 13 grubymi kartonikami w kształcie domków, każdy w innym kolorze: czerwonym, malinowym, różowym, fioletowym, brązowym, pomarańczowym, żółtym, zielonym, niebieskim, błękitnym, czarnym, szarym i białym. Na każdej karcie znajduje się nazwa koloru oraz znane maluchowi zwierzątka i przedmioty w tym samym kolorze. Kompaktowy rozmiar i mocne kółko pozwalają zabrać album w podróż i wygodnie przewracać kartki małymi paluszkami. Zalecany wiek: od 6 miesięcy.",
+        en: "Colourful Shapes is a mini flashcard album on a sturdy ring with 13 thick house-shaped cards, each in its own colour: red, raspberry, pink, purple, brown, orange, yellow, green, blue, sky blue, black, grey and white. Each card shows the colour's name along with familiar animals and everyday objects in that same colour. Its compact size and sturdy ring make it easy to take along and flip through with small fingers. Recommended age: from 6 months.",
+        sv: "„Färgglada former” är ett minialbum på en stadig ring med 13 tjocka hus-formade kort, vart och ett i sin egen färg: röd, hallonröd, rosa, lila, brun, orange, gul, grön, blå, himmelsblå, svart, grå och vit. Varje kort visar färgens namn tillsammans med välbekanta djur och vardagsföremål i samma färg. Den kompakta storleken och den stadiga ringen gör albumet enkelt att ta med sig och bläddra i med små fingrar. Rekommenderad ålder: från 6 månader.",
+      },
+    },
+
     // ---------- coloring ----------
     // Coloring books do NOT have a language choice and do NOT have the
     // "child's name on the cover" option (that's what "personalizable:
