@@ -173,6 +173,12 @@
       type: "velcro-books",
       price: { PLN: 115, EUR: 27, SEK: 300 },
       image: "assets/products/velcro/dinosaur-album-cover.webp",
+      images: [
+        "assets/products/velcro/dinosaur-album-cover.webp",
+        "assets/products/velcro/dinosaur-album-spread-1.webp",
+        "assets/products/velcro/dinosaur-album-spread-2.webp",
+        "assets/products/velcro/dinosaur-album-spread-3.webp",
+      ],
       thumb: "assets/products/velcro/thumbs/dinosaur-album-cover.jpg",
       bestseller: true,
       ages: ["3"],
@@ -198,10 +204,10 @@
         sv: "Ett kardborrealbum som förvandlar barnet till en riktig ung paleontolog bland dinosaurier.",
       },
       description: {
-        uk: "«Динозаврознавець» — розвивальний альбом на липучках про світ динозаврів, у якому дитина сама стає юним палеонтологом. Малюк розкопує та чистить пензликом череп динозавра, знайомиться з тираннозавром, довгошиим динозавром і птеродактилем, а також спостерігає, як з яйця вилуплюється маленьке динозавреня біля димливого вулкана. Дитина відриває й приклеює липучки просто на сторінках, тренуючи дрібну моторику. Рекомендований вік: від 4 років.",
-        pl: "„Dinozaurolog” to rozwijający album na rzepy o świecie dinozaurów, w którym dziecko wciela się w młodego paleontologa. Maluch odkopuje i czyści pędzelkiem czaszkę dinozaura, poznaje tyranozaura, dinozaura o długiej szyi i pterodaktyla, a także obserwuje, jak z jajka wykluwa się małe dinozaurątko przy dymiącym wulkanie. Dziecko odrywa i przykleja rzepy wprost na stronach, ćwicząc małą motorykę. Zalecany wiek: od 4 lat.",
-        en: "Dinosaur Explorer is a velcro activity album about the world of dinosaurs, where your child becomes a young palaeontologist. They dig up and brush clean a dinosaur skull, meet a T-rex, a long-necked dinosaur and a pterodactyl, and watch a baby dinosaur hatch from its egg near a smoking volcano. Your child peels off and attaches the velcro pieces right on the pages, practicing fine motor skills while playing. Recommended age: from 4 years.",
-        sv: "„Dinosaurolog” är ett kardborrealbum om dinosauriernas värld, där barnet får bli en ung paleontolog. Barnet gräver fram och borstar rent en dinosaurieskalle, möter en T-rex, en långhalsad dinosaurie och en pterodaktyl, och ser en liten dinosaurieunge kläckas ur sitt ägg vid en rykande vulkan. Barnet lossar och fäster kardborrebitarna direkt på sidorna och tränar finmotoriken under lekens gång. Rekommenderad ålder: från 4 år.",
+        uk: "«Динозаврознавець» — розвивальний альбом на липучках про світ динозаврів, у якому дитина сама стає юним палеонтологом. Малюк розкопує та чистить пензликом череп динозавра, знайомиться з тираннозавром, довгошиим динозавром і птеродактилем, а також спостерігає, як з яйця вилуплюється маленьке динозавреня біля димливого вулкана. Дитина відриває й приклеює липучки просто на сторінках, тренуючи дрібну моторику. Формат А4, 14 сторінок. Рекомендований вік: від 4 років.",
+        pl: "„Dinozaurolog” to rozwijający album na rzepy o świecie dinozaurów, w którym dziecko wciela się w młodego paleontologa. Maluch odkopuje i czyści pędzelkiem czaszkę dinozaura, poznaje tyranozaura, dinozaura o długiej szyi i pterodaktyla, a także obserwuje, jak z jajka wykluwa się małe dinozaurątko przy dymiącym wulkanie. Dziecko odrywa i przykleja rzepy wprost na stronach, ćwicząc małą motorykę. Format A4, 14 stron. Zalecany wiek: od 4 lat.",
+        en: "Dinosaur Explorer is a velcro activity album about the world of dinosaurs, where your child becomes a young palaeontologist. They dig up and brush clean a dinosaur skull, meet a T-rex, a long-necked dinosaur and a pterodactyl, and watch a baby dinosaur hatch from its egg near a smoking volcano. Your child peels off and attaches the velcro pieces right on the pages, practicing fine motor skills while playing. A4 format, 14 pages. Recommended age: from 4 years.",
+        sv: "„Dinosaurolog” är ett kardborrealbum om dinosauriernas värld, där barnet får bli en ung paleontolog. Barnet gräver fram och borstar rent en dinosaurieskalle, möter en T-rex, en långhalsad dinosaurie och en pterodaktyl, och ser en liten dinosaurieunge kläckas ur sitt ägg vid en rykande vulkan. Barnet lossar och fäster kardborrebitarna direkt på sidorna och tränar finmotoriken under lekens gång. Format A4, 14 sidor. Rekommenderad ålder: från 4 år.",
       },
     },
 
