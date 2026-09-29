@@ -285,6 +285,45 @@
       },
     },
 
+    {
+      id: "vb-multicolor-transport",
+      type: "velcro-books",
+      price: { PLN: 55, EUR: 13, SEK: 145 },
+      image: "assets/products/velcro/multicolor-transport-cover.webp",
+      images: [
+        "assets/products/velcro/multicolor-transport-cover.webp",
+        "assets/products/velcro/multicolor-transport-full-set.webp",
+        "assets/products/velcro/multicolor-transport-purple.webp",
+        "assets/products/velcro/multicolor-transport-orange.webp",
+        "assets/products/velcro/multicolor-transport-blue.webp",
+        "assets/products/velcro/multicolor-transport-pink.webp",
+        "assets/products/velcro/multicolor-transport-green.webp",
+        "assets/products/velcro/multicolor-transport-yellow.webp",
+      ],
+      thumb: "assets/products/velcro/thumbs/multicolor-transport-cover.jpg",
+      ages: ["1"],
+      categories: ["colors-shapes", "transport"],
+      availableLanguages: ["uk", "pl", "en", "sv"],
+      name: {
+        uk: "Multicolor Transport — міні-альбом на кільці",
+        pl: "Multicolor Transport — mini-album na kółku",
+        en: "Multicolor Transport — mini ring-bound wheels",
+        sv: "Multicolor Transport — minialbum på ring",
+      },
+      shortDescription: {
+        uk: "Компактний міні-альбом із 9 коліщат-карток, що поєднує вивчення кольорів і транспорту.",
+        pl: "Kompaktowy mini-album z 9 kółkami-kartonikami, łączący naukę kolorów i transportu.",
+        en: "A compact mini album of 9 wheel-shaped cards that combines learning colours and vehicles.",
+        sv: "Ett kompakt minialbum med 9 hjulformade kort som kombinerar färg- och fordonsinlärning.",
+      },
+      description: {
+        uk: "«Multicolor Transport» — міні-альбом на міцному кільці з 9 щільними картками у формі коліщат, кожна свого кольору: червоний, помаранчевий, жовтий, зелений, синій, блакитний, фіолетовий, рожевий і чорно-білий. На кожному коліщаті — три різні види транспорту саме цього кольору: пожежна машина, кран, катер, ракета, трактор, таксі, повітряна куля, потяг та інші. Дитина вчиться розрізняти кольори, розглядаючи улюблені машинки, кораблі й літаки. Компактний розмір і кільце дозволяють брати альбом у дорогу. Рекомендований вік: від 1 року.",
+        pl: "„Multicolor Transport” to mini-album na mocnym kółku z 9 grubymi kartonikami w kształcie kółek, każdy w innym kolorze: czerwonym, pomarańczowym, żółtym, zielonym, niebieskim, błękitnym, fioletowym, różowym oraz czarno-białym. Na każdym kółku znajdują się trzy różne pojazdy w tym samym kolorze: wóz strażacki, dźwig, łódka, rakieta, traktor, taksówka, balon, pociąg i inne. Dziecko uczy się rozróżniać kolory, oglądając swoje ulubione samochodziki, statki i samoloty. Kompaktowy rozmiar i kółko pozwalają zabrać album w podróż. Zalecany wiek: od 1 roku.",
+        en: "Multicolor Transport is a mini album on a sturdy ring with 9 thick wheel-shaped cards, each in its own colour: red, orange, yellow, green, blue, sky blue, purple, pink and black-and-white. Each wheel shows three different vehicles in that same colour: a fire truck, a crane, a boat, a rocket, a tractor, a taxi, a hot air balloon, a train and more. Your child learns to tell colours apart while looking at favourite cars, ships and planes. Its compact size and ring make it easy to take along. Recommended age: from 1 year.",
+        sv: "„Multicolor Transport” är ett minialbum på en stadig ring med 9 tjocka hjulformade kort, vart och ett i sin egen färg: röd, orange, gul, grön, blå, himmelsblå, lila, rosa samt svart-vit. Varje hjul visar tre olika fordon i samma färg: en brandbil, en kran, en båt, en raket, en traktor, en taxi, en luftballong, ett tåg med mera. Barnet lär sig skilja på färger genom att titta på sina favoritbilar, fartyg och flygplan. Den kompakta storleken och ringen gör albumet enkelt att ta med sig. Rekommenderad ålder: från 1 år.",
+      },
+    },
+
     // ---------- coloring ----------
     // Coloring books do NOT have a language choice and do NOT have the
     // "child's name on the cover" option (that's what "personalizable:
