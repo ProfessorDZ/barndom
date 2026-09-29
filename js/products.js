@@ -211,6 +211,46 @@
       },
     },
 
+    {
+      id: "vb-amazing-colors",
+      type: "velcro-books",
+      price: { PLN: 135, EUR: 32, SEK: 350 },
+      image: "assets/products/velcro/amazing-colors-cover.webp",
+      images: [
+        "assets/products/velcro/amazing-colors-cover.webp",
+        "assets/products/velcro/amazing-colors-spread-1.webp",
+        "assets/products/velcro/amazing-colors-spread-2.webp",
+        "assets/products/velcro/amazing-colors-spread-3.webp",
+        "assets/products/velcro/amazing-colors-spread-4.webp",
+        "assets/products/velcro/amazing-colors-spread-5.webp",
+        "assets/products/velcro/amazing-colors-spread-6.webp",
+        "assets/products/velcro/amazing-colors-spread-7.webp",
+        "assets/products/velcro/amazing-colors-spread-8.webp",
+      ],
+      thumb: "assets/products/velcro/thumbs/amazing-colors-cover.jpg",
+      ages: ["1"],
+      categories: ["colors-shapes"],
+      availableLanguages: ["uk", "pl", "en", "sv"],
+      name: {
+        uk: "Amazing Colors — альбом на липучках",
+        pl: "Amazing Colors — album na rzepy",
+        en: "Amazing Colors — velcro busy book",
+        sv: "Amazing Colors — kardborrealbum",
+      },
+      shortDescription: {
+        uk: "Яскравий альбом на липучках, що вчить дитину розрізняти й підбирати кольори через гру.",
+        pl: "Kolorowy album na rzepy, który uczy dziecko rozróżniać i dobierać kolory poprzez zabawę.",
+        en: "A colourful velcro busy book that teaches your child to tell colours apart and match them through play.",
+        sv: "Ett färgglatt kardborrealbum som lär barnet att skilja på och matcha färger genom lek.",
+      },
+      description: {
+        uk: "«Amazing Colors» — альбом на липучках, повністю присвячений кольорам. На сторінках дитина сортує різнокольорові цукерки на тортику, добирає ґудзики для сонного кота, підбирає бантики в тон волоссю, розставляє машинки на кольорових смугах дороги, приклеює зірочки й ракети за кольором, годує різнокольорових рибок і збирає букет квітів, а ще шукає олівці потрібного кольору на іменинному торті. Дитина відриває й приклеює липучки просто на сторінках, тренуючи дрібну моторику, поки грається з кольорами.",
+        pl: "„Amazing Colors” to album na rzepy poświęcony w całości kolorom. Na stronach dziecko sortuje kolorowe cukierki na torcie, dobiera guziczki dla śpiącego kota, dopasowuje kokardki do koloru włosów, ustawia samochodziki na kolorowych pasach drogi, przykleja gwiazdki i rakiety według koloru, karmi kolorowe rybki i układa bukiet kwiatów, a także szuka kredek w odpowiednim kolorze na urodzinowym torcie. Dziecko odrywa i przykleja rzepy wprost na stronach, ćwicząc małą motorykę podczas zabawy kolorami.",
+        en: "Amazing Colors is a velcro busy book all about colours. On its pages, your child sorts colourful candies on a cake stand, matches buttons for a sleepy cat, picks bows to match a hair colour, lines up cars on the coloured lanes of a road, attaches stars and rockets by colour, feeds a pond of colourful fish and arranges a bouquet of flowers, and even finds the right-coloured pencils on a birthday cake. Your child peels off and attaches the velcro pieces right on the pages, practising fine motor skills while playing with colours.",
+        sv: "„Amazing Colors” är ett kardborrealbum helt tillägnat färger. På sidorna sorterar barnet färgglada godisbitar på ett tårtfat, matchar knappar till en sömnig katt, väljer rosetter som matchar hårfärgen, ställer upp bilar på vägens färgade körfält, fäster stjärnor och raketer efter färg, matar en damm full av färgglada fiskar och binder en blombukett, och hittar till och med rätt färgs pennor på en födelsedagstårta. Barnet lossar och fäster kardborrebitarna direkt på sidorna och tränar finmotoriken medan det leker med färger.",
+      },
+    },
+
     // ---------- coloring ----------
     // Coloring books do NOT have a language choice and do NOT have the
     // "child's name on the cover" option (that's what "personalizable:
