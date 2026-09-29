@@ -259,6 +259,7 @@
       images: [
         "assets/products/velcro/colorful-shapes-cover.webp",
         "assets/products/velcro/colorful-shapes-cards.webp",
+        "assets/products/velcro/colorful-shapes-detail.webp",
       ],
       thumb: "assets/products/velcro/thumbs/colorful-shapes-cover.jpg",
       ages: ["6m"],
