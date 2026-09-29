@@ -1840,6 +1840,19 @@ fieldset.form-field {
   outline-offset: 2px;
 }
 
+/* the "pick an age" buttons turn red-edged until one is chosen */
+.form-field.has-error .radio-pill {
+  border-color: var(--color-danger);
+}
+
+/* small explanatory line under a set of options (e.g. the * note under the age buttons) */
+.form-note {
+  margin: 10px 0 0;
+  font-size: 0.85rem;
+  line-height: 1.45;
+  color: var(--color-muted);
+}
+
 .checkbox-field {
   display: flex;
   align-items: center;

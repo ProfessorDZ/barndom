@@ -116,7 +116,68 @@
   ];
 
   window.BD_PRODUCTS = [
-    // ---------- velcro-books (2 real products) ----------
+    // ---------- velcro-books ----------
+    // The games folder: 40 educational games, sold with a required age
+    // choice and a required child's name. Two optional fields make that work:
+    //   "ageChoice" — { options, starred, note }: shows a required row of age
+    //     buttons ("1+", "2+", ...) on the product page. "starred" ages get
+    //     an asterisk, and "note" (all 4 languages) is the small line under
+    //     the buttons that the asterisk points to. The chosen age is saved
+    //     on the cart line and shown in the cart.
+    //   "nameIncluded: true" — the child's name is required and already part
+    //     of the price: an always-visible name field instead of the "+ name
+    //     on the cover" checkbox, and no surcharge.
+    // "ages" below lists every age filter this folder should appear under.
+    {
+      id: "vb-games-folder",
+      type: "velcro-books",
+      price: { PLN: 240, EUR: 56, SEK: 620 },
+      image: "assets/products/velcro/games-folder-cover.webp",
+      images: [
+        "assets/products/velcro/games-folder-cover.webp",
+        "assets/products/velcro/games-folder-covers-photo.jpg",
+        "assets/products/velcro/games-folder-directions.jpg",
+        "assets/products/velcro/games-folder-left-right-hand.jpg",
+        "assets/products/velcro/games-folder-shapes-colors.jpg",
+        "assets/products/velcro/games-folder-opposites.jpg",
+        "assets/products/velcro/games-folder-christmas.jpg",
+      ],
+      thumb: "assets/products/velcro/thumbs/games-folder-cover.jpg",
+      bestseller: true,
+      ages: ["1", "3", "5"],
+      ageLabel: "1+ – 5+",
+      categories: ["albums-all-topics", "logic", "english"],
+      nameIncluded: true,
+      ageChoice: {
+        options: ["1", "2", "3", "4", "5"],
+        starred: ["4", "5"],
+        note: {
+          uk: "* Для 4+ і 5+ у папці буде кілька ігор на липучках, решта — ігри на письмо, англійську мову та нейротренажери.",
+          pl: "* Dla 4+ i 5+ w segregatorze będzie kilka gier na rzepy, pozostałe to gry do pisania, do nauki angielskiego oraz neurotrenażery.",
+          en: "* For 4+ and 5+, the folder will include a few velcro games; the rest are writing games, English and brain-training games.",
+          sv: "* För 4+ och 5+ ingår några kardborrespel i pärmen; resten är skrivspel, engelska och hjärnträning.",
+        },
+      },
+      name: {
+        uk: "Папка з 40 розвивальними іграми",
+        pl: "Segregator z 40 grami edukacyjnymi",
+        en: "Folder of 40 educational games",
+        sv: "Pärm med 40 pedagogiska spel",
+      },
+      shortDescription: {
+        uk: "Папка з 40 розвивальними іграми для дітей від 1 до 5 років — добирається під вік вашої дитини.",
+        pl: "Segregator z 40 grami edukacyjnymi dla dzieci od 1 do 5 lat — dobierany do wieku Twojego dziecka.",
+        en: "A folder of 40 educational games for children aged 1 to 5 — put together for your child's age.",
+        sv: "En pärm med 40 pedagogiska spel för barn från 1 till 5 år — sammansatt efter ditt barns ålder.",
+      },
+      description: {
+        uk: "Папка з 40 розвивальними іграми, які допоможуть дитині вчитися граючись. Наповнення добирається під вік дитини — від 1+ до 5+, який ви обираєте під час замовлення. Ігри на липучках і картки: кольори й фігури, ліва та права рука з пальчиковими персонажами, транспорт, протилежності, сезонні й новорічні сюжети — так, як на фото. Для 4+ і 5+ у папці буде кілька ігор на липучках, а решта — ігри на письмо, англійську мову та нейротренажери. Ім'я дитини вказується під час замовлення.",
+        pl: "Segregator z 40 grami edukacyjnymi, dzięki którym dziecko uczy się przez zabawę. Zawartość jest dobierana do wieku dziecka — od 1+ do 5+, który wybierasz podczas składania zamówienia. Gry na rzepy i karty: kolory i figury, lewa i prawa ręka z paluszkowymi postaciami, transport, przeciwieństwa, motywy sezonowe i świąteczne — tak jak na zdjęciach. Dla 4+ i 5+ w segregatorze będzie kilka gier na rzepy, a pozostałe to gry do pisania, do nauki angielskiego oraz neurotrenażery. Imię dziecka podajesz podczas składania zamówienia.",
+        en: "A folder of 40 educational games that help your child learn through play. The contents are put together for your child's age — from 1+ to 5+ — which you choose when ordering. Velcro games and cards: colours and shapes, left and right hand with finger characters, transport, opposites, seasonal and Christmas scenes — as shown in the photos. For 4+ and 5+ the folder will include a few velcro games; the rest are writing games, English and brain-training games. You enter your child's name when ordering.",
+        sv: "En pärm med 40 pedagogiska spel som hjälper barnet att lära sig genom lek. Innehållet sätts ihop efter barnets ålder — från 1+ till 5+ — som du väljer när du beställer. Kardborrespel och kort: färger och former, vänster och höger hand med fingerfigurer, fordon, motsatser, säsongs- och julmotiv — som på bilderna. För 4+ och 5+ ingår några kardborrespel i pärmen; resten är skrivspel, engelska och hjärnträning. Barnets namn anger du när du beställer.",
+      },
+    },
+
     // NOTE on "ages": the site's age filter only has 6m / 1+ / 3+ / 5+ /
     // 10+ — there is no "4+" option. This book's own box says "from 4
     // years" (see the description and "ageNote" below), but it's tagged

@@ -12,7 +12,8 @@
  *   lineId: "abc123",        // internal unique id
  *   productId: "vb-little-traveller",
  *   productLanguage: "uk",   // language of the printed product
- *   personalized: true,      // whether a name was added to the cover
+ *   childAge: "3",           // age chosen for products with an age choice ("" otherwise)
+ *   personalized: true,      // whether a name was added (to the cover, or required by the product)
  *   childName: "Олеся",      // only meaningful when personalized
  *   quantity: 2,
  *   unitPrice: 49,           // product price + personalization if any
@@ -60,6 +61,7 @@
       if (
         line.productId === item.productId &&
         line.productLanguage === item.productLanguage &&
+        (line.childAge || "") === (item.childAge || "") &&
         !!line.personalized === !!item.personalized &&
         (line.childName || "") === (item.childName || "")
       ) {
@@ -84,6 +86,7 @@
         lineId: makeLineId(),
         productId: item.productId,
         productLanguage: item.productLanguage,
+        childAge: item.childAge || "",
         personalized: !!item.personalized,
         childName: item.personalized ? item.childName || "" : "",
         quantity: item.quantity,

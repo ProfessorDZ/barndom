@@ -98,7 +98,9 @@
   // in the shop's default currency instead, for the same reason.)
   function unitPricing(product, personalized) {
     var base = resolvePrice(product && product.price);
-    if (!personalized) return base;
+    // A product with "nameIncluded: true" asks for the child's name as a
+    // normal part of ordering (no checkbox), so there is never a surcharge.
+    if (!personalized || (product && product.nameIncluded)) return base;
     var extra = priceAmount(window.BD_CONFIG && window.BD_CONFIG.personalizationPrice, base.currency);
     if (extra != null) return { amount: base.amount + extra, currency: base.currency };
     var defaultCurrency = (window.BD_CONFIG && window.BD_CONFIG.defaultCurrency) || "EUR";
@@ -156,6 +158,23 @@
       if (list[i].id === id) return list[i];
     }
     return null;
+  }
+
+  // How a product handles the child's name:
+  //   "included" — the name is required and part of the price (product has
+  //                "nameIncluded: true"): always-visible field, no extra charge
+  //   "optional" — the usual "add name on the cover" checkbox with a surcharge
+  //   "none"     — no name at all (product has "personalizable: false")
+  function nameMode(product) {
+    if (product && product.nameIncluded) return "included";
+    return product && product.personalizable === false ? "none" : "optional";
+  }
+
+  // A product's optional "age choice" (a required set of age buttons on
+  // the product page), or null when it has none. See js/products.js.
+  function getAgeChoice(product) {
+    var choice = product && product.ageChoice;
+    return choice && choice.options && choice.options.length ? choice : null;
   }
 
   function getProductsByType(type) {
@@ -328,7 +347,8 @@
   function miniCartLineHtml(line, product) {
     var metaBits = [];
     if (line.productLanguage) metaBits.push(window.BD_T("langName." + line.productLanguage));
-    if (line.personalized) metaBits.push(window.BD_T("cart.tableChildName") + ": " + line.childName);
+    if (line.childAge) metaBits.push(window.BD_T("cart.tableChildAge") + ": " + line.childAge + "+");
+    if (line.personalized) metaBits.push(window.BD_T(nameMode(product) === "included" ? "product.nameLabel" : "cart.tableChildName") + ": " + line.childName);
     return (
       '<div class="mini-cart-line" data-line-id="' +
       line.lineId +
@@ -1757,15 +1777,36 @@
     // Coloring books (and any product with "personalizable: false") skip
     // the "child's name on the cover" option entirely — there's no name
     // field on the page to read or validate for them.
-    var personalizable = product.personalizable !== false;
+    var mode = nameMode(product);
     var childName = "";
+    var childAge = "";
 
-    if (personalizable) {
+    // Products with an age choice (e.g. the games folder) need one picked
+    // before anything can go in the cart.
+    if (getAgeChoice(product)) {
+      var ageWrap = document.getElementById("bd-child-age-wrap");
+      var ageError = document.getElementById("bd-child-age-error");
+      if (!currentProductState.age) {
+        ageError.textContent = window.BD_T("product.ageRequired");
+        ageError.hidden = false;
+        ageWrap.classList.add("has-error");
+        ageWrap.scrollIntoView({ block: "center", behavior: "smooth" });
+        var firstAge = ageWrap.querySelector('input[type="radio"]');
+        if (firstAge) firstAge.focus({ preventScroll: true });
+        return;
+      }
+      ageError.hidden = true;
+      ageWrap.classList.remove("has-error");
+      childAge = currentProductState.age;
+    }
+
+    if (mode !== "none") {
       var nameInput = document.getElementById("bd-child-name");
       var nameError = document.getElementById("bd-child-name-error");
       var childNameWrap = document.getElementById("bd-child-name-wrap");
       childName = nameInput.value.trim();
-      if (currentProductState.personalized && (!childName || childName.length > 20)) {
+      var nameNeeded = mode === "included" || currentProductState.personalized;
+      if (nameNeeded && (!childName || childName.length > 20)) {
         nameError.textContent = window.BD_T("product.nameRequired");
         nameError.hidden = false;
         childNameWrap.classList.add("has-error");
@@ -1776,7 +1817,7 @@
       childNameWrap.classList.remove("has-error");
     }
 
-    var personalized = personalizable && currentProductState.personalized;
+    var personalized = mode === "included" || (mode === "optional" && currentProductState.personalized);
     // Stored on the line so a later language switch can re-price it (see
     // repriceCartToCurrentCurrency) instead of leaving stale amounts in a
     // currency the site no longer shows.
@@ -1785,6 +1826,7 @@
     window.BD_CART.add({
       productId: product.id,
       productLanguage: currentProductState.language || "",
+      childAge: childAge,
       personalized: personalized,
       childName: personalized ? childName.slice(0, 20) : "",
       quantity: currentProductState.quantity,
@@ -1827,9 +1869,15 @@
     // at all, so nothing gets shown (or later validated / saved to the
     // cart) for a product that doesn't actually support it.
     var hasLanguages = !!(product.availableLanguages && product.availableLanguages.length);
-    var personalizable = product.personalizable !== false;
+    var mode = nameMode(product);
+    var personalizable = mode === "optional"; // the "+ name on the cover" checkbox
+    var nameIncluded = mode === "included"; // name is required, no checkbox, no surcharge
+    var ageChoice = getAgeChoice(product);
     currentProductState = {
       language: hasLanguages ? product.availableLanguages[0] : "",
+      // No default on purpose: a wrong pre-selected age would send the
+      // wrong folder, so the customer has to pick one themselves.
+      age: "",
       personalized: false,
       quantity: 1,
     };
@@ -1850,6 +1898,28 @@
               ' required>' +
               "<span>" +
               escapeHtml(window.BD_T("langName." + code)) +
+              "</span>" +
+              "</label>"
+            );
+          })
+          .join("")
+      : "";
+
+    // Age buttons ("1+", "2+", ...). Ages listed in "starred" get an
+    // asterisk that points to the note underneath.
+    var ageOptions = ageChoice
+      ? ageChoice.options
+          .map(function (value) {
+            var starred = (ageChoice.starred || []).indexOf(value) !== -1;
+            return (
+              '<label class="radio-pill">' +
+              '<input type="radio" name="bd-child-age" value="' +
+              escapeHtml(value) +
+              '">' +
+              "<span>" +
+              escapeHtml(value) +
+              "+" +
+              (starred ? "*" : "") +
               "</span>" +
               "</label>"
             );
@@ -1913,6 +1983,29 @@
           languageOptions +
           "</div>" +
           "</fieldset>"
+        : "") +
+      (ageChoice
+        ? '<fieldset class="form-field" id="bd-child-age-wrap">' +
+          "<legend>" +
+          escapeHtml(window.BD_T("product.ageLabel")) +
+          " *</legend>" +
+          '<div class="radio-pill-row">' +
+          ageOptions +
+          "</div>" +
+          (ageChoice.note ? '<p class="form-note">' + escapeHtml(localizedText(ageChoice.note)) + "</p>" : "") +
+          '<p class="form-error" id="bd-child-age-error" hidden></p>' +
+          "</fieldset>"
+        : "") +
+      (nameIncluded
+        ? '<div class="form-field" id="bd-child-name-wrap">' +
+          '<label for="bd-child-name">' +
+          escapeHtml(window.BD_T("product.nameLabel")) +
+          " *</label>" +
+          '<input type="text" id="bd-child-name" maxlength="20" autocomplete="off" placeholder="' +
+          escapeHtml(window.BD_T("product.namePlaceholder")) +
+          '">' +
+          '<p class="form-error" id="bd-child-name-error" hidden></p>' +
+          "</div>"
         : "") +
       (personalizable
         ? '<div class="form-field form-field--checkbox">' +
@@ -2006,6 +2099,26 @@
         input.addEventListener("change", function () {
           if (input.checked) currentProductState.language = input.value;
         });
+      });
+    }
+
+    // age buttons (only present when the product has an age choice)
+    if (ageChoice) {
+      Array.prototype.forEach.call(mount.querySelectorAll('input[name="bd-child-age"]'), function (input) {
+        input.addEventListener("change", function () {
+          if (!input.checked) return;
+          currentProductState.age = input.value;
+          document.getElementById("bd-child-age-error").hidden = true;
+          document.getElementById("bd-child-age-wrap").classList.remove("has-error");
+        });
+      });
+    }
+
+    // typing a name clears its error straight away (name-included products)
+    if (nameIncluded) {
+      document.getElementById("bd-child-name").addEventListener("input", function () {
+        document.getElementById("bd-child-name-error").hidden = true;
+        document.getElementById("bd-child-name-wrap").classList.remove("has-error");
       });
     }
 
@@ -2142,9 +2255,16 @@
                 escapeHtml(window.BD_T("langName." + line.productLanguage)) +
                 "</p>"
               : "") +
+            (line.childAge
+              ? '<p class="cart-line__meta">' +
+                escapeHtml(window.BD_T("cart.tableChildAge")) +
+                ": " +
+                escapeHtml(line.childAge) +
+                "+</p>"
+              : "") +
             (line.personalized
               ? '<p class="cart-line__meta">' +
-                escapeHtml(window.BD_T("cart.tableChildName")) +
+                escapeHtml(window.BD_T(nameMode(product) === "included" ? "product.nameLabel" : "cart.tableChildName")) +
                 ": " +
                 escapeHtml(line.childName) +
                 "</p>"

@@ -127,6 +127,17 @@ Extra things you can add to any product:
   still comes from `ages`. Leave it out and the label is worked out
   from `ages` as usual. The same text works for all 4 languages, no
   translation needed.
+- `ageChoice: { ... }` — makes the shopper pick their child's age
+  (buttons like 1+, 2+, 3+ …) before they can add the product to the
+  cart. Inside it: `options` is the list of ages to show, `starred` is
+  the ages that get an asterisk (`*`), and `note` is the small line under
+  the buttons that the asterisk points to (write it in all 4 languages).
+  The chosen age is saved in the cart, so two different ages become two
+  separate lines. The games folder ("vb-games-folder") is the example.
+- `nameIncluded: true` — the child's name is a normal, required part of
+  the order: the product's page shows a name box straight away (instead
+  of the "add name on the cover" tick-box) and there is **no** extra
+  charge for it. Leave it out for the usual optional, paid name option.
 
 ## The "coming soon" sections
 
