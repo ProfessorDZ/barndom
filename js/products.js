@@ -385,6 +385,45 @@
       },
     },
 
+    {
+      id: "vb-colorful-monsters",
+      type: "velcro-books",
+      price: { PLN: 55, EUR: 13, SEK: 145 },
+      image: "assets/products/velcro/colorful-monsters-cover.webp",
+      images: [
+        "assets/products/velcro/colorful-monsters-cover.webp",
+        "assets/products/velcro/colorful-monsters-yellow.webp",
+        "assets/products/velcro/colorful-monsters-red.webp",
+        "assets/products/velcro/colorful-monsters-green.webp",
+        "assets/products/velcro/colorful-monsters-blue.webp",
+        "assets/products/velcro/colorful-monsters-brown.webp",
+        "assets/products/velcro/colorful-monsters-light-blue.webp",
+        "assets/products/velcro/colorful-monsters-black.webp",
+      ],
+      thumb: "assets/products/velcro/thumbs/colorful-monsters-cover.jpg",
+      ages: ["1"],
+      categories: ["colors-shapes"],
+      availableLanguages: ["uk", "pl", "en", "sv"],
+      name: {
+        uk: "Кольорові монстри — міні-альбом на кільці",
+        pl: "Kolorowe potworki — mini-album na kółku",
+        en: "Colourful Monsters — mini ring-bound album",
+        sv: "Färgglada monster — minialbum på ring",
+      },
+      shortDescription: {
+        uk: "Міні-альбом на кільці про 9 кольорів, де кожен колір має свого пухнастого монстрика.",
+        pl: "Mini-album na kółku o 9 kolorach, w którym każdy kolor ma swojego puchatego potworka.",
+        en: "A mini ring-bound album about 9 colours, where every colour has its own fluffy monster.",
+        sv: "Ett minialbum på ring om 9 färger, där varje färg har sitt eget fluffiga monster.",
+      },
+      description: {
+        uk: "«Кольорові монстри» — міні-альбом на кільці про 9 кольорів. Кожен колір — це окреме коло з пухнастим монстриком, який визирає з-за краю, та назвою кольору посередині. Дитина підбирає предмети потрібного кольору й розміщує їх на колі: жовтий — лимончик, сонечко й цукерка, червоний — полуничка, сонечкова корівка й пожежна машина, зелений — дракончик, огірок і кавунчик, синій — чорничка, книжечка й поліцейська машина, коричневий — жолудь, мавпочка й кінь, блакитний — морський коник, медуза й підводний човен, чорний — кажан, кросівки й окуляри. Так знайомство з кольорами перетворюється на веселу гру. Рекомендований вік: від 1 року.",
+        pl: "„Kolorowe potworki” to mini-album na kółku o 9 kolorach. Każdy kolor to osobne koło z puchatym potworkiem wyglądającym zza krawędzi i nazwą koloru pośrodku. Dziecko dobiera przedmioty w odpowiednim kolorze i umieszcza je na kole: żółty — cytrynka, słoneczko i cukierek, czerwony — truskawka, biedronka i wóz strażacki, zielony — mały smok, ogórek i arbuzik, niebieski — borówka, notesik i radiowóz, brązowy — żołądź, małpka i konik, błękitny — konik morski, meduza i łódź podwodna, czarny — nietoperz, trampki i okulary. Dzięki temu nauka kolorów staje się wesołą zabawą. Zalecany wiek: od 1 roku.",
+        en: "Colourful Monsters is a mini ring-bound album about 9 colours. Each colour is its own round card with a fluffy monster peeking over the edge and the colour's name in the middle. Your child picks out the objects in the right colour and places them on the card: yellow — a lemon, a sun and a candy; red — a strawberry, a ladybird and a fire engine; green — a little dragon, a cucumber and a watermelon; blue — a blueberry, a notebook and a police car; brown — an acorn, a monkey and a horse; light blue — a seahorse, a jellyfish and a submarine; black — a bat, trainers and sunglasses. Learning colours turns into a fun game. Recommended age: from 1 year.",
+        sv: "„Färgglada monster” är ett minialbum på ring om 9 färger. Varje färg är ett eget runt kort med ett fluffigt monster som tittar fram över kanten och färgens namn i mitten. Barnet plockar ut föremål i rätt färg och placerar dem på kortet: gul — en citron, en sol och en karamell; röd — en jordgubbe, en nyckelpiga och en brandbil; grön — en liten drake, en gurka och en vattenmelon; blå — ett blåbär, en anteckningsbok och en polisbil; brun — ett ekollon, en apa och en häst; ljusblå — en sjöhäst, en manet och en ubåt; svart — en fladdermus, gymnastikskor och solglasögon. Så blir färginlärning en rolig lek. Rekommenderad ålder: från 1 år.",
+      },
+    },
+
     // ---------- coloring ----------
     // Coloring books do NOT have a language choice and do NOT have the
     // "child's name on the cover" option (that's what "personalizable:
