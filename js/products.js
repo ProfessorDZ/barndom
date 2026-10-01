@@ -232,7 +232,7 @@
     {
       id: "vb-dinosaur-album",
       type: "velcro-books",
-      price: { PLN: 150, EUR: 27, SEK: 300 },
+      price: { PLN: 150, EUR: 35, SEK: 390 },
       image: "assets/products/velcro/dinosaur-album-cover.webp",
       images: [
         "assets/products/velcro/dinosaur-album-cover.webp",
