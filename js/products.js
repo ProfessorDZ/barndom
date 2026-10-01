@@ -131,7 +131,7 @@
     {
       id: "vb-games-folder",
       type: "velcro-books",
-      price: { PLN: 240, EUR: 56, SEK: 620 },
+      price: { PLN: 340, EUR: 79, SEK: 880 },
       image: "assets/products/velcro/games-folder-cover.webp",
       images: [
         "assets/products/velcro/games-folder-cover.webp",
@@ -165,16 +165,16 @@
         sv: "Pärm med 40 pedagogiska spel",
       },
       shortDescription: {
-        uk: "Папка з 40 розвивальними іграми для дітей від 1 до 5 років — добирається під вік вашої дитини.",
-        pl: "Segregator z 40 grami edukacyjnymi dla dzieci od 1 do 5 lat — dobierany do wieku Twojego dziecka.",
-        en: "A folder of 40 educational games for children aged 1 to 5 — put together for your child's age.",
-        sv: "En pärm med 40 pedagogiska spel för barn från 1 till 5 år — sammansatt efter ditt barns ålder.",
+        uk: "40 ігор, які розвивають дитину цілий рік — папка для дітей від 1 до 5 років, добирається під вік вашої дитини.",
+        pl: "40 gier, które rozwijają dziecko przez cały rok — segregator dla dzieci od 1 do 5 lat, dobierany do wieku Twojego dziecka.",
+        en: "40 games that help your child develop all year round — a folder for children aged 1 to 5, put together for your child's age.",
+        sv: "40 spel som utvecklar barnet under ett helt år — en pärm för barn från 1 till 5 år, sammansatt efter ditt barns ålder.",
       },
       description: {
-        uk: "Папка з 40 розвивальними іграми, які допоможуть дитині вчитися граючись. Наповнення добирається під вік дитини — від 1+ до 5+, який ви обираєте під час замовлення. Ігри на липучках і картки: кольори й фігури, ліва та права рука з пальчиковими персонажами, транспорт, протилежності, сезонні й новорічні сюжети — так, як на фото. Для 4+ і 5+ у папці буде кілька ігор на липучках, а решта — ігри на письмо, англійську мову та нейротренажери. Ім'я дитини вказується під час замовлення.",
-        pl: "Segregator z 40 grami edukacyjnymi, dzięki którym dziecko uczy się przez zabawę. Zawartość jest dobierana do wieku dziecka — od 1+ do 5+, który wybierasz podczas składania zamówienia. Gry na rzepy i karty: kolory i figury, lewa i prawa ręka z paluszkowymi postaciami, transport, przeciwieństwa, motywy sezonowe i świąteczne — tak jak na zdjęciach. Dla 4+ i 5+ w segregatorze będzie kilka gier na rzepy, a pozostałe to gry do pisania, do nauki angielskiego oraz neurotrenażery. Imię dziecka podajesz podczas składania zamówienia.",
-        en: "A folder of 40 educational games that help your child learn through play. The contents are put together for your child's age — from 1+ to 5+ — which you choose when ordering. Velcro games and cards: colours and shapes, left and right hand with finger characters, transport, opposites, seasonal and Christmas scenes — as shown in the photos. For 4+ and 5+ the folder will include a few velcro games; the rest are writing games, English and brain-training games. You enter your child's name when ordering.",
-        sv: "En pärm med 40 pedagogiska spel som hjälper barnet att lära sig genom lek. Innehållet sätts ihop efter barnets ålder — från 1+ till 5+ — som du väljer när du beställer. Kardborrespel och kort: färger och former, vänster och höger hand med fingerfigurer, fordon, motsatser, säsongs- och julmotiv — som på bilderna. För 4+ och 5+ ingår några kardborrespel i pärmen; resten är skrivspel, engelska och hjärnträning. Barnets namn anger du när du beställer.",
+        uk: "40 ігор, які розвивають дитину цілий рік. Папка з розвивальними іграми, які допомагають дитині вчитися граючись. Наповнення добирається під вік дитини — від 1+ до 5+, який ви обираєте під час замовлення. Ігри на липучках і картки: кольори й фігури, ліва та права рука з пальчиковими персонажами, транспорт, протилежності, сезонні й новорічні сюжети — так, як на фото. Для 4+ і 5+ у папці буде кілька ігор на липучках, а решта — ігри на письмо, англійську мову та нейротренажери. Ім'я дитини вказується під час замовлення.",
+        pl: "40 gier, które rozwijają dziecko przez cały rok. Segregator z grami edukacyjnymi, dzięki którym dziecko uczy się przez zabawę. Zawartość jest dobierana do wieku dziecka — od 1+ do 5+, który wybierasz podczas składania zamówienia. Gry na rzepy i karty: kolory i figury, lewa i prawa ręka z paluszkowymi postaciami, transport, przeciwieństwa, motywy sezonowe i świąteczne — tak jak na zdjęciach. Dla 4+ i 5+ w segregatorze będzie kilka gier na rzepy, a pozostałe to gry do pisania, do nauki angielskiego oraz neurotrenażery. Imię dziecka podajesz podczas składania zamówienia.",
+        en: "40 games that help your child develop all year round. A folder of educational games that help your child learn through play. The contents are put together for your child's age — from 1+ to 5+ — which you choose when ordering. Velcro games and cards: colours and shapes, left and right hand with finger characters, transport, opposites, seasonal and Christmas scenes — as shown in the photos. For 4+ and 5+ the folder will include a few velcro games; the rest are writing games, English and brain-training games. You enter your child's name when ordering.",
+        sv: "40 spel som utvecklar barnet under ett helt år. En pärm med pedagogiska spel som hjälper barnet att lära sig genom lek. Innehållet sätts ihop efter barnets ålder — från 1+ till 5+ — som du väljer när du beställer. Kardborrespel och kort: färger och former, vänster och höger hand med fingerfigurer, fordon, motsatser, säsongs- och julmotiv — som på bilderna. För 4+ och 5+ ingår några kardborrespel i pärmen; resten är skrivspel, engelska och hjärnträning. Barnets namn anger du när du beställer.",
       },
     },
 
