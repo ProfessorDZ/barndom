@@ -1701,5 +1701,39 @@
         sv: "„Plastelina” är en laminerad bok med 14 sidor där barnet modellerar med lekdeg. På varje bild finns vita cirklar som ska fyllas med lekdegskulor. Sidorna är varierade: en pojke och en flicka vars ansikten och frisyrer barnet skapar själv; en munk, en vattenmelonskiva, en påskkaka och en paj; ett plommon, ett hallon och blåbär; en julgran och en kälke; en mandarin och en jordgubbe; en sol, en nyckelpiga och en spindel; en hink och en xylofon; ballonger och en drake; en säl, en elefant och en varg; en luftballong och en helikopter; svampar och en räv; en späckhuggare, en delfin och en val. Leken tränar finmotorik och fantasi och introducerar färger. I setet ingår boken med 4 blad på spiral, lekdeg och förpackning. Utan kardborre.",
       },
     },
+    {
+      id: "pd-princess",
+      type: "playdough",
+      price: { PLN: 55, EUR: 13, SEK: 145 },
+      image: "assets/products/playdough/princess-cover.webp",
+      images: [
+        "assets/products/playdough/princess-cover.webp",
+        "assets/products/playdough/princess-spread-1.webp",
+        "assets/products/playdough/princess-spread-2.webp",
+        "assets/products/playdough/princess-spread-3.webp",
+        "assets/products/playdough/princess-spread-4.webp",
+        "assets/products/playdough/princess-spread-5.webp",
+      ],
+      thumb: "assets/products/playdough/thumbs/princess-cover.jpg",
+      personalizable: false,
+      name: {
+        uk: "For Little Princesses — книга з пластиліном для маленьких принцес",
+        pl: "For Little Princesses — książka z plasteliną dla małych księżniczek",
+        en: "For Little Princesses — playdough mats book",
+        sv: "For Little Princesses — lekdegsbok för små prinsessor",
+      },
+      shortDescription: {
+        uk: "Книга з 10 казкових сторінок для ліплення з пластиліну: принцеса, єдиноріг, корона, фея та інше — пластилін у наборі.",
+        pl: "Książka z 10 bajkowymi stronami do lepienia z plasteliny: księżniczka, jednorożec, korona, wróżka i więcej — plastelina w zestawie.",
+        en: "A book of 10 fairy-tale pages for sculpting with playdough: a princess, a unicorn, a crown, a fairy and more — playdough included.",
+        sv: "En bok med 10 sagolika sidor för modellering med lekdeg: en prinsessa, en enhörning, en krona, en fe och mer — lekdeg ingår.",
+      },
+      description: {
+        uk: "«For Little Princesses» — ламінована книга з 10 казкових сторінок, на яких дитина ліпить з пластиліну. На кожній картинці є намисто, кружечки й візерунки, які треба прикрасити кульками та джгутиками пластиліну: принцеса з намистом, чарівний єдиноріг, чайний сервіз, королівська корона, метелик-фея, лялька з іграшками, фея-садівниця з квітами, співачка, дівчинка на велосипеді та дзеркальце з гребінцем. Така гра тренує дрібну моторику, уяву та терпіння. У наборі: книга на спіралі, пластилін та пакування. Липучок немає.",
+        pl: "„For Little Princesses” to laminowana książka z 10 bajkowymi stronami, na których dziecko lepi z plasteliny. Na każdym obrazku są korale, kółka i wzory, które trzeba ozdobić kulkami i wałeczkami plasteliny: księżniczka z naszyjnikiem, magiczny jednorożec, serwis do herbaty, królewska korona, motyl-wróżka, lalka z zabawkami, wróżka-ogrodniczka z kwiatami, śpiewaczka, dziewczynka na rowerze oraz lusterko z grzebieniem. Taka zabawa ćwiczy małą motorykę, wyobraźnię i cierpliwość. W zestawie: książka na spirali, plastelina i opakowanie. Bez rzepów.",
+        en: "For Little Princesses is a laminated book of 10 fairy-tale pages where your child sculpts with playdough. Every picture has beads, circles and patterns to decorate with balls and rolls of playdough: a princess with a necklace, a magical unicorn, a tea set, a royal crown, a butterfly fairy, a doll with toys, a gardener fairy with flowers, a singer, a girl on a bicycle, and a hand mirror with a comb. This kind of play builds fine motor skills, imagination and patience. The set includes the book on a spiral, playdough and packaging. No velcro.",
+        sv: "„For Little Princesses” är en laminerad bok med 10 sagolika sidor där barnet modellerar med lekdeg. På varje bild finns pärlor, cirklar och mönster att dekorera med kulor och korvar av lekdeg: en prinsessa med halsband, en magisk enhörning, ett tekalas, en kunglig krona, en fjärilsfe, en docka med leksaker, en trädgårdsfe med blommor, en sångerska, en flicka på cykel och en handspegel med kam. Leken tränar finmotorik, fantasi och tålamod. I setet ingår boken på spiral, lekdeg och förpackning. Utan kardborre.",
+      },
+    },
   ];
 })();
