@@ -76,7 +76,7 @@
   // true, the site hides it from navigation (header menu, footer links)
   // and from bestsellers/search/"you may also like", and shows a friendly
   // "coming soon" page instead of a product grid if someone opens its
-  // catalog link directly. Right now velcro-books, coloring and playdough have
+  // catalog link directly. Right now velcro-books, coloring, playdough and wipe-clean have
   // real products, so every other section below is marked comingSoon —
   // set a section's flag back to false (or remove the line) once it has
   // real products in window.BD_PRODUCTS, see README.md for the full
@@ -86,7 +86,7 @@
     { id: "coloring", image: "assets/types/coloring.svg", pastel: "mint" },
     { id: "playdough", image: "assets/types/playdough.svg", pastel: "sky" },
     { id: "spot-it", image: "assets/types/spot-it.svg", pastel: "sun", comingSoon: true },
-    { id: "wipe-clean", image: "assets/types/wipe-clean.svg", pastel: "lilac", comingSoon: true },
+    { id: "wipe-clean", image: "assets/types/wipe-clean.svg", pastel: "lilac" },
     { id: "unit-study", image: "assets/types/unit-study.svg", comingSoon: true },
   ];
 
@@ -1768,6 +1768,48 @@
         pl: "„Plastelinowy alfabet” to laminowana książka ze wszystkimi 33 literami ukraińskiego alfabetu na 11 stronach. Każda litera to duży biały kształt, który dziecko wypełnia plasteliną, a obok obrazek z białymi kółkami na kulki plasteliny: morela, banany, wiśnie, jeż, małpka, słoń, flaming, kameleon, żółw i inne. Ostatnia strona to ciekawa zagadka ze splecionymi konturami wszystkich liter. Dziecko uczy się liter przez zabawę, ćwicząc małą motorykę, wyobraźnię i uwagę. W zestawie: książka na spirali, plastelina i opakowanie. Bez rzepów.",
         en: "Playdough Alphabet is a laminated book with all 33 letters of the Ukrainian alphabet on 11 pages. Each letter is a big white shape that your child fills with playdough, and next to it is a picture with white circles for balls of playdough: an apricot, bananas, cherries, a hedgehog, a monkey, an elephant, a flamingo, a chameleon, a turtle and more. The last page is a fun puzzle of interlocking outlines of all the letters. Your child learns the letters through play while building fine motor skills, imagination and attention. The set includes the book on a spiral, playdough and packaging. No velcro.",
         sv: "„Lekdegsalfabetet” är en laminerad bok med alla 33 bokstäver i det ukrainska alfabetet på 11 sidor. Varje bokstav är en stor vit form som barnet fyller med lekdeg, och bredvid finns en bild med vita cirklar för lekdegskulor: en aprikos, bananer, körsbär, en igelkott, en apa, en elefant, en flamingo, en kameleont, en sköldpadda och mer. Sista sidan är ett roligt pussel med sammanflätade konturer av alla bokstäver. Barnet lär sig bokstäverna genom lek och tränar finmotorik, fantasi och uppmärksamhet. I setet ingår boken på spiral, lekdeg och förpackning. Utan kardborre.",
+      },
+    },
+
+    // ---------- wipe-clean ----------
+    // Wipe-clean workbooks: no velcro, no language choice (instructions are in
+    // Ukrainian, the learning words are English), no name on the cover.
+    {
+      id: "wc-english-workbook",
+      type: "wipe-clean",
+      price: { PLN: 85, EUR: 20, SEK: 220 },
+      image: "assets/products/wipe-clean/english-cover.webp",
+      images: [
+        "assets/products/wipe-clean/english-cover.webp",
+        "assets/products/wipe-clean/english-spread-1.webp",
+        "assets/products/wipe-clean/english-spread-2.webp",
+        "assets/products/wipe-clean/english-spread-3.webp",
+        "assets/products/wipe-clean/english-spread-4.webp",
+        "assets/products/wipe-clean/english-spread-5.webp",
+        "assets/products/wipe-clean/english-spread-6.webp",
+        "assets/products/wipe-clean/english-spread-7.webp",
+        "assets/products/wipe-clean/english-spread-8.webp",
+        "assets/products/wipe-clean/english-spread-9.webp",
+      ],
+      thumb: "assets/products/wipe-clean/thumbs/english-cover.jpg",
+      personalizable: false,
+      name: {
+        uk: "Поринь у пригоди — зошит пиши-стирай з англійської",
+        pl: "Zanurz się w przygodzie — zeszyt zmazywalny do angielskiego",
+        en: "Dive into Adventure — wipe-clean English workbook",
+        sv: "Dyk in i äventyret — torkbar engelsk arbetsbok",
+      },
+      shortDescription: {
+        uk: "Зошит пиши-стирай на 11 листків із завданнями для першого знайомства з англійською — ручка в наборі.",
+        pl: "Zeszyt zmazywalny z 11 kartkami zadań do pierwszego poznania angielskiego — pisak w zestawie.",
+        en: "A wipe-clean workbook of 11 sheets with tasks for a first introduction to English — pen included.",
+        sv: "En torkbar arbetsbok med 11 blad och uppgifter för första mötet med engelska — penna ingår.",
+      },
+      description: {
+        uk: "«Поринь у пригоди» — ламінований зошит пиши-стирай для першого знайомства з англійською мовою, у якому дитину веде за собою кумедний зайчик Коржик. Завдання написані українською, а слова для вивчення — англійською. Дитина сортує овочі й фрукти по кошиках, з'єднує кольорові олівці з предметами, збирає врожай із дерев, з'єднує половинки фруктів, вчить «ліворуч і праворуч» на морських мешканцях, знайомиться з видами транспорту й професіями, розгадує ребуси, вивчає геометричні фігури, цифри від 1 до 10, посуд, частини тіла, англійську абетку та складає прості речення («I am a cow, I live on a farm»). Усе можна писати й стирати знову та знову. У наборі: зошит із 11 листків на спіралі, ручка для писання й стирання та пакування. Липучок немає.",
+        pl: "„Zanurz się w przygodzie” to laminowany zeszyt zmazywalny do pierwszego poznania języka angielskiego, w którym dziecko prowadzi wesoły króliczek Korżyk. Polecenia są po ukraińsku, a słówka do nauki po angielsku. Dziecko sortuje warzywa i owoce do koszyków, łączy kolorowe kredki z przedmiotami, zbiera plony z drzew, łączy połówki owoców, uczy się „lewo i prawo” na morskich mieszkańcach, poznaje rodzaje transportu i zawody, rozwiązuje rebusy, uczy się figur geometrycznych, liczb od 1 do 10, naczyń, części ciała, angielskiego alfabetu i układa proste zdania („I am a cow, I live on a farm”). Wszystko można pisać i ścierać raz po raz. W zestawie: zeszyt z 11 kartek na spirali, pisak do pisania i ścierania oraz opakowanie. Bez rzepów.",
+        en: "Dive into Adventure is a laminated wipe-clean workbook for a first introduction to English, led by a funny little rabbit named Korzhyk. The instructions are in Ukrainian and the words to learn are in English. Your child sorts vegetables and fruit into baskets, matches coloured pencils to objects, picks the harvest from trees, matches fruit halves, learns “left and right” with sea animals, meets vehicles and jobs, solves picture puzzles, learns geometric shapes, numbers from 1 to 10, kitchenware, parts of the body and the English alphabet, and builds simple sentences (“I am a cow, I live on a farm”). Everything can be written and wiped away again and again. The set includes the workbook of 11 sheets on a spiral, a pen for writing and wiping, and packaging. No velcro.",
+        sv: "„Dyk in i äventyret” är en laminerad torkbar arbetsbok för första mötet med engelska, där en rolig liten kanin vid namn Korzjyk guidar barnet. Instruktionerna är på ukrainska och orden som ska läras är på engelska. Barnet sorterar grönsaker och frukt i korgar, kopplar färgpennor till föremål, plockar skörd från träd, matchar fruktdelar, lär sig ”vänster och höger” med havsdjur, möter fordon och yrken, löser bildgåtor, lär sig geometriska former, siffror från 1 till 10, köksredskap, kroppsdelar och det engelska alfabetet och bygger enkla meningar („I am a cow, I live on a farm”). Allt kan skrivas och torkas bort om och om igen. I setet ingår arbetsboken med 11 blad på spiral, en penna för att skriva och torka och förpackning. Utan kardborre.",
       },
     },
   ];
