@@ -466,7 +466,7 @@
     {
       id: "vb-ledi",
       type: "velcro-books",
-      price: { PLN: 150, EUR: 35, SEK: 390 },
+      price: { PLN: 155, EUR: 36, SEK: 400 },
       image: "assets/products/velcro/ledi-cover.webp",
       images: [
         "assets/products/velcro/ledi-cover.webp",
