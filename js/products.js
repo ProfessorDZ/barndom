@@ -501,6 +501,45 @@
       },
     },
 
+    {
+      id: "vb-boys",
+      type: "velcro-books",
+      price: { PLN: 160, EUR: 38, SEK: 420 },
+      image: "assets/products/velcro/boys-cover.webp",
+      images: [
+        "assets/products/velcro/boys-cover.webp",
+        "assets/products/velcro/boys-spread-1.webp",
+        "assets/products/velcro/boys-spread-2.webp",
+        "assets/products/velcro/boys-spread-3.webp",
+        "assets/products/velcro/boys-spread-4.webp",
+        "assets/products/velcro/boys-spread-5.webp",
+        "assets/products/velcro/boys-spread-6.webp",
+        "assets/products/velcro/boys-spread-7.webp",
+      ],
+      thumb: "assets/products/velcro/thumbs/boys-cover.jpg",
+      ages: ["5"],
+      categories: ["albums-all-topics", "transport"],
+      availableLanguages: ["uk", "pl", "en", "sv"],
+      name: {
+        uk: "Boys! — альбом для крутих хлопців",
+        pl: "Boys! — album dla fajnych chłopaków",
+        en: "Boys! — velcro album for cool boys",
+        sv: "Boys! — album för coola killar",
+      },
+      shortDescription: {
+        uk: "Альбом на липучках для хлопців: спорт, професії, супергерої, транспорт і багато іншого в одному.",
+        pl: "Album na rzepy dla chłopców: sport, zawody, superbohaterowie, transport i wiele więcej w jednym.",
+        en: "A velcro album for boys: sports, jobs, superheroes, vehicles and much more in one.",
+        sv: "Ett kardborrealbum för pojkar: sport, yrken, superhjältar, fordon och mycket mer i ett.",
+      },
+      description: {
+        uk: "«Boys!» — розвивальний альбом на липучках для хлопців від 5 років, у якому зібрано багато тем. Дитина складає розпорядок «Мого дня» від пробудження до сну, вчить частини тіла та збирає обличчя з деталей, знайомиться з 16 видами спорту (футбол, баскетбол, хокей, серфінг, дзюдо, бокс, гольф та інші), підбирає до професій їхні речі — пожежного, лікаря, будівельника, поліцейського, пілота, моряка й космонавта, складає пазли із супергероями та роботами. Окремі сторінки присвячені транспорту: спеціальному, пасажирському, будівельному, військовому, повітряному та водному — до кожного силуету треба підібрати свою машину. Дитина відриває й приклеює липучки просто на сторінках, тренуючи дрібну моторику, увагу й логіку. Рекомендований вік: від 5 років.",
+        pl: "„Boys!” to rozwijający album na rzepy dla chłopców od 5 lat, w którym zebrano wiele tematów. Dziecko układa plan „Mojego dnia” od przebudzenia do snu, uczy się części ciała i składa twarz z elementów, poznaje 16 dyscyplin sportu (piłka nożna, koszykówka, hokej, surfing, judo, boks, golf i inne), dobiera do zawodów ich przedmioty — strażaka, lekarza, budowniczego, policjanta, pilota, marynarza i kosmonauty, układa puzzle z superbohaterami i robotami. Osobne strony poświęcono transportowi: specjalnemu, pasażerskiemu, budowlanemu, wojskowemu, powietrznemu i wodnemu — do każdej sylwetki trzeba dobrać właściwy pojazd. Dziecko odrywa i przykleja rzepy wprost na stronach, ćwicząc małą motorykę, uwagę i logiczne myślenie. Zalecany wiek: od 5 lat.",
+        en: "Boys! is a velcro activity album for boys aged 5 and up, with many topics gathered in one place. Your child arranges the routine of “My Day” from waking up to going to sleep, learns the parts of the body and builds a face from pieces, meets 16 sports (football, basketball, hockey, surfing, judo, boxing, golf and more), matches the tools to each job — firefighter, doctor, builder, police officer, pilot, sailor and astronaut, and puts together puzzles of superheroes and robots. Separate pages are dedicated to vehicles: special-purpose, passenger, construction, military, air and water transport — each silhouette needs its own vehicle. Your child peels off and attaches the velcro pieces right on the pages, practising fine motor skills, attention and logic. Recommended age: from 5 years.",
+        sv: "„Boys!” är ett pedagogiskt kardborrealbum för pojkar från 5 år, med många teman samlade på ett ställe. Barnet lägger upp rutinen för ”Min dag” från uppvaknandet till läggdags, lär sig kroppsdelarna och bygger ett ansikte av bitar, möter 16 sporter (fotboll, basket, ishockey, surfing, judo, boxning, golf med flera), matchar verktygen till varje yrke — brandman, läkare, byggare, polis, pilot, sjöman och astronaut, och lägger pussel med superhjältar och robotar. Egna sidor ägnas åt fordon: specialfordon, persontransport, byggfordon, militärfordon, flygfordon och sjöfordon — varje siluett ska få sitt fordon. Barnet lossar och fäster kardborrebitarna direkt på sidorna och tränar finmotorik, uppmärksamhet och logik. Rekommenderad ålder: från 5 år.",
+      },
+    },
+
     // ---------- coloring ----------
     // Coloring books do NOT have a language choice and do NOT have the
     // "child's name on the cover" option (that's what "personalizable:
