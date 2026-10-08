@@ -1665,5 +1665,41 @@
         sv: "„Clay Activity Book” är en laminerad bok med 14 sensoriska sidor där barnet lär sig att rulla, trycka och skapa med lekdeg. På varje sida finns en glad figur med vita cirklar som ska fyllas med lekdegskulor: en vattenmelon, igelkott, sol, solros, nyckelpiga, bil, bi, gris, ko, tåg, fisk, groda, fjäril och snigel. Leken tränar finmotorik och fantasi och introducerar färger. I setet ingår boken med 8 blad på spiral, lekdeg och förpackning. Utan kardborre.",
       },
     },
+    {
+      id: "pd-plastelina",
+      type: "playdough",
+      price: { PLN: 65, EUR: 15, SEK: 170 },
+      image: "assets/products/playdough/plastelina-cover.webp",
+      images: [
+        "assets/products/playdough/plastelina-cover.webp",
+        "assets/products/playdough/plastelina-spread-1.webp",
+        "assets/products/playdough/plastelina-spread-2.webp",
+        "assets/products/playdough/plastelina-spread-3.webp",
+        "assets/products/playdough/plastelina-spread-4.webp",
+        "assets/products/playdough/plastelina-spread-5.webp",
+        "assets/products/playdough/plastelina-spread-6.webp",
+        "assets/products/playdough/plastelina-spread-7.webp",
+      ],
+      thumb: "assets/products/playdough/thumbs/plastelina-cover.jpg",
+      personalizable: false,
+      name: {
+        uk: "Plastelina — книга з пластиліном",
+        pl: "Plastelina — książka z plasteliną",
+        en: "Plastelina — playdough activity book",
+        sv: "Plastelina — aktivitetsbok med lekdeg",
+      },
+      shortDescription: {
+        uk: "Книга з 14 сторінок для ігор з пластиліном: від облич і солодощів до тварин — пластилін у наборі.",
+        pl: "Książka z 14 stronami do zabaw z plasteliną: od twarzy i słodyczy po zwierzęta — plastelina w zestawie.",
+        en: "A 14-page book for playing with playdough: from faces and sweets to animals — playdough included.",
+        sv: "En bok med 14 sidor för lek med lekdeg: från ansikten och godis till djur — lekdeg ingår.",
+      },
+      description: {
+        uk: "«Plastelina» — ламінована книга з 14 сторінок, на яких дитина ліпить з пластиліну. На кожній картинці є білі кола, які треба заповнити кульками пластиліну. Сторінки різноманітні: хлопчик і дівчинка, чиї обличчя й зачіски дитина створює сама; пончик, кавун, паска й пиріг; слива, малина й чорниця; ялинка й санки; мандарин і полуниця; сонечко, божа корівка й павучок; відерце й ксилофон; повітряні кульки й повітряний змій; тюлень, слон і вовк; повітряна куля й вертоліт; гриби й лисичка; косатка, дельфін і кит. Така гра тренує дрібну моторику, уяву та знайомить з кольорами. У наборі: книга з 4 листків на спіралі, пластилін та пакування. Липучок немає.",
+        pl: "„Plastelina” to laminowana książka z 14 stronami, na których dziecko lepi z plasteliny. Na każdym obrazku są białe kółka, które trzeba wypełnić kulkami plasteliny. Strony są różnorodne: chłopiec i dziewczynka, którym dziecko samo tworzy twarze i fryzury; pączek, arbuz, babka wielkanocna i ciasto; śliwka, malina i borówki; choinka i sanki; mandarynka i truskawka; słoneczko, biedronka i pajączek; wiaderko i ksylofon; baloniki i latawiec; foka, słoń i wilk; balon i helikopter; grzyby i lisek; orka, delfin i wieloryb. Taka zabawa ćwiczy małą motorykę i wyobraźnię oraz uczy kolorów. W zestawie: książka z 4 kartek na spirali, plastelina i opakowanie. Bez rzepów.",
+        en: "Plastelina is a laminated book of 14 pages where your child sculpts with playdough. Every picture has white circles to fill with balls of playdough. The pages are varied: a boy and a girl whose faces and hairstyles your child creates; a doughnut, a watermelon slice, an Easter cake and a pie; a plum, a raspberry and blueberries; a Christmas tree and a sledge; a tangerine and a strawberry; a sun, a ladybird and a spider; a bucket and a xylophone; balloons and a kite; a seal, an elephant and a wolf; a hot-air balloon and a helicopter; mushrooms and a fox; an orca, a dolphin and a whale. This kind of play builds fine motor skills and imagination and introduces colours. The set includes the book of 4 sheets on a spiral, playdough and packaging. No velcro.",
+        sv: "„Plastelina” är en laminerad bok med 14 sidor där barnet modellerar med lekdeg. På varje bild finns vita cirklar som ska fyllas med lekdegskulor. Sidorna är varierade: en pojke och en flicka vars ansikten och frisyrer barnet skapar själv; en munk, en vattenmelonskiva, en påskkaka och en paj; ett plommon, ett hallon och blåbär; en julgran och en kälke; en mandarin och en jordgubbe; en sol, en nyckelpiga och en spindel; en hink och en xylofon; ballonger och en drake; en säl, en elefant och en varg; en luftballong och en helikopter; svampar och en räv; en späckhuggare, en delfin och en val. Leken tränar finmotorik och fantasi och introducerar färger. I setet ingår boken med 4 blad på spiral, lekdeg och förpackning. Utan kardborre.",
+      },
+    },
   ];
 })();
