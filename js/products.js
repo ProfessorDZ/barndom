@@ -1777,7 +1777,7 @@
     {
       id: "wc-english-workbook",
       type: "wipe-clean",
-      price: { PLN: 50, EUR: 12, SEK: 130 },
+      price: { PLN: 65, EUR: 15, SEK: 170 },
       image: "assets/products/wipe-clean/english-cover.webp",
       images: [
         "assets/products/wipe-clean/english-cover.webp",
