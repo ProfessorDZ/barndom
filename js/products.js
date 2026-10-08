@@ -76,7 +76,7 @@
   // true, the site hides it from navigation (header menu, footer links)
   // and from bestsellers/search/"you may also like", and shows a friendly
   // "coming soon" page instead of a product grid if someone opens its
-  // catalog link directly. Right now only velcro-books and coloring have
+  // catalog link directly. Right now velcro-books, coloring and playdough have
   // real products, so every other section below is marked comingSoon —
   // set a section's flag back to false (or remove the line) once it has
   // real products in window.BD_PRODUCTS, see README.md for the full
@@ -84,7 +84,7 @@
   window.BD_PRODUCT_TYPES = [
     { id: "velcro-books", image: "assets/types/velcro-books.svg", pastel: "peach" },
     { id: "coloring", image: "assets/types/coloring.svg", pastel: "mint" },
-    { id: "playdough", image: "assets/types/playdough.svg", pastel: "sky", comingSoon: true },
+    { id: "playdough", image: "assets/types/playdough.svg", pastel: "sky" },
     { id: "spot-it", image: "assets/types/spot-it.svg", pastel: "sun", comingSoon: true },
     { id: "wipe-clean", image: "assets/types/wipe-clean.svg", pastel: "lilac", comingSoon: true },
     { id: "unit-study", image: "assets/types/unit-study.svg", comingSoon: true },
@@ -1622,6 +1622,47 @@
         pl: "Na stronach dwoje dzieci pielęgnuje ogród z konewką i łopatką, podczas gdy motyle krążą nad słonecznikiem i tulipanami, a biedronka pełznie po liściu. W zestawie kolorowanka, kredki i naklejki na słoneczny dzień wśród kwiatów.",
         en: "On these pages, two children tend the garden with a watering can and a trowel, while butterflies flutter over a sunflower and tulips, and a ladybird crawls along a leaf. The set includes the coloring book, pencils and stickers for a sunny day among the flowers.",
         sv: "På sidorna sköter två barn trädgården med vattenkanna och planteringsspade, medan fjärilar fladdrar över en solros och tulpaner och en nyckelpiga kryper längs ett blad. I setet ingår målarboken, färgpennor och klistermärken för en solig dag bland blommorna.",
+      },
+    },
+
+    // ---------- playdough ----------
+    // Playdough books have no velcro and no language choice (the pages are
+    // wordless; only the cover title is in English), and the plasticine is
+    // included in the set. "personalizable: false" hides the name-on-cover option.
+    {
+      id: "pd-clay-activity-book",
+      type: "playdough",
+      price: { PLN: 85, EUR: 20, SEK: 220 },
+      image: "assets/products/playdough/clay-cover.webp",
+      images: [
+        "assets/products/playdough/clay-cover.webp",
+        "assets/products/playdough/clay-spread-1.webp",
+        "assets/products/playdough/clay-spread-2.webp",
+        "assets/products/playdough/clay-spread-3.webp",
+        "assets/products/playdough/clay-spread-4.webp",
+        "assets/products/playdough/clay-spread-5.webp",
+        "assets/products/playdough/clay-spread-6.webp",
+        "assets/products/playdough/clay-spread-7.webp",
+      ],
+      thumb: "assets/products/playdough/thumbs/clay-cover.jpg",
+      personalizable: false,
+      name: {
+        uk: "Clay Activity Book — книга з пластиліном",
+        pl: "Clay Activity Book — książka z plasteliną",
+        en: "Clay Activity Book — 14 sensory pages with playdough",
+        sv: "Clay Activity Book — aktivitetsbok med lekdeg",
+      },
+      shortDescription: {
+        uk: "Книга з 14 сенсорних сторінок: розкачуй, тисни й створюй з пластиліном — він уже в наборі.",
+        pl: "Książka z 14 sensorycznymi stronami: turlaj, dociskaj i twórz z plasteliną — jest już w zestawie.",
+        en: "A book of 14 sensory pages: roll, press and create with playdough — it comes in the set.",
+        sv: "En bok med 14 sensoriska sidor: rulla, tryck och skapa med lekdeg — den ingår i setet.",
+      },
+      description: {
+        uk: "«Clay Activity Book» — ламінована книга з 14 сенсорних сторінок, на яких дитина вчиться розкачувати, притискати й створювати з пластиліну. На кожній сторінці — веселий герой із білими колами, куди треба вкласти кульки пластиліну: кавун, їжачок, сонечко, соняшник, божа корівка, машинка, бджілка, свинка, корівка, паровозик, рибка, жабка, метелик і равлик. Така гра тренує дрібну моторику та уяву й знайомить з кольорами. У наборі: книга з 8 листків на спіралі, пластилін та пакування. Липучок немає.",
+        pl: "„Clay Activity Book” to laminowana książka z 14 sensorycznymi stronami, na których dziecko uczy się turlać, dociskać i tworzyć z plasteliny. Na każdej stronie jest wesoły bohater z białymi kołami, w które trzeba włożyć kulki plasteliny: arbuz, jeż, słoneczko, słonecznik, biedronka, samochodzik, pszczółka, świnka, krówka, pociąg, rybka, żabka, motyl i ślimak. Taka zabawa ćwiczy małą motorykę i wyobraźnię oraz uczy kolorów. W zestawie: książka z 8 kartek na spirali, plastelina i opakowanie. Bez rzepów.",
+        en: "Clay Activity Book is a laminated book of 14 sensory pages where your child learns to roll, press and create with playdough. Each page has a cheerful character with white circles to fill with balls of playdough: a watermelon, hedgehog, sun, sunflower, ladybird, car, bee, pig, cow, train, fish, frog, butterfly and snail. This kind of play builds fine motor skills and imagination and introduces colours. The set includes the book of 8 sheets on a spiral, playdough and packaging. No velcro.",
+        sv: "„Clay Activity Book” är en laminerad bok med 14 sensoriska sidor där barnet lär sig att rulla, trycka och skapa med lekdeg. På varje sida finns en glad figur med vita cirklar som ska fyllas med lekdegskulor: en vattenmelon, igelkott, sol, solros, nyckelpiga, bil, bi, gris, ko, tåg, fisk, groda, fjäril och snigel. Leken tränar finmotorik och fantasi och introducerar färger. I setet ingår boken med 8 blad på spiral, lekdeg och förpackning. Utan kardborre.",
       },
     },
   ];
