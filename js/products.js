@@ -463,6 +463,44 @@
       },
     },
 
+    {
+      id: "vb-ledi",
+      type: "velcro-books",
+      price: { PLN: 150, EUR: 35, SEK: 390 },
+      image: "assets/products/velcro/ledi-cover.webp",
+      images: [
+        "assets/products/velcro/ledi-cover.webp",
+        "assets/products/velcro/ledi-spread-1.webp",
+        "assets/products/velcro/ledi-spread-2.webp",
+        "assets/products/velcro/ledi-spread-3.webp",
+        "assets/products/velcro/ledi-spread-4.webp",
+        "assets/products/velcro/ledi-spread-5.webp",
+        "assets/products/velcro/ledi-spread-6.webp",
+      ],
+      thumb: "assets/products/velcro/thumbs/ledi-cover.jpg",
+      ages: ["3"],
+      categories: ["dolls", "albums-all-topics"],
+      availableLanguages: ["uk", "pl", "en", "sv"],
+      name: {
+        uk: "Юна Леді — альбом для дівчат",
+        pl: "Młoda Dama — album dla dziewczynek",
+        en: "Young Lady — velcro album for girls",
+        sv: "Unga damen — album för flickor",
+      },
+      shortDescription: {
+        uk: "Альбом на липучках для дівчат із ляльками, вбранням і казковими замками — багато тем в одному.",
+        pl: "Album na rzepy dla dziewczynek z lalkami, ubrankami i bajkowymi zamkami — wiele tematów w jednym.",
+        en: "A velcro album for girls with dolls, outfits and fairy-tale castles — many topics in one.",
+        sv: "Ett kardborrealbum för flickor med dockor, kläder och sagoslott — många teman i ett.",
+      },
+      description: {
+        uk: "«Юна Леді» — розвивальний альбом на липучках для дівчат від 3 років, у якому багато тем зібрано разом. Дитина вдягає ляльку в улюблені речі з гардероба, добирає до неї аксесуари й взуття, складає розпорядок «Мого дня» від пробудження до сну, накриває стіл на сніданок, обід, десерт і вечерю, готує капкейк і добирає вбрання модним дівчаткам у місті. А ще вирішує, в якому замку живе принцеса. Дитина відриває й приклеює липучки просто на сторінках, тренуючи дрібну моторику, уяву та увагу. Рекомендований вік: від 3 років.",
+        pl: "„Młoda Dama” to rozwijający album na rzepy dla dziewczynek od 3 lat, w którym zebrano wiele tematów w jednym miejscu. Dziecko ubiera lalkę w ulubione rzeczy z szafy, dobiera dodatki i buty, układa plan „Mojego dnia” od przebudzenia do snu, nakrywa stół do śniadania, obiadu, deseru i kolacji, przygotowuje babeczkę i dobiera stroje modnym dziewczynkom w mieście. Zastanawia się też, w którym zamku mieszka księżniczka. Dziecko odrywa i przykleja rzepy wprost na stronach, ćwicząc małą motorykę, wyobraźnię i uwagę. Zalecany wiek: od 3 lat.",
+        en: "Young Lady is a velcro activity album for girls aged 3 and up, with many topics gathered together. Your child dresses a doll in favourite clothes from the wardrobe, picks accessories and shoes, arranges the routine of “My Day” from waking up to going to sleep, sets the table for breakfast, lunch, dessert and dinner, bakes a cupcake and chooses outfits for the fashionable girls in the city. She also decides which castle the princess lives in. Your child peels off and attaches the velcro pieces right on the pages, practising fine motor skills, imagination and attention. Recommended age: from 3 years.",
+        sv: "„Unga damen” är ett kardborrealbum för flickor från 3 år, med många teman samlade på ett ställe. Barnet klär en docka i favoritkläder ur garderoben, väljer tillbehör och skor, lägger upp rutinen för ”Min dag” från uppvaknandet till läggdags, dukar bordet till frukost, lunch, efterrätt och middag, bakar en cupcake och väljer kläder åt de moderna flickorna i staden. Barnet får också avgöra i vilket slott prinsessan bor. Barnet lossar och fäster kardborrebitarna direkt på sidorna och tränar finmotorik, fantasi och uppmärksamhet. Rekommenderad ålder: från 3 år.",
+      },
+    },
+
     // ---------- coloring ----------
     // Coloring books do NOT have a language choice and do NOT have the
     // "child's name on the cover" option (that's what "personalizable:
