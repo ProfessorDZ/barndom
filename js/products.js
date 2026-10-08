@@ -1735,5 +1735,40 @@
         sv: "„For Little Princesses” är en laminerad bok med 10 sagolika sidor där barnet modellerar med lekdeg. På varje bild finns pärlor, cirklar och mönster att dekorera med kulor och korvar av lekdeg: en prinsessa med halsband, en magisk enhörning, ett tekalas, en kunglig krona, en fjärilsfe, en docka med leksaker, en trädgårdsfe med blommor, en sångerska, en flicka på cykel och en handspegel med kam. Leken tränar finmotorik, fantasi och tålamod. I setet ingår boken på spiral, lekdeg och förpackning. Utan kardborre.",
       },
     },
+    {
+      id: "pd-abetka",
+      type: "playdough",
+      price: { PLN: 70, EUR: 16, SEK: 180 },
+      image: "assets/products/playdough/abetka-cover.webp",
+      images: [
+        "assets/products/playdough/abetka-cover.webp",
+        "assets/products/playdough/abetka-spread-1.webp",
+        "assets/products/playdough/abetka-spread-2.webp",
+        "assets/products/playdough/abetka-spread-3.webp",
+        "assets/products/playdough/abetka-spread-4.webp",
+        "assets/products/playdough/abetka-spread-5.webp",
+        "assets/products/playdough/abetka-spread-6.webp",
+      ],
+      thumb: "assets/products/playdough/thumbs/abetka-cover.jpg",
+      personalizable: false,
+      name: {
+        uk: "Пластилінова абетка — українські літери з пластиліном",
+        pl: "Plastelinowy alfabet ukraiński — książka z plasteliną",
+        en: "Playdough Alphabet — Ukrainian letters book",
+        sv: "Lekdegsalfabet — bok med ukrainska bokstäver",
+      },
+      shortDescription: {
+        uk: "Книга з усіма 33 літерами української абетки: викладай літери й картинки з пластиліну — пластилін у наборі.",
+        pl: "Książka ze wszystkimi 33 literami ukraińskiego alfabetu: wykładaj litery i obrazki plasteliną — plastelina w zestawie.",
+        en: "A book with all 33 letters of the Ukrainian alphabet: fill the letters and pictures with playdough — playdough included.",
+        sv: "En bok med alla 33 bokstäver i det ukrainska alfabetet: fyll bokstäver och bilder med lekdeg — lekdeg ingår.",
+      },
+      description: {
+        uk: "«Пластилінова абетка» — ламінована книга з усіма 33 літерами української абетки на 11 сторінках. Кожна літера — це велика біла форма, яку дитина заповнює пластиліном, і поруч картинка з білими колами для кульок пластиліну: абрикос, банани, вишні, їжак, мавпа, слон, фламінго, хамелеон, черепаха та інші. Остання сторінка — цікава загадка зі сплетеними контурами всіх літер. Так дитина вчить літери граючись, тренує дрібну моторику, уяву та увагу. У наборі: книга на спіралі, пластилін та пакування. Липучок немає.",
+        pl: "„Plastelinowy alfabet” to laminowana książka ze wszystkimi 33 literami ukraińskiego alfabetu na 11 stronach. Każda litera to duży biały kształt, który dziecko wypełnia plasteliną, a obok obrazek z białymi kółkami na kulki plasteliny: morela, banany, wiśnie, jeż, małpka, słoń, flaming, kameleon, żółw i inne. Ostatnia strona to ciekawa zagadka ze splecionymi konturami wszystkich liter. Dziecko uczy się liter przez zabawę, ćwicząc małą motorykę, wyobraźnię i uwagę. W zestawie: książka na spirali, plastelina i opakowanie. Bez rzepów.",
+        en: "Playdough Alphabet is a laminated book with all 33 letters of the Ukrainian alphabet on 11 pages. Each letter is a big white shape that your child fills with playdough, and next to it is a picture with white circles for balls of playdough: an apricot, bananas, cherries, a hedgehog, a monkey, an elephant, a flamingo, a chameleon, a turtle and more. The last page is a fun puzzle of interlocking outlines of all the letters. Your child learns the letters through play while building fine motor skills, imagination and attention. The set includes the book on a spiral, playdough and packaging. No velcro.",
+        sv: "„Lekdegsalfabetet” är en laminerad bok med alla 33 bokstäver i det ukrainska alfabetet på 11 sidor. Varje bokstav är en stor vit form som barnet fyller med lekdeg, och bredvid finns en bild med vita cirklar för lekdegskulor: en aprikos, bananer, körsbär, en igelkott, en apa, en elefant, en flamingo, en kameleont, en sköldpadda och mer. Sista sidan är ett roligt pussel med sammanflätade konturer av alla bokstäver. Barnet lär sig bokstäverna genom lek och tränar finmotorik, fantasi och uppmärksamhet. I setet ingår boken på spiral, lekdeg och förpackning. Utan kardborre.",
+      },
+    },
   ];
 })();
