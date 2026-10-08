@@ -424,6 +424,45 @@
       },
     },
 
+    {
+      id: "vb-wunderkind",
+      type: "velcro-books",
+      price: { PLN: 160, EUR: 38, SEK: 420 },
+      image: "assets/products/velcro/wunderkind-cover.webp",
+      images: [
+        "assets/products/velcro/wunderkind-cover.webp",
+        "assets/products/velcro/wunderkind-spread-1.webp",
+        "assets/products/velcro/wunderkind-spread-2.webp",
+        "assets/products/velcro/wunderkind-spread-3.webp",
+        "assets/products/velcro/wunderkind-spread-4.webp",
+        "assets/products/velcro/wunderkind-spread-5.webp",
+        "assets/products/velcro/wunderkind-spread-6.webp",
+        "assets/products/velcro/wunderkind-spread-7.webp",
+      ],
+      thumb: "assets/products/velcro/thumbs/wunderkind-cover.jpg",
+      ages: ["5"],
+      categories: ["albums-all-topics"],
+      availableLanguages: ["uk", "pl", "en", "sv"],
+      name: {
+        uk: "Вундеркінд — альбом на всі теми",
+        pl: "Wunderkind — album na wszystkie tematy",
+        en: "Wunderkind — velcro album of many topics",
+        sv: "Wunderkind — album med alla teman",
+      },
+      shortDescription: {
+        uk: "Вундеркінд — альбом на липучках із багатьма темами в одному: фігури, кольори, лічба, родинне дерево та інше.",
+        pl: "Wunderkind — album na rzepy z wieloma tematami w jednym: figury, kolory, liczenie, drzewo genealogiczne i więcej.",
+        en: "Wunderkind — a velcro album with many topics in one: shapes, colours, counting, a family tree and more.",
+        sv: "Wunderkind — ett kardborrealbum med många teman i ett: former, färger, räkning, släktträd och mer.",
+      },
+      description: {
+        uk: "«Вундеркінд» — розвивальний альбом на липучках для дітей від 5 років, у якому зібрано багато тем в одному місці. Дитина вчить геометричні фігури разом з білими мишками й шматочками сиру, сортує предмети за кольором, рахує від 1 до 10 на рибалці, допомагає бджілці зібрати мед і розселити бджілок по сотах, підбирає кольори до фото з природи, рахує крапочки на яблуках їжачка, розкладає іграшки на полиці за силуетами, збирає аплікацію з деталей, добирає кольори для повітряної кулі та складає родинне дерево. Дитина відриває й приклеює липучки просто на сторінках, тренуючи дрібну моторику, увагу й логіку. Рекомендований вік: від 5 років.",
+        pl: "„Wunderkind” to rozwijający album na rzepy dla dzieci od 5 lat, w którym zebrano wiele tematów w jednym miejscu. Dziecko poznaje figury geometryczne razem z białymi myszkami i kawałkami sera, sortuje przedmioty według koloru, liczy od 1 do 10 podczas wędkowania, pomaga pszczółce zebrać miód i rozmieścić pszczoły w plastrach, dobiera kolory do zdjęć z natury, liczy kropki na jabłkach jeża, układa zabawki na półce według sylwetek, składa aplikację z elementów, dobiera kolory do balonu i układa drzewo genealogiczne. Dziecko odrywa i przykleja rzepy wprost na stronach, ćwicząc małą motorykę, uwagę i logiczne myślenie. Zalecany wiek: od 5 lat.",
+        en: "Wunderkind is a velcro activity album for children aged 5 and up, with many topics gathered in one place. Your child learns geometric shapes with white mice and pieces of cheese, sorts objects by colour, counts from 1 to 10 while fishing, helps a bee collect honey and place the bees in the honeycomb, matches colours to photos from nature, counts the dots on a hedgehog's apples, arranges toys on a shelf by their silhouettes, builds an appliqué from pieces, picks colours for a hot-air balloon and builds a family tree. Your child peels off and attaches the velcro pieces right on the pages, practising fine motor skills, attention and logic. Recommended age: from 5 years.",
+        sv: "„Wunderkind” är ett pedagogiskt kardborrealbum för barn från 5 år, med många teman samlade på ett ställe. Barnet lär sig geometriska former tillsammans med vita möss och ostbitar, sorterar föremål efter färg, räknar från 1 till 10 medan det fiskar, hjälper en bi att samla honung och placera bina i kakan, matchar färger med bilder från naturen, räknar prickarna på igelkottens äpplen, ställer leksaker på hyllan efter deras silhuetter, bygger en applikation av bitar, väljer färger till en luftballong och bygger ett släktträd. Barnet lossar och fäster kardborrebitarna direkt på sidorna och tränar finmotorik, uppmärksamhet och logik. Rekommenderad ålder: från 5 år.",
+      },
+    },
+
     // ---------- coloring ----------
     // Coloring books do NOT have a language choice and do NOT have the
     // "child's name on the cover" option (that's what "personalizable:
