@@ -540,6 +540,44 @@
       },
     },
 
+    {
+      id: "vb-first-velcro",
+      type: "velcro-books",
+      price: { PLN: 105, EUR: 25, SEK: 275 },
+      image: "assets/products/velcro/first-cover.webp",
+      images: [
+        "assets/products/velcro/first-cover.webp",
+        "assets/products/velcro/first-spread-1.webp",
+        "assets/products/velcro/first-spread-2.webp",
+        "assets/products/velcro/first-spread-3.webp",
+        "assets/products/velcro/first-spread-4.webp",
+        "assets/products/velcro/first-spread-5.webp",
+        "assets/products/velcro/first-spread-6.webp",
+      ],
+      thumb: "assets/products/velcro/thumbs/first-cover.jpg",
+      ages: ["1"],
+      categories: ["albums-all-topics", "animals", "colors-shapes", "food", "numbers"],
+      availableLanguages: ["uk", "pl", "en", "sv"],
+      name: {
+        uk: "Мої перші липучки — альбом на всі теми",
+        pl: "Moje pierwsze rzepy — album na wszystkie tematy",
+        en: "My First Velcro — album of many topics",
+        sv: "Mina första kardborrar — album med alla teman",
+      },
+      shortDescription: {
+        uk: "Перший альбом на липучках для малюків: тварини, кольори, цифри, овочі й фрукти — 101 деталь для гри.",
+        pl: "Pierwszy album na rzepy dla maluchów: zwierzęta, kolory, liczby, warzywa i owoce — 101 elementów do zabawy.",
+        en: "A first velcro album for little ones: animals, colours, numbers, vegetables and fruit — 101 pieces to play with.",
+        sv: "Ett första kardborrealbum för de minsta: djur, färger, siffror, grönsaker och frukt — 101 bitar att leka med.",
+      },
+      description: {
+        uk: "«Мої перші липучки» — перший альбом на липучках для найменших, у якому зібрано багато тем. Малюк підбирає тварин до їхніх силуетів на фермі, у лісі, джунглях і морі, знаходить мам і малюків, вгадує, хто сховався на картинці, і підбирає овочі та фрукти до їхніх тіней. Є й перша лічба: у потязі треба розмістити цифри від 1 до 5 і відповідну кількість комах. А ще — кольорові плями, куди дитина кладе предмети такого ж кольору, і веселкова пірамідка з кілець. В альбомі 12 листків і 101 деталь на липучках. Дитина відриває й приклеює липучки просто на сторінках, тренуючи дрібну моторику, увагу й логіку. Рекомендований вік: від 1 року.",
+        pl: "„Moje pierwsze rzepy” to pierwszy album na rzepy dla najmłodszych, w którym zebrano wiele tematów. Maluch dopasowuje zwierzęta do ich sylwetek na farmie, w lesie, w dżungli i w morzu, szuka mam i ich dzieci, zgaduje, kto schował się na obrazku, i dobiera warzywa oraz owoce do ich cieni. Jest też pierwsze liczenie: w pociągu trzeba umieścić cyfry od 1 do 5 i odpowiednią liczbę owadów. A do tego kolorowe plamy, na których dziecko układa przedmioty w tym samym kolorze, oraz tęczowa piramidka z kółek. W albumie jest 12 kartek i 101 elementów na rzepy. Dziecko odrywa i przykleja rzepy wprost na stronach, ćwicząc małą motorykę, uwagę i logiczne myślenie. Zalecany wiek: od 1 roku.",
+        en: "My First Velcro is a first velcro album for the littlest ones, with many topics in one place. Your toddler matches animals to their silhouettes on the farm, in the forest, in the jungle and in the sea, finds mothers and their babies, guesses who is hiding in the picture and matches vegetables and fruit to their shadows. There is early counting too: on the train, numbers 1 to 5 go with the right number of insects. Plus colourful splashes where your child places objects of the same colour, and a rainbow stacking-ring tower. The album has 12 sheets and 101 velcro pieces. Your child peels off and attaches the velcro pieces right on the pages, practising fine motor skills, attention and logic. Recommended age: from 1 year.",
+        sv: "„Mina första kardborrar” är ett första kardborrealbum för de allra minsta, med många teman samlade på ett ställe. Barnet matchar djur med deras silhuetter på gården, i skogen, i djungeln och i havet, hittar mammor och deras ungar, gissar vem som gömmer sig på bilden och matchar grönsaker och frukt med sina skuggor. Det finns också första räkning: på tåget ska siffrorna 1 till 5 paras ihop med rätt antal insekter. Dessutom färgglada stänk där barnet lägger föremål i samma färg och ett regnbågstorn av ringar. Albumet har 12 blad och 101 kardborrebitar. Barnet lossar och fäster kardborrebitarna direkt på sidorna och tränar finmotorik, uppmärksamhet och logik. Rekommenderad ålder: från 1 år.",
+      },
+    },
+
     // ---------- coloring ----------
     // Coloring books do NOT have a language choice and do NOT have the
     // "child's name on the cover" option (that's what "personalizable:
